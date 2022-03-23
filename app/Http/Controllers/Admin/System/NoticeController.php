@@ -4,33 +4,19 @@
 namespace App\Http\Controllers\Admin\System;
 
 
-class NoticeController
+use App\Http\Controllers\Admin\BaseController;
+use App\Models\Admin\Notice;
+use Illuminate\Http\Request;
+
+class NoticeController extends BaseController
 {
     public function index()
     {
         return view('admin.system.notice');
     }
-    public function data()
+    public function data(Request $request)
     {
-        $data = [
-            [
-                "id"=>1,"notice"=>"下雨收衣服喽","create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id"=>1,"notice"=>"下雨收衣服喽","create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id"=>1,"notice"=>"下雨收衣服喽","create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id"=>1,"notice"=>"下雨收衣服喽","create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id"=>1,"notice"=>"下雨收衣服喽","create_time"=>date("Y-m-d H:i:s")
-            ]
-        ];
-        $code=0;
-        $count = count($data);
-        return response()->json(compact('data','code','count'));
+        $userData = Notice::paginate($request->limit);
+        return $this->success($userData);
     }
 }

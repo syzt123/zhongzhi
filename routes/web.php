@@ -36,7 +36,7 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/buy_log',[BuyLog::class,"index"]);
         Route::get('/buy_log/{page?}/{limit?}',[BuyLog::class,"data"]);
         Route::get('/exchange_log',[ExchangeLog::class,"index"]);
-        Route::get('/exchange_log/{page?}/{limit?}',[BuyLog::class,"data"]);
+        Route::get('/exchange_log/{page?}/{limit?}',[ExchangeLog::class,"data"]);
     });
     Route::group(['prefix'=>'vegetable'],function(){
         Route::get('/',[Vegetable::class,"index"]);
