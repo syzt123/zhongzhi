@@ -1,0 +1,71 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "接口文档",
+        "description": "学习测试用的 先用再研究",
+        "version": "V1"
+    },
+    "paths": {
+        "/api/index/index": {
+            "get": {
+                "tags": [
+                    "index"
+                ],
+                "summary": "首页",
+                "operationId": "6d8416445a12b87cc0af72c2983b6546",
+                "parameters": [
+                    {
+                        "name": "isFastLogin",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "client",
+                        "in": "header"
+                    },
+                    {
+                        "name": "version",
+                        "in": "header"
+                    },
+                    {
+                        "name": "tel",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "verification_code",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "  {err_code: int32, msg:string, data:[]}  "
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "index",
+            "description": "首页模块"
+        }
+    ],
+    "security": [
+        []
+    ]
+}
