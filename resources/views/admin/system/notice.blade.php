@@ -36,6 +36,19 @@
                     // ,{field:'v_address', min:80, title: '配送地址'}
                     ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
                 ]]
+                ,parseData: function(res){ //res 即为原始返回的数据
+                    // console.log(res)
+                    // for (var i = 0; i < res.data.data.length; i++) {
+                    //     res.data.data[i].v_price = res.data.data[i].v_price / 100
+                    //     res.data.data[i].n_price = res.data.data[i].n_price / 100
+                    // }
+                    return {
+                        "code": !res.code, //解析接口状态
+                        "msg": res.message, //解析提示文本
+                        "count": res.data.total, //解析数据长度
+                        "data": res.data.data //解析数据列表
+                    };
+                }
             });
         });
     </script>

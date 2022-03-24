@@ -32,14 +32,27 @@
                 ,cols: [[
                     {field:'id', min:80, title: 'ID', sort: true}
                     ,{field:'wechat_no', min:200, title: '订单号', }
-                    ,{field:'name', min:80, title: '用户'}
-                    ,{field:'payment_type', min:80, title: '付款类型'}
+                    ,{field:'nickname', min:80, title: '用户'}
+                    // ,{field:'payment_type', min:80, title: '付款类型'}
                     ,{field:'f_price', min:80, title: '金额'}
                     ,{field:'status', min:80, title: '已支付'}
                     ,{field:'create_time', min:80, title: '时间'}
                     // ,{field:'v_address', min:80, title: '配送地址'}
                     ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
                 ]]
+                , parseData: function (res) { //res 即为原始返回的数据
+                    // console.log(res)
+                    // for (var i = 0; i < res.data.data.length; i++) {
+                    //     res.data.data[i].v_price = res.data.data[i].v_price / 100
+                    //     res.data.data[i].n_price = res.data.data[i].n_price / 100
+                    // }
+                    return {
+                        "code": !res.code, //解析接口状态
+                        "msg": res.message, //解析提示文本
+                        "count": res.data.total, //解析数据长度
+                        "data": res.data.data //解析数据列表
+                    };
+                }
             });
         });
     </script>

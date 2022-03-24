@@ -4,34 +4,21 @@
 namespace App\Http\Controllers\Admin\Logistics;
 
 
-class OrderController
+use App\Http\Controllers\Admin\BaseController;
+use App\Models\Admin\PaymentOrder;
+use Illuminate\Http\Request;
+
+class OrderController extends BaseController
 {
     public function index()
     {
         return view("admin.logistics.order");
     }
 
-    public function data()
+    public function data(Request $request)
     {
-        $data = [
-            [
-                "id" => 1, "name" => "张三", "payment_type" => "支付宝", "f_price" => "200.00", "status" => "已支付", "wechat_no" => date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),"create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id" => 1, "name" => "张三", "payment_type" => "支付宝", "f_price" => "200.00", "status" => "已支付", "wechat_no" => date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),"create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id" => 1, "name" => "张三", "payment_type" => "支付宝", "f_price" => "200.00", "status" => "已支付", "wechat_no" => date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),"create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id" => 1, "name" => "张三", "payment_type" => "支付宝", "f_price" => "200.00", "status" => "已支付", "wechat_no" => date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),"create_time"=>date("Y-m-d H:i:s")
-            ],
-            [
-                "id" => 1, "name" => "张三", "payment_type" => "支付宝", "f_price" => "200.00", "status" => "已支付", "wechat_no" => date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT),"create_time"=>date("Y-m-d H:i:s")
-            ]
-        ];
-        $code = 0;
-        $count = count($data);
-        return response()->json(compact('data', 'code', 'count'));
+        $userData = PaymentOrder::leftJoin('member_info','m_id','=','member_info.id')
+            ->paginate($request->limit,["payment_order.*","member_info.nickname"]);
+        return $this->success($userData);
     }
 }
