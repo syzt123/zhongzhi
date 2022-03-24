@@ -73,6 +73,10 @@
                                     <dd><a href="{{url("admin/user")}}">用户列表</a></dd>
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd class="layui-this"><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
+                                @else
+                                    <dd><a href="{{url("admin/user")}}" @if(strpos(request()->path(),'user')) class="layui-this" @endif>用户列表</a></dd>
+                                    <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
+                                    <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @endif
                             </dl>
                         </li>

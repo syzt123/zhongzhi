@@ -5,10 +5,12 @@ namespace App\Models\Admin;
 
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\Paginator;
 
 class Base extends Model
 {
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
+    protected $dateFormat = 'U';
     protected $casts = [
         'create_time' => 'datetime:Y-m-d H:i:s',
     ];

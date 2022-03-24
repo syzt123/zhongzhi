@@ -10,6 +10,10 @@ use App\Http\Controllers\Admin\Vegetable\IndexController as Vegetable;
 use App\Http\Controllers\Admin\System\NoticeController as Notice;
 use App\Http\Controllers\Admin\Logistics\OrderController as Order;
 use App\Http\Controllers\Admin\Logistics\DistributionController as Distribution;
+use App\Http\Controllers\Admin\Land\AddController as AddLand;
+use App\Http\Controllers\Admin\Land\EditController as EditLand;
+use App\Http\Controllers\Admin\Land\DelController as DelLand;
+use App\Http\Controllers\Admin\User\user\AddController as AddUser;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,6 +33,11 @@ Route::group(['prefix'=>'admin'],function(){
     Route::group(['prefix'=>'land'],function(){
         Route::get('/',[Land::class,"index"]);
         Route::get('/data/{page?}/{limit?}',[Land::class,"data"]);
+        Route::get('add',[AddLand::class,'index']);
+        Route::post('add/submit',[AddLand::class,'submit']);
+        Route::get('edit/{id}',[EditLand::class,'index']);
+        Route::put('edit/submit',[EditLand::class,'submit']);
+        Route::delete('del/{id}',[DelLand::class,'index']);
     });
     Route::group(['prefix'=>'user'],function(){
         Route::get('/',[User::class,"index"]);
@@ -37,6 +46,8 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/buy_log/{page?}/{limit?}',[BuyLog::class,"data"]);
         Route::get('/exchange_log',[ExchangeLog::class,"index"]);
         Route::get('/exchange_log/{page?}/{limit?}',[ExchangeLog::class,"data"]);
+        Route::get('/user/add',[AddUser::class,"index"]);
+        Route::post('/user/add/submit',[AddUser::class,"submit"]);
     });
     Route::group(['prefix'=>'vegetable'],function(){
         Route::get('/',[Vegetable::class,"index"]);
