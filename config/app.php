@@ -177,6 +177,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // swager
+        L5Swagger\L5SwaggerServiceProvider::class,
+
     ],
 
     /*

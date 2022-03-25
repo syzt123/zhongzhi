@@ -56,6 +56,153 @@
                         "description": "  {err_code: int32, msg:string, data:[]}  "
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "index"
+                ],
+                "summary": "首页2",
+                "operationId": "e97c4567cb606aba0c7c211620dcd1e5",
+                "parameters": [
+                    {
+                        "name": "isFastLogin",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "client",
+                        "in": "header"
+                    },
+                    {
+                        "name": "version",
+                        "in": "header"
+                    },
+                    {
+                        "name": "tel",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "verification_code",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "  {code: 200, msg:string, data:[]}  "
+                    }
+                }
+            }
+        },
+        "/api/v1/user/register": {
+            "post": {
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户注册",
+                "description": "用户注册",
+                "operationId": "096e89ba50e21c210c2303bbcfc7297d",
+                "parameters": [
+                    {
+                        "name": "tel",
+                        "in": "query",
+                        "description": "手机号",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nickname",
+                        "in": "query",
+                        "description": "用户昵称",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "head_img",
+                        "in": "query",
+                        "description": "用户头像",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "  {code: 200, msg:string, data:[]}  "
+                    }
+                }
+            }
+        },
+        "/api/v1/user/login": {
+            "post": {
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户登陆",
+                "description": "用户登陆",
+                "operationId": "43e7f39bbe76b766b9176e93203068a9",
+                "parameters": [
+                    {
+                        "name": "tel",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "  {code: 200, msg:string, data:[]}  "
+                    }
+                }
+            }
+        },
+        "/api/v1/user/index": {
+            "post": {
+                "tags": [
+                    "用户管理"
+                ],
+                "summary": "用户个人中心",
+                "description": "用户个人中心",
+                "operationId": "b4871b138b797683511af6813e7273c6",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "description": "header头token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "  {code: 200, msg:string, data:[]}  "
+                    }
+                }
             }
         }
     },

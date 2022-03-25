@@ -30,7 +30,7 @@ class CheckToken
             //校验正确性
             $token = $request->header('TOKEN');
             //
-            if (Cache::store("redis")->get($token)) {
+            if (Cache::store("redis")->get(config("comm_code.redis_prefix.token") . $token)) {
                 //token过期
                 $data = [
                     "code" => -1,

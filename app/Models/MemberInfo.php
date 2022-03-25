@@ -24,7 +24,11 @@ class MemberInfo extends Model
         if (!empty($data)) {
             $selfRs = $selfRs->where($data);// 如密码
         }
-        return $selfRs->where("tel", '=', $phone)->first();
+        $selfRs = $selfRs->where("tel", '=', $phone)->first();
+        if ($selfRs != null) {
+            return $selfRs->toArray();
+        }
+        return [];
     }
 
     //查询单个用户根据uid

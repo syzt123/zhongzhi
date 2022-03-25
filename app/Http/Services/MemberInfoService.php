@@ -15,7 +15,7 @@ class MemberInfoService
     //获取用户登陆信息
     static function LoginUser($data): array
     {
-        return MemberInfo::findUserByPhone($data["phone"], $data);
+        return MemberInfo::findUserByPhone($data["tel"], $data);
     }
 
     //删除登陆信息
