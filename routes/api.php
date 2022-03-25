@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\Api\V1\LoginController;
+use \App\Http\Controllers\Api\V1\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,18 +22,28 @@ Route::get('/', function () {
     echo 'fff';
 });//登陆
 
-Route::prefix("user")->group(function () {
 
-    Route::post('/register', [LoginController::class, 'registerUser']);//登陆  这种方式可以
-    Route::post('/login', [LoginController::class, 'loginUser']);//登陆  这种方式可以
+Route::middleware("check.token")->prefix("v1")->group(function () {
+    Route::get('/demo', function () {
+        /*var_dump(config("comm_code.redis_prefix.token"));
+        var_dump(\Illuminate\Support\Facades\Cache::put());
+        $rs = \Illuminate\Support\Facades\Cache::get("6c7a61d1c0dcd748f6901d4c210bab83");
+        var_dump(json_decode($rs, true));
+        echo 'fff';*/
+    });//测试
 
+
+    //登录注册
+    Route::prefix("user")->group(function () {
+        Route::post('/register', [UserController::class, 'registerUser']);//注册  这种方式可以
+        Route::post('/login', [UserController::class, 'loginUser']);//登陆  这种方式可以
+        Route::post('/index', [UserController::class, 'index']);//用户首页  这种方式可以
+    });
+    //
 });
 
-Route::get('/cc', [LoginController::class, 'login']);//登陆  这种方式可以
-//Route::middleware([''])->group(function () {
-//
-//    Route::controller(LoginController::class)->group(function () {
-//        Route::get('/demo', 'login');//登陆
-//    });
-//
-//});
+
+//其他
+Route::prefix("other")->group(function () {
+
+});
