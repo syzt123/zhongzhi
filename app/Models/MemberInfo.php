@@ -63,4 +63,40 @@ class MemberInfo extends Model
         $selfRs = self::with([]);
         return $selfRs->where($phone)->delete();
     }
+
+    // 购买记录
+    function buyLog()
+    {
+        $this->hasMany(BuyLog::class, "m_id");
+    }
+
+    // 头像
+    function userImage()
+    {
+        $this->hasOne(HeadImg::class, "m_id");
+    }
+
+    // 头像
+    function userDeliverOrder()
+    {
+        $this->hasMany(DeliveryOrder::class, "m_id");
+    }
+
+    // 支付订单
+    function userPaymentOrder()
+    {
+        $this->hasMany(PaymentOrder::class, "m_id");
+    }
+
+    // 兑换记录
+    function userExchangeLog()
+    {
+        $this->hasMany(ExchangeLog::class, "m_id");
+    }
+
+    // 用户蔬菜信息
+    function userVegetable()
+    {
+        $this->hasMany(MemberVegetable::class, "m_id");
+    }
 }

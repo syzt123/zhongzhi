@@ -37,7 +37,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     Route::prefix("user")->group(function () {
         Route::post('/register', [UserController::class, 'registerUser']);//注册  这种方式可以
         Route::post('/login', [UserController::class, 'loginUser']);//登陆  这种方式可以
-        Route::post('/index', [UserController::class, 'index']);//用户首页  这种方式可以
+        Route::post('/center', [UserController::class, 'center']);//用户中心  这种方式可以
     });
     //
 });

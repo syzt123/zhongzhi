@@ -9,4 +9,31 @@ use Illuminate\Database\Eloquent\Model;
 class Notice extends Model
 {
     protected $table = 'notice';
+
+    // 新增
+    static function addNotice($data): int
+    {
+        return self::with([""])->insertGetId($data);
+    }
+
+    // 查询
+    static function getNoticeInfo($uId, $data = []): array
+    {
+        $info = self::with([])->first();
+        if ($info != null) {
+            return $info->toArray();
+        }
+        return [];
+    }
+
+    // 删除
+    static function delNotice($id = 1, $data = []): int
+    {
+        $model = self::with([""])->where("id", '=', $id);
+        if (count($data)) {
+            $model = $model->where($data);
+        }
+        return $model->delete();
+    }
+
 }

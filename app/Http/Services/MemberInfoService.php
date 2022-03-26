@@ -2,9 +2,10 @@
 
 namespace App\Http\Services;
 // 用户信息
+use App\Models\HeadImg;
 use App\Models\MemberInfo;
 
-class MemberInfoService
+class MemberInfoService extends BaseService
 {
     //注册用户
     static function registerUser($data): int
@@ -22,5 +23,11 @@ class MemberInfoService
     static function delUser($phone): int
     {
         return MemberInfo::delUserByPhone($phone);
+    }
+
+    // 获取用户头像
+    static function getUserImgInfo($uid): array
+    {
+        return HeadImg::getUserHeadImg($uid);
     }
 }
