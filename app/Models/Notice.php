@@ -17,7 +17,7 @@ class Notice extends Model
     }
 
     // 查询
-    static function getNoticeInfo($uId, $data = []): array
+    static function getNoticeInfo(): array
     {
         $info = self::with([])->first();
         if ($info != null) {

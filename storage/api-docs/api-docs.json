@@ -56,46 +56,21 @@
                         "description": "  {err_code: int32, msg:string, data:[]}  "
                     }
                 }
-            },
+            }
+        },
+        "/api/v1/notice/info": {
             "post": {
                 "tags": [
-                    "index"
+                    "系统公告"
                 ],
-                "summary": "首页2",
-                "operationId": "e97c4567cb606aba0c7c211620dcd1e5",
+                "summary": "系统公告信息",
+                "description": "系统公告信息",
+                "operationId": "4237497874d703bcb30c3313893bcba9",
                 "parameters": [
                     {
-                        "name": "isFastLogin",
-                        "in": "query",
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "client",
-                        "in": "header"
-                    },
-                    {
-                        "name": "version",
-                        "in": "header"
-                    },
-                    {
-                        "name": "tel",
-                        "in": "query",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "verification_code",
-                        "in": "query",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
+                        "name": "token",
+                        "in": "header",
+                        "description": "heder头带token",
                         "schema": {
                             "type": "string"
                         }
@@ -103,7 +78,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "  {code: 200, msg:string, data:[]}  "
+                        "description": "  {code: 200, msg:string, data:[//dddd /// ttt]}  "
                     }
                 }
             }
@@ -180,14 +155,14 @@
                 }
             }
         },
-        "/api/v1/user/index": {
+        "/api/v1/user/center": {
             "post": {
                 "tags": [
                     "用户管理"
                 ],
                 "summary": "用户个人中心",
                 "description": "用户个人中心",
-                "operationId": "b4871b138b797683511af6813e7273c6",
+                "operationId": "34eba86b48863709980a1aa759349b04",
                 "parameters": [
                     {
                         "name": "token",
@@ -195,6 +170,22 @@
                         "description": "header头token",
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "第几页 默认第一页",
+                        "schema": {
+                            "type": "int"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "每页多少数据 默认10",
+                        "schema": {
+                            "type": "int"
                         }
                     }
                 ],

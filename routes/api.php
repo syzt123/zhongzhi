@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Api\V1\UserController;
+use \App\Http\Controllers\Api\V1\NoticeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,12 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         var_dump(json_decode($rs, true));
         echo 'fff';*/
     });//测试
+    // 公共上传 最好支持多上传
+
+    // 公告
+    Route::prefix("notice")->group(function () {
+        Route::post('/info', [NoticeController::class, 'info']);//公告信息
+    });
 
 
     //登录注册
