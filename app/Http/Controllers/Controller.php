@@ -8,6 +8,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class Controller extends BaseController
 {
@@ -67,7 +69,6 @@ class Controller extends BaseController
     //请求方式
     static function methodCurl($url = '', $method = 'post', $contentType = 1, $data = []): array
     {
-        $data = json_encode($data);
         if ($contentType == 1) {
             $headerArray = array("Content-Type:application/x-www-form-urlencoded");
         } else {
@@ -91,10 +92,99 @@ class Controller extends BaseController
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headerArray);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         }
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
         curl_setopt($curl, CURLOPT_HEADER, 0);//不抓取头部信息。只返回数据
-        $output = curl_exec($curl);
+        // 执行操作
+        $response_body = curl_exec($curl);
+        //捕抓异常
+        $error_msg = "";
+        if (curl_errno($curl)) {
+            $error_msg = 'Errno' . curl_error($curl);
+        }
+        // 关闭CURL会话
         curl_close($curl);
-        return json_decode($output, true);
+        // 返回结果
+        $response = json_decode($response_body, true);//请求接口返回的数据 大于0代表成功，否则根据返回值查找错误
+        if (isset($response["code"]) && ($response["code"] == '200' || $response["code"] == 200)) {
+            $response["msg"] = $error_msg;//curl post 提交发生的错误
+        }
+        return $response;
+    }
+
+    static function httpCurl($url = '', $method = 'get', $header = [], $param = [], $contentType = 1)
+    {
+        $val = strtolower($method) == 'get' ? 'GET' : 'POST';
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);//接口地址
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $val);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)');
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
+        //设置header头
+        if (!empty($header)) {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        }
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($param));
+        if ($contentType == 1) {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type:application/x-www-form-urlencoded"));
+        } else {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-type:application/json", "charset='utf-8'"));
+        }
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        // 执行操作
+        $response_body = curl_exec($curl);
+        //捕抓异常
+        $error_msg = "";
+        if (curl_errno($curl)) {
+            $error_msg = 'Errno' . curl_error($curl);
+        }
+        // 关闭CURL会话
+        curl_close($curl);
+        // 返回结果
+        $response = json_decode($response_body, true);//请求接口返回的数据 大于0代表成功，否则根据返回值查找错误
+        if (isset($response["code"]) && ($response["code"] == '200' || $response["code"] == 200)) {
+            $response["msg"] = $error_msg;//curl post 提交发生的错误
+        }
+        return $response;
+    }
+
+    /**
+     * @OA\Post (
+     *     path="/api/v1/com_uploads",
+     *     tags={"单/多图片公共上传",},
+     *     summary="公共上传接口",
+     *     description="公共上传接口",
+     *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
+     *     @OA\Parameter(name="files[]", in="query", @OA\Schema(type="file"),description="要上传的文件列表"),
+     *     @OA\Response(
+     *         response=200,
+     *         description="{code: 200, msg:string, data:[]}",
+     *     ),
+     *    )
+     */
+    static function uploadImges(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $files = $request->allFiles();
+            if (!isset($files["files"])) {
+                return ['code' => -1, 'msg' => 'files字段必须', 'data' => []];
+            }
+            if (is_array($files["files"])) {
+                $imgs = [];
+                foreach ($files["files"] as $file) {
+                    $path = Storage::disk('uploads')->putFile(date('Ymd'), $file);
+                    if ($path != false) {
+                        //图片追加
+                        $imgs[] = config("comm_code.local_url") . '/uploads/public/' . $path;
+                    }
+                }
+                return ['code' => 200, 'msg' => '上传成功', 'data' => $imgs];
+            }
+        } else {
+            return ['code' => -1, 'msg' => '非法请求,请求方式须为post', 'data' => []];
+        }
     }
 }

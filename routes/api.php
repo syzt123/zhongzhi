@@ -2,8 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\Controller;
 use \App\Http\Controllers\Api\V1\UserController;
 use \App\Http\Controllers\Api\V1\NoticeController;
+use \App\Http\Controllers\Api\V1\CommUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +22,7 @@ use \App\Http\Controllers\Api\V1\NoticeController;
 //    return $request->user();
 //});
 Route::get('/', function () {
-    echo 'fff';
+    return ["code" => 200, "msg" => '欢迎', "data" => []];
 });//登陆
 
 
@@ -33,7 +35,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         echo 'fff';*/
     });//测试
     // 公共上传 最好支持多上传
-
+    Route::post('/com_uploads', [Controller::class, 'uploadImges']);
     // 公告
     Route::prefix("notice")->group(function () {
         Route::post('/info', [NoticeController::class, 'info']);//公告信息

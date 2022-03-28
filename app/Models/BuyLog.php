@@ -19,10 +19,11 @@ class BuyLog extends Model
     // 查询
     static function getUserBuyLogList($uId, $data = []): array
     {
-        $lists = self::with([])->where("m_id",'=', $uId);
+        $lists = self::with([])->where("m_id", '=', $uId);
 
         $page = 1;
         $pageSize = 10;
+        $sort = 'desc';// desc asc
         if (isset($data["page"]) && (int)$data["page"] > 0) {
             $page = $data["page"];
             unset($data["page"]);
@@ -31,11 +32,15 @@ class BuyLog extends Model
             $pageSize = $data["page_size"];
             unset($data["page_size"]);
         }
+        if (isset($data["page_size"])) {
+            $sort = $data["sort"];
+            unset($data["sort"]);
+        }
         if (count($data)) {
             $lists = $lists->where($data);
         }
-        $skipNums = ($page-1) * $pageSize;
-        $lists = $lists->skip($skipNums)->limit($pageSize)->get();
+        $skipNums = ($page - 1) * $pageSize;
+        $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
         if ($lists) {
             return $lists->toArray();
         }

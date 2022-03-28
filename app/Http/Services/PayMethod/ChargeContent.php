@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\PayMethod;
 // 支付选择策略
 class ChargeContent
 {

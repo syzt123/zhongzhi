@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Http\Services\PayMethod;
 // 支付宝支付策略
 class AliPayCharge implements PayChargeStrategy
 {

@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Services;
+namespace App\Http\Services\PayMethod;
 // 微信支付策略
 class WechatPayCharge implements PayChargeStrategy
 {
