@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Land;
 
 
 use App\Http\Controllers\Admin\BaseController;
-use App\Models\Admin\VegetableLand;
+use App\Http\Services\VegetableLandService;
 use Illuminate\Http\Request;
 
 class IndexController extends BaseController
@@ -16,7 +16,7 @@ class IndexController extends BaseController
     }
     public function data(Request $request)
     {
-        $userData = VegetableLand::paginate($request->limit);
+        $userData = VegetableLandService::getPageDataListByAdmin();
         return $this->success($userData);
     }
 }

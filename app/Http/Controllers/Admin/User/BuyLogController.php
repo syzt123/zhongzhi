@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 
 
 use App\Http\Controllers\Admin\BaseController;
-use App\Models\Admin\BuyLog;
+use App\Http\Services\BuyLogService;
 use Illuminate\Http\Request;
 
 
@@ -18,8 +18,11 @@ class BuyLogController extends BaseController
 
     public function data(Request $request)
     {
-        $data = BuyLog::leftJoin('member_info','m_id','=','member_info.id')
-            ->paginate($request->limit,["buy_log.*","member_info.nickname"]);
+        $data = BuyLogService::getPageDataListByAdmin([
+            "table" => "member_info",
+            "foreign_key" => "m_id",
+            "type" => "left"
+        ]);
         return $this->success($data);
     }
 

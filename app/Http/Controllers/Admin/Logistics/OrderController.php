@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Logistics;
 
 
 use App\Http\Controllers\Admin\BaseController;
+use App\Http\Services\PaymentOrderService;
 use App\Models\Admin\PaymentOrder;
 use Illuminate\Http\Request;
 
@@ -17,8 +18,11 @@ class OrderController extends BaseController
 
     public function data(Request $request)
     {
-        $userData = PaymentOrder::leftJoin('member_info','m_id','=','member_info.id')
-            ->paginate($request->limit,["payment_order.*","member_info.nickname"]);
-        return $this->success($userData);
+        $data = PaymentOrderService::getPageDataListByAdmin([
+            "table" => "member_info",
+            "foreign_key" => "m_id",
+            "type" => "left"
+        ]);
+        return $this->success($data);
     }
 }

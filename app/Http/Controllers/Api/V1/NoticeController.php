@@ -8,7 +8,7 @@ use App\Http\Services\NoticeService;
 use Illuminate\Http\Request;
 
 /**
- * Class NoticeController
+ * Class IndexController
  * @package App\Http\Controllers\Api\V1
  */
 //公告管理

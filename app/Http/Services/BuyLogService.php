@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 // 购买记录
 use App\Models\BuyLog;
+use Illuminate\Support\Facades\Request;
 
 class BuyLogService extends BaseService
 {
@@ -31,4 +32,5 @@ class BuyLogService extends BaseService
     {
         return BuyLog::delUserBuyLog($id, $data);
     }
+
 }

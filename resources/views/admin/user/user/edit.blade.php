@@ -7,37 +7,57 @@
 
 @section('content')
     <blockquote class="layui-elem-quote layui-text">
-        土地管理
+        用户管理
     </blockquote>
 
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-        <legend>编辑土地</legend>
+        <legend>添加用户</legend>
     </fieldset>
     <form class="layui-form" action="" id="addLandForm">
         <div class="layui-form-item">
-            <label class="layui-form-label">摄像头地址</label>
+            <label class="layui-form-label">昵称</label>
             <div class="layui-input-block">
-                <input type="text" name="monitor" value="{{$land->monitor}}" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
+                <input type="text" name="nickname" value="{{$memberInfo->nickname}}" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
                        placeholder="请输入" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label">可种植的蔬菜量</label>
+            <label class="layui-form-label">电话</label>
             <div class="layui-input-block">
-                <input type="number" name="v_num" value="{{$land->v_num}}" lay-verify="required" lay-reqtext="可种植的蔬菜量是必填项，岂能为空？"
+                <input type="number" name="tel" value="{{$memberInfo->tel}}" lay-verify="required" lay-reqtext="可种植的蔬菜量是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
-
-
+        <div class="layui-form-item">
+            <label class="layui-form-label">蔬菜币</label>
+            <div class="layui-input-block">
+                <input type="number" name="gold" value="{{$memberInfo->gold}}" lay-verify="required" lay-reqtext="可种植的蔬菜量是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">蔬菜</label>
+            <div class="layui-input-block">
+                <input type="number" name="vegetable_num" value="{{$memberInfo->vegetable_num}}" lay-verify="required" lay-reqtext="可种植的蔬菜量是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">物流地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="v_address" value="{{$memberInfo->v_address}}" lay-verify="required" lay-reqtext="可种植的蔬菜量是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <input name="password" type="hidden" value="123456">
         <div class="layui-form-item">
             <label class="layui-form-label">状态</label>
             <div class="layui-input-block">
-                <input type="radio" name="l_status" value="0" title="未使用">
-                <input type="radio" name="l_status" value="1" title="已使用">
-                <input type="radio" name="l_status" value="2" title="其他">
+                <input type="radio" name="status" value="0" title="禁用">
+                <input type="radio" name="status" value="1" title="正常">
             </div>
         </div>
+        <input type="hidden" value="{{$memberInfo->id}}" name="id">
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
@@ -56,17 +76,15 @@
             var form = layui.form
                 , layer = layui.layer
                 , $ = layui.$ //重点处;
-            $("input[name=l_status][title={{$land->l_status}}]").prop("checked","false");
+            $("input[name=status][value={{$memberInfo->status}}]").prop("checked","false");
             form.render();
-            // $("input[name=l_status][value=1]").prop("checked","true");
             //监听提交
             form.on('submit(demo1)', function (data) {
                 // console.log(data.field)
-                data.field.id = "{{$land->id}}"
                 $.ajax({
-                    url: "{{url("admin/land/edit/submit")}}"
+                    url: "{{url("admin/user/user/edit/submit")}}"
                     , data: data.field
-                    , type: "put"
+                    , type: "post"
                     , headers: {
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     }
@@ -74,10 +92,12 @@
                         if(res.code)
                         {
                             layer.confirm('操作成功', {
-                                btn: ['返回','确认'] //按钮
+                                btn: ['返回','继续编辑'] //按钮
                             }, function(){
-                                window.location = "{{url('admin/land')}}"
+                                window.location = "{{url('admin/user/user')}}"
                             }, function(){
+                                $("#addLandForm")[0].reset();
+                                layui.form.render();
                                 layer.close();
                             });
                         }else {

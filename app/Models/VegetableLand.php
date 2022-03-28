@@ -56,4 +56,5 @@ class VegetableLand extends Model
         $model = self::with([""])->where("m_id", $uId);
         return $model->count();
     }
+
 }

@@ -7,10 +7,17 @@ namespace App\Models\Admin;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
+use App\Models\MemberInfo as Base;
 
 class MemberInfo extends Base
 {
     protected $table = "member_info";
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
+    protected $dateFormat = 'U';
+    protected $casts = [
+        'create_time' => 'datetime:Y-m-d H:i:s',
+    ];
     public function getStatusAttribute($value)
     {
         $arr = ["禁用", '正常', "其他"];

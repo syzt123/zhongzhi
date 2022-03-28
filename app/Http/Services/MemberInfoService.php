@@ -4,6 +4,7 @@ namespace App\Http\Services;
 // 用户信息
 use App\Models\HeadImg;
 use App\Models\MemberInfo;
+use Illuminate\Support\Facades\Request;
 
 class MemberInfoService extends BaseService
 {
@@ -29,5 +30,8 @@ class MemberInfoService extends BaseService
     static function getUserImgInfo($uid): array
     {
         return HeadImg::getUserHeadImg($uid);
+    }
+    static function getUserInfo($uid){
+        return MemberInfo::find($uid);
     }
 }

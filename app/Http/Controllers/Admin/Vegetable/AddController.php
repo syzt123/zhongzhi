@@ -9,15 +9,15 @@ use App\Http\Services\VegetableTypeService;
 use App\Models\Admin\VegetableType;
 use Illuminate\Http\Request;
 
-class IndexController extends BaseController
+class AddController extends BaseController
 {
     public function index()
     {
-        return view('admin.vegetable.index');
+        return view('admin.vegetable.add');
     }
-    public function data(Request $request)
+    public function submit(Request $request)
     {
-        $userData = VegetableTypeService::getPageDataListByAdmin();
+        $userData = VegetableTypeService::addVegetableType($request->post());
         return $this->success($userData);
     }
 }

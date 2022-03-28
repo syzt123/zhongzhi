@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Http\Controllers\Admin\User\user;
+namespace App\Http\Controllers\Admin\User\User;
 
 
 use App\Http\Controllers\Admin\BaseController;
