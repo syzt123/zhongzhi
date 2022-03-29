@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class BuyLog extends Model
 {
     protected $table = 'buy_log';
+    protected $dateFormat = 'U';
 
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
     // 新增
     static function addUserBuyLog($data): int
     {

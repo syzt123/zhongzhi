@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentOrder extends Model
 {
     protected $table = 'payment_order';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
 
     // 新增
     static function addPaymentOrder($data): int

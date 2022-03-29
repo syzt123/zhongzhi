@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class ExchangeLog extends Model
 {
     protected $table = 'exchange_log';
+    protected $dateFormat = 'U';
 
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
     // 新增
     static function addExchangeLog($data): int
     {

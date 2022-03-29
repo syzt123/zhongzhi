@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class MemberVegetable extends Model
 {
     protected $table = 'member_vegetable';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
 
     // 新增
     static function addMemberVegetable($data): int
@@ -19,7 +23,7 @@ class MemberVegetable extends Model
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with([])->where("m_id",'=', $uId);
+        $lists = self::with([])->where("m_id", '=', $uId);
         $page = 1;
         $pageSize = 10;
         $sort = 'desc';// desc asc
@@ -34,7 +38,7 @@ class MemberVegetable extends Model
         if (count($data)) {
             $lists = $lists->where($data);
         }
-        $skipNums = ($page-1) * $pageSize;
+        $skipNums = ($page - 1) * $pageSize;
         $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
 
         if ($lists) {

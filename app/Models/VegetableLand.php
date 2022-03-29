@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class VegetableLand extends Model
 {
     protected $table = 'vegetable_land';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
 
     // 新增
     static function addVegetableLand($data): int

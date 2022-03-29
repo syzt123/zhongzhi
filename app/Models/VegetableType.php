@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class VegetableType extends Model
 {
     protected $table = 'vegetable_type';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
 
     // 新增
     static function addVegetableType($data): int

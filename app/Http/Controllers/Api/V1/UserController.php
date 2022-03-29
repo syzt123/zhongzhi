@@ -82,7 +82,7 @@ class UserController extends Controller
      *     summary="用户登陆",
      *     description="用户登陆(2022/03/22日完)",
      *     @OA\Parameter(name="tel", in="query", @OA\Schema(type="string")),
-     *     @OA\Parameter(name="password", in="query", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="password", in="query", @OA\Schema(type="string"),description="密码 默认为：12345678" ),
      *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
      *    )
      */
@@ -206,10 +206,14 @@ class UserController extends Controller
             // 更新用户头像
             $data["user_address"] = trim($request->user_address);
         }
-        $bool = MemberInfoService::updateUserInfo($userInfo["id"], $data);
-        if ($bool) {
-            return $this->backArr('更新成功', config("comm_code.code.ok"), []);
+        try {
+            $bool = MemberInfoService::updateUserInfo($userInfo["id"], $data);
+            if ($bool) {
+                return $this->backArr('更新成功', config("comm_code.code.ok"), []);
+            }
+        }catch (\Exception $e){
+            return $this->backArr('更新失败,原因：'.$e->getMessage(), config("comm_code.code.fail"), []);
+
         }
-        $this->backArr('更新失败', config("comm_code.code.fail"), []);
     }
 }

@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Notice extends Model
 {
     protected $table = 'notice';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = null;
 
     // 新增
     static function addNotice($data): int

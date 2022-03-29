@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class MemberInfo extends Model
 {
     protected $table = 'member_info';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
 
     //添加用户
     static function addUser($data): int

@@ -9,6 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 class HeadImg extends Model
 {
     protected $table = 'head_img';
+    protected $dateFormat = 'U';// 时间格式类型
+    protected $fillable = ["m_id", "head"];// 维护更新字段
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
+
 
     //获取用户信息
     static function getUserHeadImg($uid): array
@@ -20,12 +26,16 @@ class HeadImg extends Model
         return [];
     }
 
-    // 更新
+    // 根据用户id更新头像
     static function updateHeadImg($uId, $data = []): int
     {
-        $model = self::with([])->where("m_id", $uId);
+        $model = self::with([])->where("m_id", '=', $uId);
         if (count($data)) {
-            return $model->updateOrInsert($data);
+            $data["m_id"] = $uId;
+            $rs = $model->updateOrCreate($data)->toArray();
+            if (isset($rs["id"])) {
+                return $rs["id"];
+            }
         }
         return 0;
     }

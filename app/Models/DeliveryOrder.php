@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class DeliveryOrder extends Model
 {
     protected $table = 'delivery_order';
+    protected $dateFormat = 'U';
+
+    const CREATED_AT = 'create_time';
+    const UPDATED_AT = 'update_time';
 
     // 新增
     static function addDeliveryOrder($data): int
