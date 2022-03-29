@@ -21,6 +21,7 @@ class OrderController extends BaseController
         $data = PaymentOrderService::getPageDataListByAdmin([
             "table" => "member_info",
             "foreign_key" => "m_id",
+            "field"=>["payment_order.*","member_info.nickname"],
             "type" => "left"
         ]);
         return $this->success($data);

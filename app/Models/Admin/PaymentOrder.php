@@ -16,7 +16,7 @@ class PaymentOrder extends Base
     public function getStatusAttribute($value)
     {
         $arr = ["未知","已支付" ,"未支付"];
-//        return $arr[$value];
+        return $arr[$value];
     }
     public function getFPriceAttribute($value)
     {

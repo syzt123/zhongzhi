@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\Vegetable\AddController as VegetableAdd;
 use App\Http\Controllers\Admin\Vegetable\EditController as EditVegetable;
 use App\Http\Controllers\Admin\Vegetable\DeleteController as DelVegetable;
 use App\Http\Controllers\Admin\System\Notice\AddController as NoticeAdd;
+use App\Http\Controllers\Admin\Logistics\EditDistributionController as EditDistribution;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -77,6 +78,7 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/order',[Order::class,"index"]);
         Route::get('/order/data/{page?}/{limit?}',[Order::class,"data"]);
         Route::get('/distribution',[Distribution::class,"index"]);
+        Route::put('/distribution',[EditDistribution::class,"index"]);
         Route::get('/distribution/data/{page?}/{limit?}',[Distribution::class,"data"]);
     });
 

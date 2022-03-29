@@ -73,7 +73,6 @@ class BaseService
         if (class_exists(get_called_class())) {
             $model = "App\Models\Admin\\" . str_replace("Service", '', (new \ReflectionClass(get_called_class()))->getShortName());
             if (class_exists($model)) {
-
                 try {
                     DB::beginTransaction();
                     $model::where('id', $id)
