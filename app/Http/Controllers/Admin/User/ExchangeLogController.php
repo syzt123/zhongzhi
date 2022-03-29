@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 
 
 use App\Http\Controllers\Admin\BaseController;
-use App\Models\Admin\ExchangeLog;
+use App\Http\Services\ExchangeLogService;
 use Illuminate\Http\Request;
 
 class ExchangeLogController extends BaseController
@@ -16,8 +16,13 @@ class ExchangeLogController extends BaseController
     }
     public function data(Request $request)
     {
-        $data = ExchangeLog::leftJoin('member_info','m_id','=','member_info.id')
-            ->paginate($request->limit,["exchange_log.*","member_info.nickname"]);
+        $data = ExchangeLogService::getPageDataListByAdmin(
+            [
+                "table" => "member_info",
+                "foreign_key" => "m_id",
+                "type" => "left"
+            ]
+        );
         return $this->success($data);
     }
 }

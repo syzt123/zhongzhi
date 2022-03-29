@@ -3,6 +3,8 @@
 namespace App\Http\Services;
 // 蔬菜地信息
 use App\Models\VegetableLand;
+use App\Models\Admin\VegetableLand as Admin;
+use Illuminate\Support\Facades\Request;
 
 class VegetableLandService extends BaseService
 {
@@ -37,4 +39,10 @@ class VegetableLandService extends BaseService
     {
         return VegetableLand::findVegetableLandInfoById($id, $data);
     }
+
+    // 编辑土地
+
+
+
+
 }

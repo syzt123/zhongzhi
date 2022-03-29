@@ -1,14 +1,15 @@
 <?php
 
 
-namespace App\Http\Controllers\Admin\System;
+namespace App\Http\Controllers\Admin\System\Notice;
 
 
 use App\Http\Controllers\Admin\BaseController;
+use App\Http\Services\NoticeService;
 use App\Models\Admin\Notice;
 use Illuminate\Http\Request;
 
-class NoticeController extends BaseController
+class IndexController extends BaseController
 {
     public function index()
     {
@@ -16,7 +17,7 @@ class NoticeController extends BaseController
     }
     public function data(Request $request)
     {
-        $userData = Notice::paginate($request->limit);
-        return $this->success($userData);
+        $data = NoticeService::getPageDataListByAdmin();
+        return $this->success($data);
     }
 }

@@ -60,6 +60,7 @@ class VegetableLand extends Model
         return $model->count();
     }
 
+
     // 查询根据id
     static function findVegetableLandInfoById($id, $data = []): array
     {

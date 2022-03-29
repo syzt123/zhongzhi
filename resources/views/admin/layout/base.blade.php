@@ -62,7 +62,7 @@
                             <a href="javascript:;">用户管理</a>
                             <dl class="layui-nav-child">
                                 @if(request()->path() === "admin/user")
-                                    <dd class="layui-this"><a href="{{url("admin/user")}}">用户列表</a></dd>
+                                    <dd class="layui-this"><a href="{{url("admin/user/user")}}">用户列表</a></dd>
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @elseif(request()->path() === "admin/user/buy_log")
@@ -70,11 +70,11 @@
                                     <dd class="layui-this"><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @elseif(request()->path() === "admin/user/exchange_log")
-                                    <dd><a href="{{url("admin/user")}}">用户列表</a></dd>
+                                    <dd><a href="{{url("admin/user/user")}}">用户列表</a></dd>
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd class="layui-this"><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @else
-                                    <dd><a href="{{url("admin/user")}}" @if(strpos(request()->path(),'user')) class="layui-this" @endif>用户列表</a></dd>
+                                    <dd><a href="{{url("admin/user/user")}}" @if(strpos(request()->path(),'user')) class="layui-this" @endif>用户列表</a></dd>
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @endif
@@ -84,7 +84,7 @@
                         <li class="layui-nav-item">
                             <a href="javascript:;">用户管理</a>
                             <dl class="layui-nav-child">
-                                <dd><a href="{{url("admin/user")}}">用户列表</a></dd>
+                                <dd><a href="{{url("admin/user/user")}}">用户列表</a></dd>
                                 <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                 <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                             </dl>

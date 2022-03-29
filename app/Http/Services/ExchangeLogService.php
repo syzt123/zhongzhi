@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 // 兑换信息
 use App\Models\ExchangeLog;
+use Illuminate\Support\Facades\Request;
 
 class ExchangeLogService extends BaseService
 {
@@ -32,4 +33,6 @@ class ExchangeLogService extends BaseService
     {
         return ExchangeLog::delExchangeLog($id, $data);
     }
+
+
 }
