@@ -16,6 +16,9 @@ use Psr\SimpleCache\InvalidArgumentException;
  * Class UserController
  * @package App\Http\Controllers\Api\V1
  */
+/**
+ * @OA\Info (title="接口文档",version="V1",description="指尖种菜接口文档")
+ */
 //用户管理
 class UserController extends Controller
 {
@@ -24,7 +27,7 @@ class UserController extends Controller
      *     path="/api/v1/user/register",
      *     tags={"用户管理",},
      *     summary="用户注册",
-     *     description="用户注册",
+     *     description="用户注册(2022/03/22日完)",
      *     @OA\Parameter(name="tel", in="query", @OA\Schema(type="string"),description="手机号"),
      *     @OA\Parameter(name="nickname", in="query", @OA\Schema(type="string"),description="用户昵称"),
      *     @OA\Parameter(name="head_img", in="query", @OA\Schema(type="string"),description="用户头像"),
@@ -77,7 +80,7 @@ class UserController extends Controller
      *     path="/api/v1/user/login",
      *     tags={"用户管理"},
      *     summary="用户登陆",
-     *     description="用户登陆",
+     *     description="用户登陆(2022/03/22日完)",
      *     @OA\Parameter(name="tel", in="query", @OA\Schema(type="string")),
      *     @OA\Parameter(name="password", in="query", @OA\Schema(type="string")),
      *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
@@ -122,12 +125,14 @@ class UserController extends Controller
      *     path="/api/v1/user/center",
      *     tags={"用户管理"},
      *     summary="用户个人中心",
-     *     description="用户个人中心",
+     *     description="用户个人中心(2022/03/24日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
      *     @OA\Parameter (name="page", in="query", @OA\Schema (type="int"),description="第几页 默认第一页"),
      *     @OA\Parameter (name="page_size", in="query", @OA\Schema (type="int"),description="每页多少数据 默认10"),
      *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
      *    )
+     * @param Request $request
+     * @return array
      */
     function center(Request $request): array
     {
@@ -168,5 +173,43 @@ class UserController extends Controller
             "page_size" => $pageSize,
         ]);
         return $this->backArr('ok', config("comm_code.code.ok"), $rs);
+    }
+
+    // 更新用户信息 todo 头像或用户地址
+
+    /**
+     * @OA\Post (
+     *     path="/api/v1/user/updateUserInfo",
+     *     tags={"用户管理"},
+     *     summary="更新用户信息",
+     *     description="更新用户信息(2022/03/30日完)",
+     *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
+     *     @OA\Parameter (name="head_img", in="query", @OA\Schema (type="string"),description="用户头像地址 *非必须字段"),
+     *     @OA\Parameter (name="user_address", in="query", @OA\Schema (type="string"),description="用户收获地址 *非必须字段"),
+     *     @OA\Response(response=200, description="{code: 200, msg:string, data:[]}"),
+     *    )
+     * @param Request $request
+     * @return array
+     */
+    function updateUserInfo(Request $request): array
+    {
+        $userInfo = $this->getUserInfo($request->header("token"));
+        if (empty($userInfo)) {
+            return $this->backArr('fail', config("comm_code.code.fail"), []);
+        }
+        $data = [];
+        if (isset($request->head_img) && trim($request->head_img) != '') {
+            // 更新用户头像
+            $data["head_img"] = trim($request->head_img);
+        }
+        if (isset($request->user_address) && trim($request->user_address) != '') {
+            // 更新用户头像
+            $data["user_address"] = trim($request->user_address);
+        }
+        $bool = MemberInfoService::updateUserInfo($userInfo["id"], $data);
+        if ($bool) {
+            return $this->backArr('更新成功', config("comm_code.code.ok"), []);
+        }
+        $this->backArr('更新失败', config("comm_code.code.fail"), []);
     }
 }

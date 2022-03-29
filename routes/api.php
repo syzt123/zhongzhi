@@ -5,7 +5,10 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Controller;
 use \App\Http\Controllers\Api\V1\UserController;
 use \App\Http\Controllers\Api\V1\NoticeController;
-use \App\Http\Controllers\Api\V1\CommUploadController;
+use \App\Http\Controllers\Api\V1\UserExchangeLogController;
+use \App\Http\Controllers\Api\V1\PaymentOrderController;
+use \App\Http\Controllers\Api\V1\LandController;
+use \App\Http\Controllers\Api\V1\VegetableTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,8 +50,27 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         Route::post('/register', [UserController::class, 'registerUser']);//注册  这种方式可以
         Route::post('/login', [UserController::class, 'loginUser']);//登陆  这种方式可以
         Route::post('/center', [UserController::class, 'center']);//用户中心  这种方式可以
+        Route::post('/updateUserInfo', [UserController::class, 'updateUserInfo']);//更新用户头像地址等信息  这种方式可以 todo
+        //Route::post('/vegetableLists', [UserController::class, 'updateUserInfo']);//更新用户头像地址等信息  这种方式可以 todo
+
+
+        // 新增蔬菜兑换
+        Route::post('/addExchangeLog', [UserExchangeLogController::class, 'addExchangeLog']);
+        // 新增订单
+        Route::post("/addOrder", [PaymentOrderController::class, 'addOrder']);// todo
+        // 根据订单号更新状态
+        Route::post("/updateOrderStatus", [PaymentOrderController::class, 'updateOrderStatus']);// todo
     });
-    //
+
+    //土地列表
+    Route::prefix("land")->group(function () {
+        Route::post('/lists', [LandController::class, 'landLists']);//土地列表
+    });
+
+    //蔬菜类型列表
+    Route::prefix("vegetable")->group(function () {
+        Route::post('/typeLists', [VegetableTypeController::class, 'typeLists']);//蔬菜类型列表
+    });
 });
 
 

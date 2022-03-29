@@ -13,7 +13,7 @@ class VegetableLandService extends BaseService
     }
 
     //获取蔬菜地列表
-    static function getVegetableLandList($uid, $data = []): array
+    static function getVegetableLandList($data = []): array
     {
         $page = 1;
         $pageSize = 10;
@@ -23,7 +23,7 @@ class VegetableLandService extends BaseService
         if (isset($data["page_size"])) {
             $pageSize = $data["page_size"];
         }
-        return self::getPageDataList(VegetableLand::getVegetableLandNumsByUId($uid), $page, $pageSize, VegetableLand::getVegetableLandList($uid, $data));
+        return self::getPageDataList(VegetableLand::getVegetableLandNumsByUId(), $page, $pageSize, VegetableLand::getVegetableLandList($data));
 
     }
 
@@ -31,5 +31,10 @@ class VegetableLandService extends BaseService
     static function delVegetableLandById($id, $data = []): int
     {
         return VegetableLand::delVegetableLand($id, $data);
+    }
+    //根据id查询蔬菜地信息
+    static function findVegetableLandInfoById($id, $data = []): array
+    {
+        return VegetableLand::findVegetableLandInfoById($id, $data);
     }
 }

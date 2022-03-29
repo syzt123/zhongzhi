@@ -13,15 +13,16 @@ class VegetableLand extends Model
     // 新增
     static function addVegetableLand($data): int
     {
-        return self::with([""])->insertGetId($data);
+        return self::with([])->insertGetId($data);
     }
 
     // 查询
-    static function getVegetableLandList($uId, $data = []): array
+    static function getVegetableLandList($data = []): array
     {
-        $lists = self::with([])->where("m_id",'=', $uId);
+        $lists = self::with([]);
         $page = 1;
         $pageSize = 10;
+        $sort = 'desc';// desc asc
         if (isset($data["page"]) && (int)$data["page"] > 0) {
             $page = $data["page"];
             unset($data["page"]);
@@ -33,27 +34,43 @@ class VegetableLand extends Model
         if (count($data)) {
             $lists = $lists->where($data);
         }
-        $skipNums = ($page-1) * $pageSize;
-        $lists = $lists->skip($skipNums)->limit($pageSize)->get();
+        $skipNums = ($page - 1) * $pageSize;
+        $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
 
         if ($lists) {
             return $lists->toArray();
         }
         return [];
     }
+
     // 删除
     static function delVegetableLand($id, $data = []): int
     {
-        $model = self::with([""])->where("id", $id);
+        $model = self::with([])->where("id", $id);
         if (count($data)) {
             $model = $model->where($data);
         }
         return $model->delete();
     }
+
     // 总数
-    static function getVegetableLandNumsByUId($uId): int
+    static function getVegetableLandNumsByUId(): int
     {
-        $model = self::with([""])->where("m_id", $uId);
+        $model = self::with([]);
         return $model->count();
+    }
+
+    // 查询根据id
+    static function findVegetableLandInfoById($id, $data = []): array
+    {
+        $model = self::with([])->where("id", $id);
+        if (count($data)) {
+            $model = $model->where($data);
+        }
+        $rs = $model->first();
+        if ($rs != null) {
+            return $rs->toArray();
+        }
+        return [];
     }
 }

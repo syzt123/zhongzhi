@@ -99,4 +99,14 @@ class MemberInfo extends Model
     {
         $this->hasMany(MemberVegetable::class, "m_id");
     }
+
+    // 新增或更新用户信息
+    static function updateUserInfo($uId, $data = []): int
+    {
+        $model = self::with([])->where("id", '=', $uId);
+        if (count($data) != 0) {
+            return $model->update($data);
+        }
+        return 0;
+    }
 }

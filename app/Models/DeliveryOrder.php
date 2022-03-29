@@ -13,7 +13,7 @@ class DeliveryOrder extends Model
     // 新增
     static function addDeliveryOrder($data): int
     {
-        return self::with([""])->insertGetId($data);
+        return self::with([])->insertGetId($data);
     }
 
     // 查询
@@ -23,6 +23,7 @@ class DeliveryOrder extends Model
 
         $page = 1;
         $pageSize = 10;
+        $sort = 'desc';// desc asc
         if (isset($data["page"]) && (int)$data["page"] > 0) {
             $page = $data["page"];
             unset($data["page"]);
@@ -36,7 +37,7 @@ class DeliveryOrder extends Model
         }
 
         $skipNums = ($page - 1) * $pageSize;
-        $lists = $lists->skip($skipNums)->limit($pageSize)->get();
+        $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
 
         if ($lists) {
             return $lists->toArray();
@@ -47,7 +48,7 @@ class DeliveryOrder extends Model
     // 删除
     static function delDeliveryOrder($id, $data = []): int
     {
-        $model = self::with([""])->where("id", $id);
+        $model = self::with([])->where("id", $id);
         if (count($data)) {
             $model = $model->where($data);
         }
@@ -57,7 +58,7 @@ class DeliveryOrder extends Model
     // 总数
     static function getDeliveryOrderNumsByUId($uId): int
     {
-        $model = self::with([""])->where("id", $uId);
+        $model = self::with([])->where("id", $uId);
         return $model->count();
     }
 }

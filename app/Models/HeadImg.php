@@ -21,11 +21,11 @@ class HeadImg extends Model
     }
 
     // 更新
-    static function updateHeadImg($id, $data = []): int
+    static function updateHeadImg($uId, $data = []): int
     {
-        $model = self::with([""])->where("id", $id);
+        $model = self::with([])->where("m_id", $uId);
         if (count($data)) {
-            return $model->update($data);
+            return $model->updateOrInsert($data);
         }
         return 0;
     }

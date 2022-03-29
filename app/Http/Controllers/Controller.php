@@ -156,7 +156,7 @@ class Controller extends BaseController
      *     path="/api/v1/com_uploads",
      *     tags={"单/多图片公共上传",},
      *     summary="公共上传接口",
-     *     description="公共上传接口",
+     *     description="公共上传接口(2022/03/28日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="files[]", in="query", @OA\Schema(type="file"),description="要上传的文件列表"),
      *     @OA\Response(
@@ -186,5 +186,11 @@ class Controller extends BaseController
         } else {
             return ['code' => -1, 'msg' => '非法请求,请求方式须为post', 'data' => []];
         }
+    }
+
+    // 生成唯一订单号
+    static function getUniqueOrderNums(): string
+    {
+        return date('YmdHis', time()) . substr(microtime(), 2, 6) . sprintf('%04d', rand(0, 9999));
     }
 }

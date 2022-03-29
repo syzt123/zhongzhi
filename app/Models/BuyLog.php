@@ -13,7 +13,7 @@ class BuyLog extends Model
     // 新增
     static function addUserBuyLog($data): int
     {
-        return self::with([""])->insertGetId($data);
+        return self::with([])->insertGetId($data);
     }
 
     // 查询
@@ -50,7 +50,7 @@ class BuyLog extends Model
     // 删除
     static function delUserBuyLog($id, $data = []): int
     {
-        $model = self::with([""])->where("id", $id);
+        $model = self::with([])->where("id", $id);
         if (count($data)) {
             $model = $model->where($data);
         }
@@ -60,7 +60,7 @@ class BuyLog extends Model
     // 总数
     static function getBuyLogNumsByUId($uId): int
     {
-        $model = self::with([""])->where("m_id", $uId);
+        $model = self::with([])->where("m_id", $uId);
         return $model->count();
     }
 }

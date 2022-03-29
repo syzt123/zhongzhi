@@ -14,7 +14,7 @@ class VegetableTypeService extends BaseService
     }
 
     //获取蔬菜地类型列表
-    static function getVegetableTypeList($uid, $data = []): array
+    static function getVegetableTypeList($data = []): array
     {
         $page = 1;
         $pageSize = 10;
@@ -24,7 +24,7 @@ class VegetableTypeService extends BaseService
         if (isset($data["page_size"])) {
             $pageSize = $data["page_size"];
         }
-        return self::getPageDataList(VegetableType::getVegetableTypeNumsByUId($uid), $page, $pageSize, VegetableType::getVegetableTypeList($uid, $data));
+        return self::getPageDataList(VegetableType::getVegetableTypeNums($data), $page, $pageSize, VegetableType::getVegetableTypeList($data));
 
     }
 
@@ -32,5 +32,10 @@ class VegetableTypeService extends BaseService
     static function delVegetableTypeById($id, $data = []): int
     {
         return VegetableType::delVegetableType($id, $data);
+    }
+
+    static function findVegetableTypeInfoById($id, $data = []):array
+    {
+        return VegetableType::findVegetableTypeInfoById($id, $data);
     }
 }

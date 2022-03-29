@@ -13,7 +13,7 @@ class ExchangeLog extends Model
     // 新增
     static function addExchangeLog($data): int
     {
-        return self::with([""])->insertGetId($data);
+        return self::with([])->insertGetId($data);
     }
 
     // 查询
@@ -23,6 +23,7 @@ class ExchangeLog extends Model
 
         $page = 1;
         $pageSize = 10;
+        $sort = 'desc';// desc asc
         if (isset($data["page"]) && (int)$data["page"] > 0) {
             $page = $data["page"];
             unset($data["page"]);
@@ -35,7 +36,7 @@ class ExchangeLog extends Model
             $lists = $lists->where($data);
         }
         $skipNums = ($page - 1) * $pageSize;
-        $lists = $lists->skip($skipNums)->limit($pageSize)->get();
+        $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
 
         if ($lists) {
             return $lists->toArray();
@@ -46,7 +47,7 @@ class ExchangeLog extends Model
     // 删除
     static function delExchangeLog($id, $data = []): int
     {
-        $model = self::with([""])->where("id", $id);
+        $model = self::with([])->where("id", $id);
         if (count($data)) {
             $model = $model->where($data);
         }
@@ -56,7 +57,7 @@ class ExchangeLog extends Model
     // 总数
     static function getExchangeLogNumsByUId($uId): int
     {
-        $model = self::with([""])->where("m_id", $uId);
+        $model = self::with([])->where("m_id", $uId);
         return $model->count();
     }
 }
