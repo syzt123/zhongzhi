@@ -29,6 +29,18 @@ Route::get('/', function () {
     return ["code" => 200, "msg" => '欢迎', "data" => []];
 });//登陆
 
+/*Route::get('/alipay', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'pay']);//测试支付宝支付
+Route::get('/wxpay', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'wxPay']);//测试微信支付
+Route::post('/alipay_notify', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'payNotify']);//测试微信回调
+Route::post('/wx_pay_notify', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'wxPayNotify']);//测试支付宝回调*/
+
+//登录注册
+Route::prefix("v1")->group(function () {
+    Route::prefix("user")->group(function () {
+        Route::post('/register', [UserController::class, 'registerUser']);//注册  这种方式可以
+        Route::post('/login', [UserController::class, 'loginUser']);//登陆  这种方式可以
+    });
+});
 
 Route::middleware("check.token")->prefix("v1")->group(function () {
     Route::get('/demo', function () {
@@ -48,11 +60,8 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
 
     //登录注册
     Route::prefix("user")->group(function () {
-        Route::post('/register', [UserController::class, 'registerUser']);//注册  这种方式可以
-        Route::post('/login', [UserController::class, 'loginUser']);//登陆  这种方式可以
         Route::post('/center', [UserController::class, 'center']);//用户中心  这种方式可以
-        Route::post('/updateUserInfo', [UserController::class, 'updateUserInfo']);//更新用户头像地址等信息  这种方式可以 todo
-        //Route::post('/vegetableLists', [UserController::class, 'updateUserInfo']);//更新用户头像地址等信息  这种方式可以 todo
+        Route::post('/updateUserInfo', [UserController::class, 'updateUserInfo']);//更新用户头像地址等信息
 
 
         // 新增蔬菜兑换
