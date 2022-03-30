@@ -17,63 +17,63 @@
         <div class="layui-form-item">
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
-                <input type="text" name="v_type" value="{{$vegetableTyp->v_type}}" autocomplete="off" lay-verify="required" lay-reqtext="名称是必填项，岂能为空？"
+                <input type="text" name="v_type" value="{{$vegetableType->v_type}}" autocomplete="off" lay-verify="required" lay-reqtext="名称是必填项，岂能为空？"
                        placeholder="请输入" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">认领价格</label>
             <div class="layui-input-block">
-                <input type="number" name="v_price" value="{{$vegetableTyp->v_price}}" lay-verify="required" lay-reqtext="认领价格是必填项，岂能为空？"
+                <input type="number" name="v_price" value="{{$vegetableType->v_price}}" lay-verify="required" lay-reqtext="认领价格是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">蔬菜币</label>
             <div class="layui-input-block">
-                <input type="number" name="f_price" value="{{$vegetableTyp->f_price}}"lay-verify="required" lay-reqtext="蔬菜币是必填项，岂能为空？"
+                <input type="number" name="f_price" value="{{$vegetableType->f_price}}"lay-verify="required" lay-reqtext="蔬菜币是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">种子时期</label>
             <div class="layui-input-block">
-                <input type="number" name="grow_1" value="{{$vegetableTyp->grow_1}}" lay-verify="required" lay-reqtext="种子时期是必填项，岂能为空？"
+                <input type="number" name="grow_1" value="{{$vegetableType->grow_1}}" lay-verify="required" lay-reqtext="种子时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">幼苗时期</label>
             <div class="layui-input-block">
-                <input type="text" name="grow_2" value="{{$vegetableTyp->grow_2}}" lay-verify="required" lay-reqtext="幼苗时期是必填项，岂能为空？"
+                <input type="text" name="grow_2" value="{{$vegetableType->grow_2}}" lay-verify="required" lay-reqtext="幼苗时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">生长时期</label>
             <div class="layui-input-block">
-                <input type="text" name="grow_3" value="{{$vegetableTyp->grow_3}}" lay-verify="required" lay-reqtext="生长时期是必填项，岂能为空？"
+                <input type="text" name="grow_3" value="{{$vegetableType->grow_3}}" lay-verify="required" lay-reqtext="生长时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">成年期</label>
             <div class="layui-input-block">
-                <input type="text" name="grow_4" value="{{$vegetableTyp->grow_4}}" lay-verify="required" lay-reqtext="成年期是必填项，岂能为空？"
+                <input type="text" name="grow_4" value="{{$vegetableType->grow_4}}" lay-verify="required" lay-reqtext="成年期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">成熟期</label>
             <div class="layui-input-block">
-                <input type="text" name="grow_5" value="{{$vegetableTyp->grow_4}}" lay-verify="required" lay-reqtext="成熟期是必填项，岂能为空？"
+                <input type="text" name="grow_5" value="{{$vegetableType->grow_4}}" lay-verify="required" lay-reqtext="成熟期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">可存放时期</label>
             <div class="layui-input-block">
-                <input type="text" name="storage_time" value="{{$vegetableTyp->storage_time}}" lay-verify="required" lay-reqtext="可存放时期是必填项，岂能为空？"
+                <input type="text" name="storage_time" value="{{$vegetableType->storage_time}}" lay-verify="required" lay-reqtext="可存放时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -85,7 +85,7 @@
                 <input type="radio" name="status" value="2" title="不可种植">
             </div>
         </div>
-        <input name="id" type="hidden" value="{{$vegetableTyp->id}}">
+        <input name="id" type="hidden" value="{{$vegetableType->id}}">
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
@@ -104,7 +104,7 @@
             var form = layui.form
                 , layer = layui.layer
                 , $ = layui.$ //重点处;
-            $("input[name=status][value={{$vegetableTyp->status}}]").prop("checked","false");
+            $("input[name=status][value={{$vegetableType->status}}]").prop("checked","false");
             //监听提交
             form.on('submit(demo1)', function (data) {
                 // console.log(data.field)

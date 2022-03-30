@@ -22,6 +22,7 @@ class DistributionController extends BaseController
         $data = DeliveryOrderService::getPageDataListByAdmin([
             "table" => "member_info",
             "foreign_key" => "m_id",
+            "field"=>["delivery_order.*","member_info.nickname"],
             "type" => "left"
         ]);
 
