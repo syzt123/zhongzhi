@@ -34,8 +34,15 @@ class VegetableTypeService extends BaseService
         return VegetableType::delVegetableType($id, $data);
     }
 
-    static function findVegetableTypeInfoById($id, $data = []):array
+    static function findVegetableTypeInfoById($id, $data = []): array
     {
         return VegetableType::findVegetableTypeInfoById($id, $data);
+    }
+
+    // 蔬菜种子
+    static function getSeed()
+    {
+        $vegetables = VegetableType::getVegetableTypeSeed();
+        return $vegetables->groupBy('recommend');
     }
 }

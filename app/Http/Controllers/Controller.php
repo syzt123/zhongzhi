@@ -15,6 +15,16 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    public function success($data = [], $message = 'ok', $code = 1)
+    {
+        return response()->json(compact('data', 'message', 'code'));
+    }
+
+    public function error($message = 'error', $data = [], $code = 0)
+    {
+        return response()->json(compact('data', 'message', 'code'));
+    }
+
     //返回json格式
     public function backjson($msg, $code = 200, $data = []): string
     {

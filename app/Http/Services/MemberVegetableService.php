@@ -32,4 +32,15 @@ class MemberVegetableService extends BaseService
     {
         return MemberVegetable::delMemberVegetable($id, $data);
     }
+
+    // 用户蔬菜状态
+    static function memberVegetableStatus($uId, $vegetable_id)
+    {
+        return MemberVegetable::getMemberVegetableByUId($uId, $vegetable_id);
+    }
+    // 获取用户的蔬菜
+    static function getMemberVegetables($uId)
+    {
+        return MemberVegetable::getMemberVegetablesByUId($uId);
+    }
 }

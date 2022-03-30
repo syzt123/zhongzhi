@@ -86,4 +86,26 @@ class VegetableType extends Model
         }
         return $model->count();
     }
+
+    public function vegetableResources()
+    {
+        return $this->hasMany(VegetableResources::class);
+    }
+
+    // 蔬菜种子
+    static function getVegetableTypeSeed()
+    {
+        $model = self::with([]);
+        $vegetables = $model
+            ->where('status', '=', 1)
+            ->get();
+        foreach ($vegetables as $vegetable) {
+            $vegetable->vegetable_img = $vegetable
+                ->vegetableResources()
+                ->where('vegetable_resources.vegetable_grow', '=', 1)
+                ->where('vegetable_resources.vegetable_resources_type', '=', 1)
+                ->value('vegetable_resources');
+        }
+        return $vegetables;
+    }
 }

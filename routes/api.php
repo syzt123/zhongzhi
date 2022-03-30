@@ -9,6 +9,7 @@ use \App\Http\Controllers\Api\V1\UserExchangeLogController;
 use \App\Http\Controllers\Api\V1\PaymentOrderController;
 use \App\Http\Controllers\Api\V1\LandController;
 use \App\Http\Controllers\Api\V1\VegetableTypeController;
+use App\Http\Controllers\Api\V1\PlantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,11 +71,10 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     //蔬菜类型列表
     Route::prefix("vegetable")->group(function () {
         Route::post('/typeLists', [VegetableTypeController::class, 'typeLists']);//蔬菜类型列表
+        Route::get('/seed', [PlantController::class, 'seed']);//蔬菜类型列表
     });
 });
 
 
-//其他
-Route::prefix("other")->group(function () {
 
-});
+
