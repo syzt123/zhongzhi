@@ -88,6 +88,7 @@ class UserController extends Controller
      */
     function loginUser(Request $request): array
     {
+
         if (!$request->isMethod('post')) {
             return $this->backArr("请求方式必须为post", config("comm_code.code.fail"), []);
         }
@@ -111,6 +112,7 @@ class UserController extends Controller
             return $this->backArr('用户不存在或密码错误', config("comm_code.code.fail"), []);
         }
         $rsJson = json_encode($rs);
+
         // 保存缓存
         try {
             $token = $this->createTokenRules($rsJson);

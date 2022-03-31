@@ -17,12 +17,12 @@ class Controller extends BaseController
 
     public function success($data = [], $message = 'ok', $code = 1)
     {
-        return response()->json(compact('data', 'message', 'code'));
+        return response()->json(compact('data', 'message', 'code'),200);
     }
 
     public function error($message = 'error', $data = [], $code = 0)
     {
-        return response()->json(compact('data', 'message', 'code'));
+        return response()->json(compact('data', 'message', 'code'),400);
     }
 
     //返回json格式

@@ -19,9 +19,9 @@ class MemberVegetable extends Model
     protected static function booted()
     {
         // 用户每次查看自己的蔬菜时看看是否坏掉
-        static::retrived(function ($memberVegetable) {
+        static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
-            $termOfValidity = $vegetableType->array_sum([
+            $termOfValidity = array_sum([
                 $vegetableType->grow_2,
                 $vegetableType->grow_3,
                 $vegetableType->grow_4,

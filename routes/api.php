@@ -11,6 +11,7 @@ use \App\Http\Controllers\Api\V1\LandController;
 use \App\Http\Controllers\Api\V1\VegetableTypeController;
 use \App\Http\Controllers\Api\V1\PlantController;
 use \App\Http\Controllers\Api\V1\DeliveryOrderController;
+use App\Http\Controllers\Api\V1\HarvestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +97,12 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     Route::prefix("vegetable")->group(function () {
         Route::post('/typeLists', [VegetableTypeController::class, 'typeLists']);//蔬菜类型列表
         Route::get('/seed', [PlantController::class, 'seed']);//蔬菜类型列表
+    });
+
+    // 采收模块
+    Route::prefix("harvest")->group(function () {
+        Route::post('/warehousing', [HarvestController::class, 'warehousing']);//入库
+        Route::post('/distribution', [HarvestController::class, 'distribution']);//物流配送
     });
 });
 

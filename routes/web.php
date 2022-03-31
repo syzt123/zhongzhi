@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\Vegetable\EditController as EditVegetable;
 use App\Http\Controllers\Admin\Vegetable\DeleteController as DelVegetable;
 use App\Http\Controllers\Admin\System\Notice\AddController as NoticeAdd;
 use App\Http\Controllers\Admin\Logistics\EditDistributionController as EditDistribution;
+use Illuminate\Support\Facades\Redis;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,9 +33,10 @@ use App\Http\Controllers\Admin\Logistics\EditDistributionController as EditDistr
 |
 */
 
-//Route::get('/', function () {
-//
-//});
+Route::get('/', function () {
+    Redis::get('key');
+    return \Illuminate\Support\Facades\DB::table('member_info')->get();
+});
 Route::group(['prefix'=>'admin'],function(){
     Route::get('/',[Index::class,"index"]);
     Route::group(['prefix'=>'land'],function(){
