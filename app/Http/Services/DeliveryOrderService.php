@@ -32,4 +32,10 @@ class DeliveryOrderService extends BaseService
     {
         return DeliveryOrder::delDeliveryOrder($id, $data);
     }
+
+    // 更新物流订单
+    static function updateDeliveryOrder($id, $data=[]): int
+    {
+        return DeliveryOrder::updateDeliveryOrder($id, $data);
+    }
 }

@@ -38,9 +38,17 @@ class MemberVegetableService extends BaseService
     {
         return MemberVegetable::getMemberVegetableByUId($uId, $vegetable_id);
     }
+
     // 获取用户的蔬菜
     static function getMemberVegetables($uId)
     {
         return MemberVegetable::getMemberVegetablesByUId($uId);
+    }
+
+    // 更新
+    static function updateMemberVegetable($id, $data = []): int
+    {
+        return MemberVegetable::updateMemberVegetableById($id, $data);
+
     }
 }

@@ -9,7 +9,8 @@ use \App\Http\Controllers\Api\V1\UserExchangeLogController;
 use \App\Http\Controllers\Api\V1\PaymentOrderController;
 use \App\Http\Controllers\Api\V1\LandController;
 use \App\Http\Controllers\Api\V1\VegetableTypeController;
-use App\Http\Controllers\Api\V1\PlantController;
+use \App\Http\Controllers\Api\V1\PlantController;
+use \App\Http\Controllers\Api\V1\DeliveryOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,10 +67,24 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
 
         // 新增蔬菜兑换
         Route::post('/addExchangeLog', [UserExchangeLogController::class, 'addExchangeLog']);
-        // 新增订单
+        // 新增订单 购买种子
         Route::post("/addOrder", [PaymentOrderController::class, 'addOrder']);// todo
-        // 根据订单号更新状态
-        Route::post("/updateOrderStatus", [PaymentOrderController::class, 'updateOrderStatus']);// todo
+        // 根据订单号更新状态 默认完成
+        //Route::post("/updateOrderStatus", [PaymentOrderController::class, 'updateOrderStatus']);// todo
+
+
+        // 新增物流邮寄
+        Route::post('/addDelivery', [DeliveryOrderController::class, 'addDeliveryOrder']);
+        // 物流详情
+        Route::get('/getDetailDeliveryByOrderId/{order_id}', [DeliveryOrderController::class, 'getDetailDeliveryByOrderId']);//根据用户id 种子id 订单详细
+        // 用户更新物流状态 设置为已完成。进行中由后台进行设置 确认收货
+        Route::post('/updateDeliveryComplete', [DeliveryOrderController::class, 'updateDeliveryComplete']);//根据用户id 种子id 订单详细
+        // 蔬菜兑换蔬菜币  蔬菜币兑换蔬菜（发物流） 存疑
+        Route::post('/updateUserInfo', [UserController::class, 'updateUserInfo']);//根据用户id 种子id 订单详细
+
+        // 用户的所有物流订单信息 根据状态过滤
+        Route::post('/getDeliveryList', [DeliveryOrderController::class, 'getDeliveryList']);//根据用户id 种子id 订单详细
+
     });
 
     //土地列表

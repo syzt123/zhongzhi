@@ -20,10 +20,16 @@ class DeliveryOrder extends Model
         return self::with([])->insertGetId($data);
     }
 
+    // 关联用户蔬菜表
+    function memberVegetable()
+    {
+        return $this->belongsTo(MemberVegetable::class, 'm_v_id');
+    }
+
     // 查询
     static function getDeliveryOrderList($uId, $data = []): array
     {
-        $lists = self::with([])->where("m_id", '=', $uId);
+        $lists = self::with(["memberVegetable", 'memberVegetable.vegetableType'])->where("m_id", '=', $uId);
 
         $page = 1;
         $pageSize = 10;
@@ -64,5 +70,15 @@ class DeliveryOrder extends Model
     {
         $model = self::with([])->where("id", $uId);
         return $model->count();
+    }
+
+    // 更新
+    static function updateDeliveryOrder($id, $data = []): int
+    {
+        $model = self::with([])->where("id", $id);
+        if (count($data)) {
+            return $model->update($data);
+        }
+        return 0;
     }
 }

@@ -20,32 +20,34 @@ class MemberVegetable extends Model
     {
         // 用户每次查看自己的蔬菜时看看是否坏掉
         static::retrived(function ($memberVegetable) {
-                $vegetableType = $memberVegetable->vegetableType;
-                $termOfValidity = $vegetableType->array_sum([
-                    $vegetableType->grow_2,
-                    $vegetableType->grow_3,
-                    $vegetableType->grow_4,
-                    $vegetableType->grow_5,
-                    $vegetableType->storage_time
-                ]);
-                // 种植时间 + 生长过程 + 可存储时间 <= 当前时间 视为坏掉
-                if (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($termOfValidity)->lte(Carbon::now())) {
-                    $memberVegetable->vegetable_grow = -1;
-                    $memberVegetable->v_status = 3;
-                    $memberVegetable->save();
-                }
+            $vegetableType = $memberVegetable->vegetableType;
+            $termOfValidity = $vegetableType->array_sum([
+                $vegetableType->grow_2,
+                $vegetableType->grow_3,
+                $vegetableType->grow_4,
+                $vegetableType->grow_5,
+                $vegetableType->storage_time
+            ]);
+            // 种植时间 + 生长过程 + 可存储时间 <= 当前时间 视为坏掉
+            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($termOfValidity)->lte(Carbon::now())) {
+                $memberVegetable->vegetable_grow = -1;
+                $memberVegetable->v_status = 3;
+                $memberVegetable->save();
+            }
 
         });
     }
 
     public function vegetableType()
     {
-        return $this->belongsTo(VegetableType::class);
+        return $this->belongsTo(VegetableType::class, 'v_type');
     }
+
     public function memberInfo()
     {
-        return $this->belongsTo(MemberInfo::class,'m_id');
+        return $this->belongsTo(MemberInfo::class, 'm_id');
     }
+
 
     // 新增
     static function addMemberVegetable($data): int
@@ -105,6 +107,7 @@ class MemberVegetable extends Model
             ->where("v_type", $vegetable_id);
         return $model->first();
     }
+
     // 获取用户蔬菜
     static function getMemberVegetablesByUId($uId)
     {
@@ -113,4 +116,13 @@ class MemberVegetable extends Model
         return $model->get();
     }
 
+    // 更新
+    static function updateMemberVegetableById($id, $data = []):int
+    {
+        $model = self::with([])->where("id", $id);
+        if (count($data)) {
+            return $model->update($data);
+        }
+        return 0;
+    }
 }
