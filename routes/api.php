@@ -12,6 +12,7 @@ use \App\Http\Controllers\Api\V1\VegetableTypeController;
 use \App\Http\Controllers\Api\V1\PlantController;
 use \App\Http\Controllers\Api\V1\DeliveryOrderController;
 use App\Http\Controllers\Api\V1\HarvestController;
+use App\Http\Controllers\Api\V1\ExchangeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,7 +116,10 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         Route::post('/warehousing', [HarvestController::class, 'warehousing']);//入库
         Route::post('/distribution', [HarvestController::class, 'distribution']);//物流配送
     });
-
+    // 蔬菜兑换
+    Route::prefix("exchange")->group(function () {
+        Route::post('vegetable', [ExchangeController::class, 'vegetable']);//兑换蔬菜
+    });
 });
 
 

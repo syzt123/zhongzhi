@@ -40,9 +40,9 @@ class MemberVegetable extends Model
 
     public function vegetableType()
     {
-        return $this->belongsTo(VegetableType::class, 'v_type');
+        return $this->belongsTo(VegetableType::class);
     }
-
+    // 蔬菜的主人
     public function memberInfo()
     {
         return $this->belongsTo(MemberInfo::class, 'm_id');
@@ -135,4 +135,5 @@ class MemberVegetable extends Model
         }
         return 0;
     }
+
 }
