@@ -24,7 +24,7 @@ class DeliveryOrderController extends Controller
     /**
      * @OA\Post (
      *     path="/api/v1/user/addDelivery",
-     *     tags={"蔬菜兑换/物流订单管理",},
+     *     tags={"蔬菜物流订单管理",},
      *     summary="新增物流订单",
      *     description="新增物流订单(2022/03/31已完成)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
@@ -100,7 +100,7 @@ class DeliveryOrderController extends Controller
      * 根据订单号更新订单状态为已完成
      * @OA\Post (
      *     path="/api/v1/user/updateDeliveryComplete",
-     *     tags={"蔬菜兑换/物流订单管理",},
+     *     tags={"蔬菜物流订单管理",},
      *     summary="根据订单号更新订单状态为已完成",
      *     description="根据订单号更新订单状态为已完成(2022/03/31已完成)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
@@ -150,9 +150,9 @@ class DeliveryOrderController extends Controller
 
     /**
      * 根据订单号查看物流详情
-     * @OA\Post (
+     * @OA\Get (
      *     path="/api/v1/user/getDetailDeliveryByOrderId/{order_id}",
-     *     tags={"蔬菜兑换/物流订单管理",},
+     *     tags={"蔬菜物流订单管理",},
      *     summary="根据订单号查看物流详情",
      *     description="根据订单号查看物流详情(2022/03/31已完成)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
@@ -210,7 +210,7 @@ class DeliveryOrderController extends Controller
      * 根据状态等筛选不同的物流列表
      * @OA\Post (
      *     path="/api/v1/user/getDeliveryList",
-     *     tags={"蔬菜兑换/物流订单管理",},
+     *     tags={"蔬菜物流订单管理",},
      *     summary="根据状态等筛选不同的物流列表",
      *     description="根据状态等筛选不同的物流列表(2022/03/31已完成)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),

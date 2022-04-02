@@ -55,10 +55,20 @@ class MemberVegetable extends Model
         return self::with([])->insertGetId($data);
     }
 
+    function vegetableLand(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(VegetableLand::class, 'land');
+    }
+
+    function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(MemberInfo::class, 'm_id');
+    }
+
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with([])->where("m_id", '=', $uId);
+        $lists = self::with(["vegetableLand", "user"])->where("m_id", '=', $uId);
         $page = 1;
         $pageSize = 10;
         $sort = 'desc';// desc asc
@@ -117,7 +127,7 @@ class MemberVegetable extends Model
     }
 
     // 更新
-    static function updateMemberVegetableById($id, $data = []):int
+    static function updateMemberVegetableById($id, $data = []): int
     {
         $model = self::with([])->where("id", $id);
         if (count($data)) {

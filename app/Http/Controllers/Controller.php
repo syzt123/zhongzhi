@@ -179,12 +179,13 @@ class Controller extends BaseController
     {
         if ($request->isMethod('post')) {
             $files = $request->allFiles();
-            if (!isset($files["files"])) {
-                return ['code' => -1, 'msg' => 'files字段必须', 'data' => []];
+            var_dump($files);exit();
+            if (!isset($files["files[]"])) {
+                return ['code' => -1, 'msg' => 'files[]字段必须', 'data' => []];
             }
-            if (is_array($files["files"])) {
+            if (is_array($files["files[]"])) {
                 $imgs = [];
-                foreach ($files["files"] as $file) {
+                foreach ($files["files[]"] as $file) {
                     $path = Storage::disk('uploads')->putFile(date('Ymd'), $file);
                     if ($path != false) {
                         //图片追加

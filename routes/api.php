@@ -80,11 +80,22 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         Route::get('/getDetailDeliveryByOrderId/{order_id}', [DeliveryOrderController::class, 'getDetailDeliveryByOrderId']);//根据用户id 种子id 订单详细
         // 用户更新物流状态 设置为已完成。进行中由后台进行设置 确认收货
         Route::post('/updateDeliveryComplete', [DeliveryOrderController::class, 'updateDeliveryComplete']);//根据用户id 种子id 订单详细
-        // 蔬菜兑换蔬菜币  蔬菜币兑换蔬菜（发物流） 存疑
-        Route::post('/updateUserInfo', [UserController::class, 'updateUserInfo']);//根据用户id 种子id 订单详细
+        // 蔬菜兑换蔬菜币  蔬菜币兑换蔬菜（发物流） 存疑(有问题)
+        //Route::post('/updateUserInfo', [UserController::class, 'updateUserInfo']);//根据用户id 种子id 订单详细
 
         // 用户的所有物流订单信息 根据状态过滤
         Route::post('/getDeliveryList', [DeliveryOrderController::class, 'getDeliveryList']);//根据用户id 种子id 订单详细
+
+        //获取用户的蔬菜列表 包括各种阶段蔬菜
+        Route::post('/userVegetableList', [UserController::class, 'userVegetableList']);//获取用户的蔬菜列表
+        //获取用户的蔬菜详情
+        Route::get('/userDetailVegetable/{id}', [UserController::class, 'userDetailVegetable']);//获取用户的蔬菜详情
+
+        //获取用户的兑换蔬菜列表
+        Route::post('/userExchangeLogList', [UserExchangeLogController::class, 'userExchangeLogList']);//获取用户兑换的蔬菜列表
+        //获取用户的兑换蔬菜详情
+        Route::get('/userDetailExchangeLog/{id}', [UserExchangeLogController::class, 'userDetailExchangeLog']);//获取用户兑换的蔬菜详情
+
 
     });
 
@@ -104,6 +115,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         Route::post('/warehousing', [HarvestController::class, 'warehousing']);//入库
         Route::post('/distribution', [HarvestController::class, 'distribution']);//物流配送
     });
+
 });
 
 
