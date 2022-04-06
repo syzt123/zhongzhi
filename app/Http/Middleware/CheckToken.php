@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class CheckToken
 {
@@ -26,19 +25,19 @@ class CheckToken
                 'data' => [],
             ];
 
-            return Response(json_encode($data,JSON_UNESCAPED_UNICODE));
+            return Response(json_encode($data));
         } else {
             //校验正确性
             $token = $request->header('TOKEN');
             //
-            if (!Redis::get(config("comm_code.redis_prefix.token") . $token)) {
+            if (Cache::store("redis")->get(config("comm_code.redis_prefix.token") . $token)) {
                 //token过期
                 $data = [
                     "code" => -1,
                     'msg' => "token已过期,请重新尝试！",
                     'data' => [],
                 ];
-                return Response(json_encode($data, JSON_UNESCAPED_UNICODE));
+                return Response(json_encode($data));
             }
         }
         return $next($request);

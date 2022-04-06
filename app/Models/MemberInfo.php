@@ -10,8 +10,6 @@ class MemberInfo extends Model
 {
     protected $table = 'member_info';
     protected $dateFormat = 'U';
-    protected $hidden = ["password"];
-
 
     const CREATED_AT = 'create_time';
     const UPDATED_AT = 'update_time';

@@ -108,7 +108,8 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     //蔬菜类型列表
     Route::prefix("vegetable")->group(function () {
         Route::post('/typeLists', [VegetableTypeController::class, 'typeLists']);//蔬菜类型列表
-        Route::get('/seed', [PlantController::class, 'seed']);//蔬菜类型列表
+        Route::get('/seed', [PlantController::class, 'seed']);//可种植蔬菜类型列表
+        Route::get('/planted', [PlantController::class, 'planted']);//已种植的蔬菜类型列表
     });
 
     // 采收模块
@@ -119,6 +120,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     // 蔬菜兑换
     Route::prefix("exchange")->group(function () {
         Route::post('vegetable', [ExchangeController::class, 'vegetable']);//兑换蔬菜
+        Route::post('lists', [ExchangeController::class, 'lists']);//可兑换蔬菜列表
     });
 });
 

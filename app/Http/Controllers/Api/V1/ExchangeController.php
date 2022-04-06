@@ -6,17 +6,16 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\DeliveryOrderService;
-use App\Http\Services\MemberInfoService;
-use App\Http\Services\MemberVegetableService;
 use App\Models\MemberInfo;
 use App\Models\MemberVegetable;
-use Illuminate\Database\QueryException;
+use App\Models\VegetableType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
+use function Sodium\compare;
 
 class ExchangeController extends Controller
 {
+
     /**
      * @OA\Post(
      *     path="/api/v1/exchange/vegetable",
@@ -129,14 +128,11 @@ class ExchangeController extends Controller
                         };
                     }
                 }
-
             }
         }
     }
 
-    /**
-     * @OA\Examples
-     */
+
     private function exchangeVegetable($exchange_num, $uid, $vegetable_id)
     {
         try {

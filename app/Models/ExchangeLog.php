@@ -13,27 +13,16 @@ class ExchangeLog extends Model
 
     const CREATED_AT = 'create_time';
     const UPDATED_AT = null;
-
     // 新增
     static function addExchangeLog($data): int
     {
         return self::with([])->insertGetId($data);
     }
 
-    function memberVegetable()
-    {
-        return $this->belongsTo(MemberVegetable::class, "m_v_id");
-    }
-
-    function user()
-    {
-        return $this->belongsTo(MemberInfo::class, "m_id");
-    }
-
     // 查询
     static function getExchangeLogList($uId, $data = []): array
     {
-        $lists = self::with(["user", "memberVegetable"])->where("m_id", '=', $uId);
+        $lists = self::with([])->where("m_id", '=', $uId);
 
         $page = 1;
         $pageSize = 10;

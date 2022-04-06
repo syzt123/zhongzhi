@@ -8,7 +8,7 @@ use App\Models\VegetableType;
 class VegetableTypeService extends BaseService
 {
     //蔬菜地类型
-    static function addVegetableType($data): int
+    static function addVegetableType($data)
     {
         return VegetableType::addVegetableType($data);
     }
