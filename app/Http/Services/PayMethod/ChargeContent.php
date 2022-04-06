@@ -2,12 +2,14 @@
 
 namespace App\Http\Services\PayMethod;
 // 支付选择策略
+use Illuminate\Http\Request;
+
 class ChargeContent
 {
     private $payInstance = null;
 
     // 实例化
-    public function initInstance($payMethod = 'ali'): void
+    public function initInstance($payMethod = 'ali'): self
     {
         /*switch ($payMethod) {
             case 'ali':
@@ -25,15 +27,17 @@ class ChargeContent
             'wechat' => new WechatPayCharge(),
             default => null,
         };
+        return $this;
 
     }
 
     //支付
-    public function handlePay()
+    public function handlePay(Request $request): string
     {
+        //var_dump($this);exit();
         if ($this->payInstance == null) {
-            return;
+            return '';
         }
-        return $this->payInstance->payOrder();
+        return $this->payInstance->payOrder($request);
     }
 }
