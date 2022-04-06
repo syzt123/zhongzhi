@@ -13,6 +13,7 @@ use \App\Http\Controllers\Api\V1\PlantController;
 use \App\Http\Controllers\Api\V1\DeliveryOrderController;
 use App\Http\Controllers\Api\V1\HarvestController;
 use App\Http\Controllers\Api\V1\ExchangeController;
+use \App\Http\Controllers\Api\V1\PayDemoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,9 @@ Route::get('/', function () {
 Route::get('/wxpay', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'wxPay']);//测试微信支付
 Route::post('/alipay_notify', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'payNotify']);//测试微信回调
 Route::post('/wx_pay_notify', [\App\Http\Controllers\Api\V1\PayDemoController::class, 'wxPayNotify']);//测试支付宝回调*/
+
+Route::post('/alipay_notify', [PayDemoController::class, 'payNotify']);//测试微信回调
+Route::post('/wx_pay_notify', [PayDemoController::class, 'wxPayNotify']);//测试支付宝回调
 
 //登录注册
 Route::prefix("v1")->group(function () {

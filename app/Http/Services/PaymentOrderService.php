@@ -32,4 +32,18 @@ class PaymentOrderService extends BaseService
     {
         return PaymentOrder::delPaymentOrder($id, $data);
     }
+
+    // 更新订单状态等信息
+    static function updateOrderStatusInfoByOrderId($orderId, $data = []): int
+    {
+        return PaymentOrder::updatePaymentOrder($orderId, $data);
+
+    }
+
+    // 根据订单ID查询订单信息
+    static function getOrderInfoByOrderId($orderId, $data = []): array
+    {
+        return PaymentOrder::getOrderInfoByOrderId($orderId, $data);
+
+    }
 }

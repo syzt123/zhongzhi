@@ -38,7 +38,7 @@ class PaymentOrder extends Model
         if (count($data)) {
             $lists = $lists->where($data);
         }
-        $skipNums = ($page-1) * $pageSize;
+        $skipNums = ($page - 1) * $pageSize;
         $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
 
         if ($lists) {
@@ -62,5 +62,38 @@ class PaymentOrder extends Model
     {
         $model = self::with([])->where("m_id", $uId);
         return $model->count();
+    }
+
+    /**
+     * 更新
+     * @param string $orderId 自己按规则生成的订单号
+     * @param array $data
+     * @return int
+     */
+    static function updatePaymentOrder(string $orderId, $data = []): int
+    {
+        $model = self::with([])->where("order_id", $orderId);
+        if (count($data)) {
+            return $model->update($data);
+        }
+        return 0;
+    }
+
+    /** 查询订单信息
+     * @param string $orderId
+     * @param array $data
+     * @return array
+     */
+    static function getOrderInfoByOrderId(string $orderId, $data = []): array
+    {
+        $model = self::with([])->where("order_id", $orderId);
+        if (count($data)) {
+            $model = $model->where($data);
+        }
+        $rs = $model->first();
+        if ($rs != null) {
+            return $rs->toArray();
+        }
+        return [];
     }
 }
