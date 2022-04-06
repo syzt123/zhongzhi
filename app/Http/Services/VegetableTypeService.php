@@ -4,6 +4,9 @@ namespace App\Http\Services;
 // 蔬菜地类型
 use App\Models\MemberInfo;
 use App\Models\VegetableType;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VegetableTypeService extends BaseService
 {
@@ -27,6 +30,10 @@ class VegetableTypeService extends BaseService
         return self::getPageDataList(VegetableType::getVegetableTypeNums($data), $page, $pageSize, VegetableType::getVegetableTypeList($data));
 
     }
+    static function editModelByAdmin()
+    {
+        return \App\Models\Admin\VegetableType::editByAdmin();
+    }
 
     //删除蔬菜地类型信息
     static function delVegetableTypeById($id, $data = []): int
@@ -44,5 +51,21 @@ class VegetableTypeService extends BaseService
     {
         $vegetables = VegetableType::getVegetableTypeSeed();
         return $vegetables->groupBy('recommend');
+    }
+
+    // 修改蔬菜
+    static function editVegetableTypeByAdmin()
+    {
+        try {
+            DB::beginTransaction();
+            VegetableType::where('id', Request::input('id'))
+                ->update(Request::input());
+            DB::commit();
+            return true;
+        } catch (QueryException $exception) {
+            DB::rollBack();
+            return $exception->getMessage();
+        }
+        return false;
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Services\DeliveryOrderService;
 use App\Http\Services\MemberVegetableService;
 use App\Http\Services\NoticeService;
 use App\Http\Services\PaymentOrderService;
+use App\Http\Services\PayMethod\ChargeContent;
 use App\Http\Services\VegetableLandService;
 use App\Http\Services\VegetableTypeService;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ class PaymentOrderController extends Controller
      *     @OA\Parameter(name="v_status", in="query", @OA\Schema(type="int"),description="蔬菜当前形态 1生长期 2 成熟仓库中"),
      *     @OA\Parameter(name="f_price", in="query", @OA\Schema(type="string"),description="蔬菜领取时的单价"),
      *     @OA\Parameter(name="f_num", in="query", @OA\Schema(type="string"),description="蔬菜领取时的数量"),
+     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 wechat:微信支付 默认支付宝"),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -81,6 +83,12 @@ class PaymentOrderController extends Controller
         if ((int)$request->f_num < 0) {
             return $this->backArr('兑换的单价f_num必须为正数', config("comm_code.code.fail"), []);
         }
+        if (!isset($request->pay_type)) {
+            return $this->backArr('请选择支付方式', config("comm_code.code.fail"), []);
+        }
+        if (!in_array($request->pay_type, ["ali", "wechat"])) {
+            return $this->backArr('支付方式不存在', config("comm_code.code.fail"), []);
+        }
         $time = time();
         $userInfo = $this->getUserInfo($request->header("token"));
 
@@ -88,13 +96,14 @@ class PaymentOrderController extends Controller
         try {
             // 开启事务
             DB::beginTransaction();
+            $createOrderId = $this->getUniqueOrderNums();
             // 新增订单
             $data = [
                 "m_id" => $userInfo["id"],
                 "r_id" => 1,//1 微信支付 2 支付宝 3其他
                 "f_price" => $request->f_price,//兑换的金额
                 "status" => 1,
-                "order_id" => $this->getUniqueOrderNums(),
+                "order_id" => $createOrderId,
                 "wechat_no" => '',// 微信或者支付宝的订单号
                 "pay_price" => 0,// 实际支付的价格
                 "create_time" => $time,
@@ -116,7 +125,7 @@ class PaymentOrderController extends Controller
             ];
             MemberVegetableService::addMemberVegetable($vegetableData);
 
-            $deliveryData = [
+            /*$deliveryData = [
                 "m_id" => $userInfo["id"],
                 "r_id" => 1,//1 微信支付 2 支付宝 3其他
                 "f_price" => $request->f_price,//兑换的金额
@@ -127,7 +136,7 @@ class PaymentOrderController extends Controller
                 "update_time" => $time,
             ];
             // 新增物流
-            DeliveryOrderService::addDeliveryOrder($deliveryData);
+            DeliveryOrderService::addDeliveryOrder($deliveryData);*/
 
             $v_price = isset($request->f_price) ? $request->f_price : 0;
             $v_num = isset($request->f_num) ? $request->f_num : 0;
@@ -143,10 +152,21 @@ class PaymentOrderController extends Controller
             // 购买记录
             $buyBool = BuyLogService::addUserBuyLog($buyData);
 
+            // 调用支付
+            // 设置订单号
+            $request->out_trade_no = $createOrderId;
+            $request->total_amount = $n_price;
+            $request->subject = $vegetableTypeData["v_type"] . '种子';
+
+            $payInstance = new ChargeContent();
+            $payMethod = $request->pay_type ?? 'ali';
+            $payInstance = $payInstance->initInstance($payMethod);
+            $payUrl = $payInstance->handlePay($request);
+
             DB::commit();
 
             if ($buyBool) {
-                return $this->backArr('新增订单成功', config("comm_code.code.ok"), []);
+                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $payUrl]);
             }
         } catch (\Exception $exception) {
             DB::rollBack();

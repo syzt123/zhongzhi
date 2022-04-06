@@ -17,9 +17,8 @@ class BaseController
     {
         return response()->json(compact('data', 'message', 'code'));
     }
-
     public function upload()
     {
-        return Storage::disk('local')->putFile('tmp', request()->file('file'));
+        return $path = request()->file('file')->store('tmp');
     }
 }

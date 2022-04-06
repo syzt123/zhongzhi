@@ -5,7 +5,7 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'Api 接口文档',
+                'title' => 'L5 Swagger UI',
             ],
 
             'routes' => [
