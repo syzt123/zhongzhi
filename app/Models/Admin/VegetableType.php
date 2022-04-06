@@ -76,7 +76,7 @@ class VegetableType extends Base
                             ])
                             ->first();
                         if ($vegetableTypeGrow && Storage::disk('local')->delete($vegetableTypeGrow->vegetable_resources)) {
-                            $vegetableTypeGrow->vegetable_resources = $new_path;
+                            $vegetableTypeGrow->vegetable_resources = str_replace('public/', '', $new_path);
                             $vegetableTypeGrow->save();
                         } else {
                             $vegetableType
@@ -85,7 +85,7 @@ class VegetableType extends Base
                                     'vegetable_type_id' => request()->input('id'),
                                     'vegetable_grow' => $key,
                                     'vegetable_resources_type' => 1,
-                                    'vegetable_resources' => $new_path,
+                                    'vegetable_resources' => str_replace('public/', '', $new_path),
                                 ]);
                         }
                     }

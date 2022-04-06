@@ -7,17 +7,19 @@
 
 @section('content')
     <table class="layui-hide" id="test" lay-filter="test"></table>
+
+    {{--<script type="text/html" id="toolbarDemo">--}}
+    {{--    <div class="layui-btn-container">--}}
+    {{--        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">添加</button>--}}
+    {{--    </div>--}}
+    {{--</script>--}}
+    {{--<script type="text/html" id="barDemo">--}}
+    {{--    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>--}}
+    {{--    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>--}}
+    {{--</script>--}}
+
 @endsection
-{{--<script type="text/html" id="toolbarDemo">--}}
-{{--    <div class="layui-btn-container">--}}
-{{--        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">添加</button>--}}
-{{--    </div>--}}
-{{--</script>--}}
-{{--<script type="text/html" id="barDemo">--}}
-{{--    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>--}}
-{{--    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>--}}
-{{--</script>--}}
-<form class="layui-form" action="" id="status" style="margin-top: 30px">
+<form  class="layui-form" action="" id="status" style="margin-top: 30px">
     <div class="layui-form-item">
         <label class="layui-form-label">状态</label>
         <div class="layui-input-inline">
@@ -35,6 +37,7 @@
         </div>
     </div>
 </form>
+
 @section('js')
     <script>
         //JS
@@ -87,6 +90,7 @@
                         type: 1,
                         area: ['400px', '260px'], //宽高
                         content: $('#status') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                        // content: ['内容', '#status'] //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
                     });
 
                 }
@@ -121,6 +125,8 @@
             });
         });
     </script>
+
 @endsection
+
 
 

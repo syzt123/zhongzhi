@@ -44,7 +44,7 @@
                 <input type="number" name="grow_1" value="{{ $vegetableType-> grow_1}}" lay-verify="required"
                        lay-reqtext="种子时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
-                <input type="hidden" name="img_grow_1" lay-verify="required" lay-reqtext="请上传种子时期图片">
+                <input type="hidden" name="img_grow_1" lay-verify="required" value="{{$vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>1])->value('vegetable_resources')}}" lay-reqtext="请上传种子时期图片">
             </div>
             <div class="layui-input-inline" style="width: 110px">
                 <button type="button" class="layui-btn upload" id="grow_1" onclick="importWaypointModel('grow_1')">
@@ -54,7 +54,8 @@
             <input type="hidden" id="upload">
             <div class="layui-input-inline">
                 <img style="width: 40px;height: auto;" id="img_grow_1"
-                     er="https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350">
+                     src="{{ $vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>1])->value('vegetable_resources') }}"
+                     onerror="javascript:this.src='https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350'">
                 <div style="width: 40px">
                     <div class="layui-progress" style="height: 2px ;border-radius:unset" lay-showpercent="yes"
                          lay-filter="grow_1">
@@ -67,7 +68,7 @@
                 <input type="text" name="grow_2" value="{{ $vegetableType-> grow_2 }}" lay-verify="required"
                        lay-reqtext="幼苗时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
-                <input type="hidden" name="img_grow_2" lay-verify="required" lay-reqtext="请上传幼苗时期图片">
+                <input type="hidden" name="img_grow_2" lay-verify="required" lay-reqtext="请上传幼苗时期图片" value="{{$vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>2])->value('vegetable_resources')}}">
             </div>
             <div class="layui-input-inline" style="width: 110px">
                 <button type="button" class="layui-btn upload" id="grow_2" onclick="importWaypointModel('grow_2')">
@@ -77,7 +78,8 @@
             </div>
             <div class="layui-input-inline">
                 <img style="width: 40px;height: auto;" id="img_grow_2"
-                     src="https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350">
+                     src="{{ $vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>2])->value('vegetable_resources') }}"
+                     onerror="javascript:this.src='https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350'">
                 <div style="width: 40px">
                     <div class="layui-progress" style="height: 2px ;border-radius:unset" lay-showpercent="yes"
                          lay-filter="grow_2">
@@ -89,9 +91,10 @@
         <div class="layui-form-item">
             <label class="layui-form-label">成长期</label>
             <div class="layui-input-inline">
-                <input type="text" name="grow_3" value="{{ $vegetableType-> grow_3 }}" lay-verify="required" lay-reqtext="成长期是必填项，岂能为空？"
+                <input type="text" name="grow_3" value="{{ $vegetableType-> grow_3 }}" lay-verify="required"
+                       lay-reqtext="成长期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
-                <input type="hidden" name="img_grow_3" lay-verify="required" lay-reqtext="请上传成长时期图片">
+                <input type="hidden" name="img_grow_3" lay-verify="required" lay-reqtext="请上传成长时期图片" value="{{$vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>3])->value('vegetable_resources')}}">
             </div>
             <div class="layui-input-inline" style="width: 110px">
                 <button type="button" class="layui-btn upload" id="grow_3" onclick="importWaypointModel('grow_3')">
@@ -100,7 +103,8 @@
             </div>
             <div class="layui-input-inline">
                 <img style="width: 40px;height: auto;" id="img_grow_3"
-                     src="https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350">
+                     src="{{ $vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>3])->value('vegetable_resources') }}"
+                     onerror="javascript:this.src='https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350'">
                 <div style="width: 40px">
                     <div class="layui-progress" style="height: 2px ;border-radius:unset" lay-showpercent="yes"
                          lay-filter="grow_3">
@@ -110,9 +114,10 @@
             </div>
             <label class="layui-form-label">成年期</label>
             <div class="layui-input-inline">
-                <input type="text" name="grow_4" value="{{ $vegetableType-> grow_4 }}" lay-verify="required" lay-reqtext="幼苗时期是必填项，岂能为空？"
+                <input type="text" name="grow_4" value="{{ $vegetableType-> grow_4 }}" lay-verify="required"
+                       lay-reqtext="幼苗时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
-                <input type="hidden" name="img_grow_4" lay-verify="required" lay-reqtext="请上传成年时期图片">
+                <input type="hidden" name="img_grow_4" lay-verify="required" lay-reqtext="请上传成年时期图片" value="{{$vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>4])->value('vegetable_resources')}}">
             </div>
             <div class="layui-input-inline" style="width: 110px">
                 <button type="button" class="layui-btn upload" id="grow_4" onclick="importWaypointModel('grow_4')">
@@ -121,7 +126,8 @@
             </div>
             <div class="layui-input-inline">
                 <img style="width: 40px;height: auto;" id="img_grow_4"
-                     src="https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350">
+                     src="{{ $vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>4])->value('vegetable_resources') }}"
+                     onerror="javascript:this.src='https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350'">
                 <div style="width: 40px">
                     <div class="layui-progress" style="height: 2px ;border-radius:unset" lay-showpercent="yes"
                          lay-filter="grow_4">
@@ -133,9 +139,10 @@
         <div class="layui-form-item">
             <label class="layui-form-label">成熟期</label>
             <div class="layui-input-inline">
-                <input type="text" name="grow_5" value="{{ $vegetableType-> grow_5 }}" lay-verify="required" lay-reqtext="幼苗时期是必填项，岂能为空？"
+                <input type="text" name="grow_5" value="{{ $vegetableType-> grow_5 }}" lay-verify="required"
+                       lay-reqtext="幼苗时期是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
-                <input type="hidden" name="img_grow_5" lay-verify="required" lay-reqtext="请上传成熟时期图片">
+                <input type="hidden" name="img_grow_5" lay-verify="required" lay-reqtext="请上传成熟时期图片" value="{{$vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>5])->value('vegetable_resources')}}">
             </div>
             <div class="layui-input-inline" style="width: 110px">
                 <button type="button" class="layui-btn upload" id="grow_5" onclick="importWaypointModel('grow_5')">
@@ -144,7 +151,8 @@
             </div>
             <div class="layui-input-inline">
                 <img style="width: 40px;height: auto;" id="img_grow_5"
-                     src="https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350">
+                     src="{{ $vegetableType -> vegetableResources() -> where(['vegetable_resources_type'=>1,'vegetable_grow'=>5])->value('vegetable_resources') }}"
+                     onerror="javascript:this.src='https://img1.baidu.com/it/u=1030265100,1120065809&fm=253&fmt=auto&app=138&f=JPEG?w=350&h=350'">
                 <div style="width: 40px">
                     <div class="layui-progress" style="height: 2px ;border-radius:unset" lay-showpercent="yes"
                          lay-filter="grow_5">
@@ -158,6 +166,27 @@
             <div class="layui-input-block">
                 <input type="text" name="storage_time" value="{{$vegetableType->storage_time}}" lay-verify="required"
                        lay-reqtext="可存放时期是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成熟周期</label>
+            <div class="layui-input-block">
+                <input type="text" name="mature_rate" value="{{$vegetableType->mature_rate}}" lay-verify="required" lay-reqtext="成熟周期是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">每蔬菜币兑换重量</label>
+            <div class="layui-input-block">
+                <input type="text" name="exchange_quality" value="{{$vegetableType->exchange_quality}}" lay-verify="required" lay-reqtext="每蔬菜币兑换重量是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预计产量</label>
+            <div class="layui-input-block">
+                <input type="text" name="estimated_output" value="{{$vegetableType->estimated_output}}" lay-verify="required" lay-reqtext="预计产量是必填项，岂能为空？"
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -185,7 +214,7 @@
     <script>
         //JS
         var uploadInst, $;
-        layui.use(['form','upload', 'element', 'layer'], function () {
+        layui.use(['form', 'upload', 'element', 'layer'], function () {
             var form = layui.form
                 , upload = layui.upload
                 , element = layui.element
@@ -285,6 +314,7 @@
                 return false;
             });
         });
+
         function importWaypointModel(grow) {
             //重载该实例，支持重载全部基础参数
             uploadInst.reload({

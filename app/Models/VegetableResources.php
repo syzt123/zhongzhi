@@ -14,6 +14,6 @@ class VegetableResources extends Model
     public $timestamps = false;
     public function getVegetableResourcesAttribute($value)
     {
-        return asset($value);
+        return asset('storage/'.$value);
     }
 }

@@ -156,6 +156,27 @@
                        placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">成熟周期</label>
+            <div class="layui-input-block">
+                <input type="text" name="mature_rate" lay-verify="required" lay-reqtext="成熟周期是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">每蔬菜币兑换重量</label>
+            <div class="layui-input-block">
+                <input type="text" name="exchange_quality" lay-verify="required" lay-reqtext="每蔬菜币兑换重量是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">预计产量</label>
+            <div class="layui-input-block">
+                <input type="text" name="estimated_output" lay-verify="required" lay-reqtext="预计产量是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">状态</label>

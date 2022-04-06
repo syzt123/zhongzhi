@@ -6,7 +6,10 @@
     <title>指尖种植</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
 </head>
+
 <body>
+
+
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <div class="layui-logo layui-hide-xs layui-bg-black">指尖种植</div>
