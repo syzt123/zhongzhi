@@ -4,6 +4,8 @@
 namespace App\Http\Controllers\Admin;
 
 
+use Illuminate\Support\Facades\Storage;
+
 class BaseController
 {
     public function success($data = [], $message = 'ok', $code = 1)
@@ -14,5 +16,10 @@ class BaseController
     public function error($message = 'error', $data = [], $code = 0)
     {
         return response()->json(compact('data', 'message', 'code'));
+    }
+
+    public function upload()
+    {
+        return Storage::disk('local')->putFile('tmp', request()->file('file'));
     }
 }

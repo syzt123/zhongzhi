@@ -34,7 +34,7 @@ class MemberVegetable extends Model
                 $memberVegetable->v_status = 3;
                 $memberVegetable->save();
             }
-
+            $memberVegetable->makeHidden(['vegetable_type']);
         });
     }
 

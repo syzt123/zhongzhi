@@ -4,20 +4,68 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use phpDocumentor\Reflection\Types\Self_;
 
 //蔬菜种类表
 class VegetableType extends Model
 {
     protected $table = 'vegetable_type';
     protected $dateFormat = 'U';
+    protected $fillable = [
+        "f_price",
+        "grow_1",
+        "grow_2",
+        "grow_3",
+        "grow_4",
+        "grow_5",
+        "status",
+        "storage_time",
+        "v_price",
+        "v_type"
+    ];
 
     const CREATED_AT = 'create_time';
     const UPDATED_AT = 'update_time';
 
     // 新增
-    static function addVegetableType($data): int
+    static function addVegetableType($data)
     {
-        return self::with([])->insertGetId($data);
+        $resources = array();
+        $model = new static;
+        DB::beginTransaction();
+        $model->fill($data);
+        $model->save();
+        $movedFiles = array();
+        foreach ($data as $key => $value) {
+            if (!in_array($key, $model->getFillable()) && $value && is_numeric(str_replace('img_grow_', '', $key))) {
+                $newFile = str_replace('tmp/','public/vegetable_resources/',$value);
+
+                if(Storage::move($value, $newFile))
+                {
+                    $movedFiles[] = $newFile;
+                    $resources[] = new VegetableResources([
+                        'vegetable_grow' => str_replace('img_grow_', '', $key),
+                        'vegetable_resources_type' => 1,
+                        'vegetable_resources' => str_replace('public/','',$newFile)
+                    ]);
+                }else{
+                    foreach ($movedFiles as $file){
+                        Storage::disk('public')->delete(str_replace('public/','',$file));
+                    }
+                    DB::rollBack();
+                    return '请重新选择各生长阶段图片';
+                }
+
+            }
+        }
+        $model->vegetableResources()->saveMany($resources);
+        DB::commit();
+        Cache::forget('new_file');
+        return true;
     }
 
     // 查询
@@ -107,5 +155,10 @@ class VegetableType extends Model
                 ->value('vegetable_resources');
         }
         return $vegetables;
+    }
+
+    public function memberVegetables()
+    {
+        return $this->hasMany(MemberVegetable::class,);
     }
 }

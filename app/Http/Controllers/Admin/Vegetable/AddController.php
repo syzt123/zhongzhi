@@ -15,9 +15,20 @@ class AddController extends BaseController
     {
         return view('admin.vegetable.add');
     }
+
     public function submit(Request $request)
     {
-        $userData = VegetableTypeService::addVegetableType($request->post());
-        return $this->success($userData);
+        $res = VegetableTypeService::addVegetableType($request->post());
+        if ($res === true) {
+            return $this->success('', '添加成功');
+        } else {
+            return $this->error($res);
+        }
+
+    }
+
+    public function upResources(Request $request)
+    {
+        return $this->success($this->upload());
     }
 }

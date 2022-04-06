@@ -69,6 +69,10 @@ Route::group(['prefix'=>'admin'],function(){
         Route::get('/edit/{id}',[EditVegetable::class,"index"]);
         Route::post('/edit',[EditVegetable::class,"submit"]);
         Route::get('/add/',[VegetableAdd::class,"index"]);
+        Route::post('/add/upload',[VegetableAdd::class,"upResources"]);
+        Route::get('/test',function (){
+            return \App\Models\VegetableType::with('vegetableResources')->where('id',71)->first();
+        });
     });
     Route::group(['prefix'=>'system'],function(){
         Route::get('/notice',[Notice::class,"index"]);
