@@ -4,9 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>指尖种植</title>
-    <link rel="stylesheet" href="/storage/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/layui/css/layui.css">
 </head>
+
 <body>
+
+
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <div class="layui-logo layui-hide-xs layui-bg-black">指尖种植</div>
@@ -66,7 +69,7 @@
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @elseif(request()->path() === "admin/user/buy_log")
-                                    <dd><a href="{{url("admin/user")}}">用户列表</a></dd>
+                                    <dd><a href="{{url("admin/user/user")}}">用户列表</a></dd>
                                     <dd class="layui-this"><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @elseif(request()->path() === "admin/user/exchange_log")
@@ -170,7 +173,7 @@
         底部固定区域
     </div>
 </div>
-<script src="/storage/static/layui/layui.js"></script>
+<script src="/layui/layui.js"></script>
 @yield('js')
 
 </body>
