@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+
 use App\Http\Middleware\CheckToken;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
 
         //自定义中间件
         'check.token' => \App\Http\Middleware\CheckToken::class,
+        'admin' => \App\Http\Middleware\AdminLogin::class,
     ];
 }

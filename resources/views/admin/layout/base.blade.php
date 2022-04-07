@@ -6,31 +6,27 @@
     <title>指尖种植</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
 </head>
-
 <body>
+@section('sidebar')
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo layui-hide-xs layui-bg-black">指尖种植</div>
 
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                    <a href="javascript:;">
+                        <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
+                             class="layui-nav-img">
+                        管理员
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="{{url('admin/loginout')}}">退出</a></dd>
+                    </dl>
+                </li>
 
-<div class="layui-layout layui-layout-admin">
-    <div class="layui-header">
-        <div class="layui-logo layui-hide-xs layui-bg-black">指尖种植</div>
+            </ul>
+        </div>
 
-        <ul class="layui-nav layui-layout-right">
-            <li class="layui-nav-item layui-hide layui-show-md-inline-block">
-                <a href="javascript:;">
-                    <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg"
-                         class="layui-nav-img">
-                    管理员
-                </a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">Your Profile</a></dd>
-                    <dd><a href="">Settings</a></dd>
-                    <dd><a href="">Sign out</a></dd>
-                </dl>
-            </li>
-
-        </ul>
-    </div>
-    @section('sidebar')
         <div class="layui-side layui-bg-black">
             <div class="layui-side-scroll">
             {{--                <p>{{ request()->path() }}</p>--}}
@@ -77,7 +73,8 @@
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd class="layui-this"><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @else
-                                    <dd><a href="{{url("admin/user/user")}}" @if(strpos(request()->path(),'user')) class="layui-this" @endif>用户列表</a></dd>
+                                    <dd><a href="{{url("admin/user/user")}}"
+                                           @if(strpos(request()->path(),'user')) class="layui-this" @endif>用户列表</a></dd>
                                     <dd><a href="{{url("admin/user/buy_log")}}">购买记录</a></dd>
                                     <dd><a href="{{url("admin/user/exchange_log")}}">兑换记录</a></dd>
                                 @endif
@@ -158,21 +155,22 @@
                 </ul>
             </div>
         </div>
-    @show
 
-    <div class="layui-body">
-        <!-- 内容主体区域 -->
-        <div style="padding: 15px;">
-            @yield('content')
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                @yield('content')
+            </div>
+        </div>
+
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            底部固定区域
         </div>
     </div>
-
-
-    <div class="layui-footer">
-        <!-- 底部固定区域 -->
-        底部固定区域
-    </div>
-</div>
+@show
 <script src="/layui/layui.js"></script>
 @yield('js')
 

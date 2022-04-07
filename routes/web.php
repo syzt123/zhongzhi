@@ -33,56 +33,55 @@ use Illuminate\Support\Facades\Redis;
 |
 */
 
-Route::get('/', function () {
-    Redis::get('key');
-    return \Illuminate\Support\Facades\DB::table('member_info')->get();
-});
+Route::get('/', [\App\Http\Controllers\Admin\LoginController::class,'index'])->middleware('admin');
+Route::post('/',[\App\Http\Controllers\Admin\LoginController::class,'login']);
 Route::group(['prefix'=>'admin'],function(){
-    Route::get('/',[Index::class,"index"]);
+    Route::get('/loginout',[\App\Http\Controllers\Admin\LoginController::class,'loginout'])->middleware('admin');
+    Route::get('/',[Index::class,"index"])->middleware('admin');
     Route::group(['prefix'=>'land'],function(){
-        Route::get('/',[Land::class,"index"]);
-        Route::get('/data/{page?}/{limit?}',[Land::class,"data"]);
-        Route::get('add',[AddLand::class,'index']);
-        Route::post('add/submit',[AddLand::class,'submit']);
-        Route::get('edit/{id}',[EditLand::class,'index']);
-        Route::put('edit/submit',[EditLand::class,'submit']);
-        Route::delete('del/{id}',[DelLand::class,'index']);
+        Route::get('/',[Land::class,"index"])->middleware('admin');
+        Route::get('/data/{page?}/{limit?}',[Land::class,"data"])->middleware('admin');
+        Route::get('add',[AddLand::class,'index'])->middleware('admin');
+        Route::post('add/submit',[AddLand::class,'submit'])->middleware('admin');
+        Route::get('edit/{id}',[EditLand::class,'index'])->middleware('admin');
+        Route::put('edit/submit',[EditLand::class,'submit'])->middleware('admin');
+        Route::delete('del/{id}',[DelLand::class,'index'])->middleware('admin');
     });
     Route::group(['prefix'=>'user'],function(){
-        Route::get('/user',[User::class,"index"]);
-        Route::post('/user/edit/submit',[EditUser::class,"submit"]);
-        Route::get('/user/edit/{id}',[EditUser::class,"index"]);
-        Route::delete('/user/del/{id}',[DelUser::class,"index"]);
-        Route::get('/user/data/{page?}/{limit?}',[User::class,"data"]);
-        Route::get('/buy_log',[BuyLog::class,"index"]);
-        Route::get('/buy_log/{page?}/{limit?}',[BuyLog::class,"data"]);
-        Route::get('/exchange_log',[ExchangeLog::class,"index"]);
-        Route::get('/exchange_log/{page?}/{limit?}',[ExchangeLog::class,"data"]);
-        Route::get('/user/add',[AddUser::class,"index"]);
-        Route::post('/user/add/submit',[AddUser::class,"submit"]);
+        Route::get('/user',[User::class,"index"])->middleware('admin');
+        Route::post('/user/edit/submit',[EditUser::class,"submit"])->middleware('admin');
+        Route::get('/user/edit/{id}',[EditUser::class,"index"])->middleware('admin');
+        Route::delete('/user/del/{id}',[DelUser::class,"index"])->middleware('admin');
+        Route::get('/user/data/{page?}/{limit?}',[User::class,"data"])->middleware('admin');
+        Route::get('/buy_log',[BuyLog::class,"index"])->middleware('admin');
+        Route::get('/buy_log/{page?}/{limit?}',[BuyLog::class,"data"])->middleware('admin');
+        Route::get('/exchange_log',[ExchangeLog::class,"index"])->middleware('admin');
+        Route::get('/exchange_log/{page?}/{limit?}',[ExchangeLog::class,"data"])->middleware('admin');
+        Route::get('/user/add',[AddUser::class,"index"])->middleware('admin');
+        Route::post('/user/add/submit',[AddUser::class,"submit"])->middleware('admin');
     });
     Route::group(['prefix'=>'vegetable'],function(){
-        Route::get('/',[Vegetable::class,"index"]);
-        Route::get('/data/{page?}/{limit?}',[Vegetable::class,"data"]);
-        Route::post('/',[VegetableAdd::class,"submit"]);
-        Route::delete('/{id}',[DelVegetable::class,"index"]);
-        Route::get('/edit/{id}',[EditVegetable::class,"index"]);
-        Route::post('/edit',[EditVegetable::class,"submit"]);
-        Route::get('/add/',[VegetableAdd::class,"index"]);
-        Route::post('/add/upload',[VegetableAdd::class,"upload"]);
+        Route::get('/',[Vegetable::class,"index"])->middleware('admin');
+        Route::get('/data/{page?}/{limit?}',[Vegetable::class,"data"])->middleware('admin');
+        Route::post('/',[VegetableAdd::class,"submit"])->middleware('admin');
+        Route::delete('/{id}',[DelVegetable::class,"index"])->middleware('admin');
+        Route::get('/edit/{id}',[EditVegetable::class,"index"])->middleware('admin');
+        Route::post('/edit',[EditVegetable::class,"submit"])->middleware('admin');
+        Route::get('/add/',[VegetableAdd::class,"index"])->middleware('admin');
+        Route::post('/add/upload',[VegetableAdd::class,"upload"])->middleware('admin');
     });
     Route::group(['prefix'=>'system'],function(){
-        Route::get('/notice',[Notice::class,"index"]);
-        Route::get('/notice/add',[NoticeAdd::class,"index"]);
-        Route::post('/notice/add',[NoticeAdd::class,"submit"]);
-        Route::get('/notice/data/{page?}/{limit?}',[Notice::class,"data"]);
+        Route::get('/notice',[Notice::class,"index"])->middleware('admin');
+        Route::get('/notice/add',[NoticeAdd::class,"index"])->middleware('admin');
+        Route::post('/notice/add',[NoticeAdd::class,"submit"])->middleware('admin');
+        Route::get('/notice/data/{page?}/{limit?}',[Notice::class,"data"])->middleware('admin');
     });
     Route::group(['prefix'=>'logistics'],function(){
-        Route::get('/order',[Order::class,"index"]);
-        Route::get('/order/data/{page?}/{limit?}',[Order::class,"data"]);
-        Route::get('/distribution',[Distribution::class,"index"]);
-        Route::put('/distribution',[EditDistribution::class,"index"]);
-        Route::get('/distribution/data/{page?}/{limit?}',[Distribution::class,"data"]);
+        Route::get('/order',[Order::class,"index"])->middleware('admin');
+        Route::get('/order/data/{page?}/{limit?}',[Order::class,"data"])->middleware('admin');
+        Route::get('/distribution',[Distribution::class,"index"])->middleware('admin');
+        Route::put('/distribution',[EditDistribution::class,"index"])->middleware('admin');
+        Route::get('/distribution/data/{page?}/{limit?}',[Distribution::class,"data"])->middleware('admin');
     });
 
 
