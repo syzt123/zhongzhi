@@ -21,6 +21,9 @@ class MemberVegetable extends Model
         // 用户每次查看自己的蔬菜时看看是否坏掉
         static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
+            if ($vegetableType == null){
+                return;
+            }
             $termOfValidity = array_sum([
                 $vegetableType->grow_2,
                 $vegetableType->grow_3,

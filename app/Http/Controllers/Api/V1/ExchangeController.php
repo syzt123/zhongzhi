@@ -71,14 +71,14 @@ class ExchangeController extends Controller
         if (!$user) {
             return $this->error('未找到用户信息');
         } elseif ($memberVegetable = MemberVegetable::where('m_id', '=', $user['id'])
-            ->where('vegetable_type_id', '=', $request->vegetable_id)
+            ->where('v_type', '=', $request->vegetable_id)
             ->where('vegetable_grow', '=', 5)
             ->where('v_status', '=', 2)
             ->first()) {
             return $this->error('您种植了该蔬菜并已成熟无需兑换 ');
 
         } else {
-            $memberVegetables = MemberVegetable::where('vegetable_type_id', '=', $request->vegetable_id)
+            $memberVegetables = MemberVegetable::where('v_type', '=', $request->vegetable_id)
                 ->where('vegetable_grow', '=', 5)
                 ->where('v_status', '=', 2)
                 ->first();
@@ -86,7 +86,7 @@ class ExchangeController extends Controller
                 return $this->error('该蔬菜尚未成熟，无法兑换！');
             } else {
                 $memberInfo = MemberInfo::find($user['id']);
-                $vegetablesTotal = MemberVegetable::where('vegetable_type_id', '=', $request->vegetable_id)
+                $vegetablesTotal = MemberVegetable::where('v_type', '=', $request->vegetable_id)
                     ->where('vegetable_grow', '=', 5)
                     ->where('v_status', '=', 2)
                     ->sum('yield');
