@@ -83,7 +83,14 @@ class UserController extends Controller
      *     description="用户登陆(2022/03/22日完)",
      *     @OA\Parameter(name="tel", in="query", @OA\Schema(type="string")),
      *     @OA\Parameter(name="password", in="query", @OA\Schema(type="string"),description="密码 默认为：12345678" ),
-     *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
+     *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  ",
+     *       @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                @OA\Property(property="token", type="string", description="token值，根据该值来获取数据。需要放在header头中"),
+     *             ),
+     *          ),
+     *       ),
      *    )
      */
     function loginUser(Request $request): array
@@ -131,8 +138,22 @@ class UserController extends Controller
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
      *     @OA\Parameter (name="page", in="query", @OA\Schema (type="int"),description="第几页 默认第一页"),
      *     @OA\Parameter (name="page_size", in="query", @OA\Schema (type="int"),description="每页多少数据 默认10"),
-     *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
-     *    )
+     *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  ",
+     *       @OA\MediaType(
+     *        mediaType="application/json",
+     *             @OA\Schema(
+     *                @OA\Property(property="id", type="int", description="自增id"),
+     *                @OA\Property(property="tel", type="string", description="用户手机号"),
+     *                @OA\Property(property="nickname", type="string", description="用户昵称"),
+     *                @OA\Property(property="gold", type="int", description="用户金币数"),
+     *                @OA\Property(property="user_head_img", type="string", description="用户头像url"),
+     *                @OA\Property(property="v_address", type="string", description="用户收货地址"),
+     *                @OA\Property(property="vegetable_num", type="string", description="用户蔬菜总数"),
+     *             ),
+     *          ),
+     *       ),
+     *    ),
+     * )
      * @param Request $request
      * @return array
      */
@@ -209,7 +230,7 @@ class UserController extends Controller
             $data["user_address"] = trim($request->user_address);
         }
         if (isset($request->nickname) && trim($request->nickname) != '') {
-            // 更新用户收货地址
+            // 更新用户昵称
             $data["nickname"] = trim($request->nickname);
         }
         try {
