@@ -30,12 +30,18 @@ class HeadImg extends Model
     static function updateHeadImg($uId, $data = []): int
     {
         $model = self::with([])->where("m_id", '=', $uId);
-        if (count($data)) {
+        if ($model->first() == null && count($data)) {
+            // 新增
+            $time = time();
             $data["m_id"] = $uId;
-            $rs = $model->updateOrCreate($data)->toArray();
-            if (isset($rs["id"])) {
-                return $rs["id"];
-            }
+            $data["create_time"] = $time;
+            $data["update_time"] = $time;
+
+            return $model->insertGetId($data);
+        }
+        if (count($data)) {
+            return $model->update($data);
+
         }
         return 0;
     }
