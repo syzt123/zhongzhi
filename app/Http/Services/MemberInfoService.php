@@ -42,6 +42,8 @@ class MemberInfoService extends BaseService
         // 更新头像
         if (isset($data["head_img"]) && trim($data["head_img"]) != '') {
             HeadImg::updateHeadImg($uId, ["head" => $data["head_img"]]);
+            // 更新缓存
+
         }
         // 更新发货地址
         if (isset($data["user_address"]) && trim($data["user_address"]) != '') {

@@ -108,4 +108,39 @@ class VegetableKinds extends Model
         }
         return $vegetables;
     }
+
+    function vegetable_list()
+    {
+        return $this->hasMany(MemberVegetable::class, 'vegetable_type_id', 'id');
+    }
+
+    // 根据用户id分类下的所有蔬菜 分页信息
+    static function getVegetableTypeList($data = []): array
+    {
+        $page = 1;
+        $pageSize = 10;
+        $sort = 'desc';// desc asc
+        if (isset($data["page"]) && (int)$data["page"] > 0) {
+            $page = $data["page"];
+            unset($data["page"]);
+        }
+        if (isset($data["page_size"])) {
+            $pageSize = $data["page_size"];
+            unset($data["page_size"]);
+        }
+
+        $skipNums = ($page - 1) * $pageSize;
+        $model = self::with([
+            /*"vegetable_list" => function ($q) use ($userId, $sort, $pageSize, $skipNums) {
+                $q->where("member_vegetable.m_id", $userId)
+                    ->skip($skipNums)->limit($pageSize)->orderBy("id", $sort);
+            }*/
+        ]);
+        $vegetableTypes = $model->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
+        if ($vegetableTypes != null) {
+            return $vegetableTypes->toArray();
+        }
+        return [];
+    }
+
 }

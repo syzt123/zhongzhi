@@ -91,12 +91,14 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         // 用户的所有物流订单信息 根据状态过滤
         Route::post('/getDeliveryList', [DeliveryOrderController::class, 'getDeliveryList']);//根据用户id 种子id 订单详细
 
+        //获取用户的兑换蔬菜列表
+        Route::post('/userVegetableClassList', [UserController::class, 'userVegetableClassList']);//获取用户蔬菜分类列表
         //获取用户的蔬菜列表 包括各种阶段蔬菜
         Route::post('/userVegetableList', [UserController::class, 'userVegetableList']);//获取用户的蔬菜列表
         //获取用户的蔬菜详情
-        Route::get('/userDetailVegetable/{id}', [UserController::class, 'userDetailVegetable']);//获取用户的蔬菜详情
+        Route::post('/userDetailVegetable', [UserController::class, 'userDetailVegetable']);//获取用户的蔬菜详情
 
-        //获取用户的兑换蔬菜列表
+       //获取用户的兑换蔬菜列表
         Route::post('/userExchangeLogList', [UserExchangeLogController::class, 'userExchangeLogList']);//获取用户兑换的蔬菜列表
         //获取用户的兑换蔬菜详情
         Route::get('/userDetailExchangeLog/{id}', [UserExchangeLogController::class, 'userDetailExchangeLog']);//获取用户兑换的蔬菜详情

@@ -106,9 +106,18 @@ class MemberVegetable extends Model
     }
 
     // 总数
-    static function getMemberVegetableNumsByUId($uId): int
+    static function getMemberVegetableNumsByUId($uId, $data=[]): int
     {
         $model = self::with([])->where("m_id", $uId);
+        if (isset($data["page"])) {
+            unset($data["page"]);
+        }
+        if (isset($data["page_size"])) {
+            unset($data["page_size"]);
+        }
+        if (count($data)>0){
+            $model = $model->where($data);
+        }
         return $model->count();
     }
 

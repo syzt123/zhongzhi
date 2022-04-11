@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 // 用户蔬菜表
 use App\Models\MemberVegetable;
+use App\Models\VegetableKinds;
 
 class MemberVegetableService extends BaseService
 {
@@ -12,6 +13,29 @@ class MemberVegetableService extends BaseService
         return MemberVegetable::addMemberVegetable($data);
     }
 
+    //获取蔬菜分类列表
+    static function getMemberVegetableClassList($data): array
+    {
+        //$rs = VegetableKinds::getVegetableTypeListByUserId($uid);
+        //获取每个分类下的分页数据
+        //return $rs;
+        $page = 1;
+        $pageSize = 10;
+        if (isset($data["page"]) && (int)$data["page"] > 0) {
+            $page = $data["page"];
+        }
+        if (isset($data["page_size"])) {
+            $pageSize = $data["page_size"];
+        }
+        return self::getPageDataList(VegetableKinds::getVegetableKindsNums($data), $page, $pageSize, VegetableKinds::getVegetableTypeList($data));
+
+    }
+    //获取蔬菜分类详情
+    static function getMemberVegetableClassInfoBuId($id): array
+    {
+        return VegetableKinds::findVegetableKindsInfoById($id);
+
+    }
     //获取蔬菜列表
     static function getMemberVegetableList($uid, $data = []): array
     {
@@ -23,8 +47,7 @@ class MemberVegetableService extends BaseService
         if (isset($data["page_size"])) {
             $pageSize = $data["page_size"];
         }
-        return self::getPageDataList(MemberVegetable::getMemberVegetableNumsByUId($uid), $page, $pageSize, MemberVegetable::getMemberVegetableList($uid, $data));
-
+        return self::getPageDataList(MemberVegetable::getMemberVegetableNumsByUId($uid, $data), $page, $pageSize, MemberVegetable::getMemberVegetableList($uid,$data));
     }
 
     //删除蔬菜信息
