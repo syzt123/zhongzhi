@@ -114,6 +114,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     //蔬菜类型列表
     Route::prefix("vegetable")->group(function () {
         Route::post('/typeLists', [VegetableTypeController::class, 'typeLists']);//蔬菜类型列表
+        Route::post('/lists', [VegetableTypeController::class, 'Lists']);//蔬菜列表
         Route::get('/seed', [PlantController::class, 'seed']);//可种植蔬菜类型列表
         Route::get('/planted', [PlantController::class, 'planted']);//已种植的蔬菜类型列表
     });
