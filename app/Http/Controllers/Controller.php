@@ -68,7 +68,7 @@ class Controller extends BaseController
     public function createTokenRules($string = ''): string
     {
         $key = config("comm_code.redis_prefix.token") . md5($string);
-        $days = 30 * 24 * 60 * 60;
+        $days = 15 * 24 * 60 * 60;
         $rs = Redis::setex($key, $days, $string);
         if ($rs) {
             return md5($string);

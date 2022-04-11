@@ -10,6 +10,7 @@ use App\Http\Services\MemberInfoService;
 use App\Http\Services\MemberVegetableService;
 use App\Http\Services\PaymentOrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Psr\SimpleCache\InvalidArgumentException;
 
 /**
@@ -245,9 +246,9 @@ class UserController extends Controller
                     return $this->backArr('用户不存在或密码错误', config("comm_code.code.fail"), []);
                 }
                 $tmpRsJson = json_encode($tmpRs);
-
                 // 保存更新缓存
-                $this->createTokenRules($tmpRsJson);
+                $days = 15 * 24 * 60 * 60;
+                Redis::setex(config("comm_code.redis_prefix.token") . $request->header("token"), $days, $tmpRsJson);
                 return $this->backArr('更新成功', config("comm_code.code.ok"), []);
             }
         } catch (\Exception $e) {
