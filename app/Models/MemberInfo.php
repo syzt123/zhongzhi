@@ -113,4 +113,18 @@ class MemberInfo extends Model
         }
         return 0;
     }
+
+    // 自增长
+    static function increaseVegetableNums($uId, $nums = 1): int
+    {
+        return self::with([])->where("id", '=', $uId)
+            ->increment('vegetable_num', $nums);
+    }
+
+    // 自减少
+    static function decreaseVegetableNums($uId, $nums = 1): int
+    {
+        return self::with([])->where("id", '=', $uId)
+            ->decrement('vegetable_num', $nums);
+    }
 }

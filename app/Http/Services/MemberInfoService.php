@@ -31,12 +31,14 @@ class MemberInfoService extends BaseService
     {
         return HeadImg::getUserHeadImg($uid);
     }
-    static function getUserInfo($uid){
+
+    static function getUserInfo($uid)
+    {
         return MemberInfo::find($uid);
     }
 
     // 新增或更新用户信息
-    static function updateUserInfo($uId, $data = []):int
+    static function updateUserInfo($uId, $data = []): int
     {
 
         // 更新头像
@@ -54,5 +56,17 @@ class MemberInfoService extends BaseService
             MemberInfo::updateUserInfo($uId, ["nickname" => $data["nickname"]]);
         }
         return 1;
+    }
+
+    // 自增长
+    static function increaseVegetableNums($uId, $nums = 1): int
+    {
+        return MemberInfo::increaseVegetableNums($uId, $nums);
+    }
+
+    // 自减少
+    static function decreaseVegetableNums($uId, $nums = 1): int
+    {
+        return MemberInfo::decreaseVegetableNums($uId, $nums);
     }
 }

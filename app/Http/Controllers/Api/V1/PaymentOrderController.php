@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Ys\YsController;
 use \App\Http\Controllers\Controller;
 use App\Http\Services\BuyLogService;
 use App\Http\Services\DeliveryOrderService;
+use App\Http\Services\MemberInfoService;
 use App\Http\Services\MemberVegetableService;
 use App\Http\Services\NoticeService;
 use App\Http\Services\PaymentOrderService;
@@ -152,6 +153,8 @@ class PaymentOrderController extends Controller
             // 购买记录
             $buyBool = BuyLogService::addUserBuyLog($buyData);
 
+            // 用户蔬菜自增
+            MemberInfoService::increaseVegetableNums($userInfo["id"]);
             // 调用支付
             // 设置订单号
             $request->out_trade_no = $createOrderId;

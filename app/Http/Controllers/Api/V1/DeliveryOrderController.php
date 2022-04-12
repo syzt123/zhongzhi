@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Ys\YsController;
 use \App\Http\Controllers\Controller;
 use App\Http\Services\BuyLogService;
 use App\Http\Services\DeliveryOrderService;
+use App\Http\Services\MemberInfoService;
 use App\Http\Services\MemberVegetableService;
 use App\Http\Services\NoticeService;
 use App\Http\Services\PaymentOrderService;
@@ -137,6 +138,7 @@ class DeliveryOrderController extends Controller
             // 2.更新用户蔬菜状态为4 已收货到家
             DeliveryOrderService::updateDeliveryOrder($info["id"], ["status" => 3]);//配送完成
             $mVBool = MemberVegetableService::updateMemberVegetable($info["m_v_id"], ["v_status" => 4]);// 表示该蔬菜已被用户收货
+            MemberInfoService::decreaseVegetableNums($userInfo["id"]);
             DB::commit();
             if ($mVBool) {
                 return $this->backArr('已完成该订单，感谢您的使用！', config("comm_code.code.ok"), []);
@@ -234,11 +236,11 @@ class DeliveryOrderController extends Controller
      *                @OA\Property(property="list", type="array", description="数据列表",
      *                  @OA\Items(
      *                        @OA\Property(property="id", type="integer", description="物流自增Id"),
-             *                @OA\Property(property="order_id", type="string", description="物流订单号"),
-             *                @OA\Property(property="des_address", type="string", description="用户物流收货地址"),
-             *                @OA\Property(property="create_time", type="string", description="创建时间"),
-             *                @OA\Property(property="update_time", type="string", description="更新时间"),
-             *                @OA\Property(property="member_vegetable", type="array", description="用户蔬菜信息",
+     *                @OA\Property(property="order_id", type="string", description="物流订单号"),
+     *                @OA\Property(property="des_address", type="string", description="用户物流收货地址"),
+     *                @OA\Property(property="create_time", type="string", description="创建时间"),
+     *                @OA\Property(property="update_time", type="string", description="更新时间"),
+     *                @OA\Property(property="member_vegetable", type="array", description="用户蔬菜信息",
      *                   @OA\Items(
      *                      @OA\Property(property="id", type="int", description="主键id"),
      *                      @OA\Property(property="v_monitor", type="string", description="用户蔬菜在土地的直播地址"),
