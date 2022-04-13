@@ -111,7 +111,7 @@ class PaymentOrderController extends Controller
                 "update_time" => $time,
             ];
             $orderId = PaymentOrderService::addPaymentOrder($data);
-            // 新增领取的种子表 todo member_vegetable
+            // 新增领取的种子表 todo member_vegetable 多个种子
             $vegetableData = [
                 "m_id" => $userInfo["id"],
                 "land" => $request->land_id,
@@ -123,6 +123,7 @@ class PaymentOrderController extends Controller
                 "v_status" => $request->v_status,
                 "create_time" => $time,
                 "payment_order_id" => $orderId,
+                "v_name" => $vegetableTypeData["v_type"],//名字
             ];
             MemberVegetableService::addMemberVegetable($vegetableData);
 

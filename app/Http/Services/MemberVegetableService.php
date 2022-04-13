@@ -30,12 +30,14 @@ class MemberVegetableService extends BaseService
         return self::getPageDataList(VegetableKinds::getVegetableKindsNums($data), $page, $pageSize, VegetableKinds::getVegetableTypeList($data));
 
     }
+
     //获取蔬菜分类详情
     static function getMemberVegetableClassInfoBuId($id): array
     {
         return VegetableKinds::findVegetableKindsInfoById($id);
 
     }
+
     //获取蔬菜列表
     static function getMemberVegetableList($uid, $data = []): array
     {
@@ -47,7 +49,7 @@ class MemberVegetableService extends BaseService
         if (isset($data["page_size"])) {
             $pageSize = $data["page_size"];
         }
-        return self::getPageDataList(MemberVegetable::getMemberVegetableNumsByUId($uid, $data), $page, $pageSize, MemberVegetable::getMemberVegetableList($uid,$data));
+        return self::getPageDataList(MemberVegetable::getMemberVegetableNumsByUId($uid, $data), $page, $pageSize, MemberVegetable::getMemberVegetableList($uid, $data));
     }
 
     //删除蔬菜信息
@@ -72,6 +74,19 @@ class MemberVegetableService extends BaseService
     static function updateMemberVegetable($id, $data = []): int
     {
         return MemberVegetable::updateMemberVegetableById($id, $data);
+
+    }
+
+    /**
+     * 更新数量
+     * @param $id
+     * @param $uId
+     * @param int $nums 减少的数 默认减一
+     * @return int
+     */
+    static function updateNumsMemberVegetable($id, $uId, $nums = 1): int
+    {
+        return MemberVegetable::updateNumsMemberVegetableById($id, $uId, $nums);
 
     }
 }
