@@ -10,6 +10,14 @@ class ExchangeLog extends Model
 {
     protected $table = 'exchange_log';
     protected $dateFormat = 'U';
+    protected $fillable = [
+        'm_id',
+        'm_v_id',
+        'f_price',
+        'v_num',
+        'n_price',
+        'create_time'
+    ];
 
     const CREATED_AT = 'create_time';
     const UPDATED_AT = null;

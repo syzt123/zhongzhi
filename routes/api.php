@@ -131,6 +131,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     Route::prefix("exchange")->group(function () {
         Route::post('vegetable', [ExchangeController::class, 'vegetable']);//兑换蔬菜
         Route::post('lists', [ExchangeController::class, 'lists']);//可兑换蔬菜列表
+        Route::post('coin', [ExchangeController::class, 'vegetableToCoin']);//可兑换蔬菜列表
     });
 });
 

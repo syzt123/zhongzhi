@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\DeliveryOrderService;
+use App\Models\ExchangeLog;
 use App\Models\MemberInfo;
 use App\Models\MemberVegetable;
 use App\Models\VegetableType;
@@ -172,5 +173,87 @@ class ExchangeController extends Controller
             throw new \Exception($exception->getMessage());
         }
         return false;
+    }
+    /**
+     * @OA\Post(
+     *     path="/api/v1/exchange/coin",
+     *     tags={"蔬菜兑换模块",},
+     *     summary="蔬菜兑换蔬菜币",
+     *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="vegetable_id",
+     *                     type="int"
+     *                 ),
+     *                 example={"vegetable_id": 1}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="操作成功",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(type="boolean")
+     *             },
+     *             @OA\Examples(example="success", value={"data": "","message":"兑换成功","code":1}, summary="操作成功"),
+     *         )
+     *     ),
+     *    @OA\Response(
+     *         response=400,
+     *         description="发生错误",
+     *         @OA\JsonContent(
+     *             oneOf={
+     *                 @OA\Schema(type="boolean")
+     *             },
+     *             @OA\Examples(example="error1", value={"data": "","message":"未找到您的蔬菜或您的蔬菜已过期！","code":1}, summary="找不到"),
+     *             @OA\Examples(example="error3", value={"data": "","message":"该蔬菜总量不足！","code":0}, summary="量不足"),
+     *             @OA\Examples(example="error4", value={"data": "","message":"兑换失败！","code":0}, summary="失败"),
+     *             @OA\Examples(example="error6", value={"data": "","message":"未找到用户信息！","code":0}, summary="无用户"),
+     *         )
+     *     )
+     * )
+     */
+    public function vegetableToCoin(Request $request)
+    {
+        $user = $this->getUserInfo($request->header('token'));
+        if (!$user) {
+            return $this->error('未找到用户信息');
+        } else {
+            $user = MemberInfo::find($user['id']);
+            $memberVegetable = MemberVegetable::where('vegetable_type_id', '=', $request->vegetable_id)
+                ->where('vegetable_grow','=',0)
+                ->where('v_status','=',2)
+                ->first();
+            if (!$memberVegetable) {
+                return $this->error('未找到您的蔬菜或您的蔬菜已过期！');
+            } else {
+                if ($memberVegetable->yield <= 0) {
+                    return $this->error('该蔬菜剩余量不足！');
+                }
+                $log = ExchangeLog::create([
+                    'm_id' => $user['id'],
+                    'm_v_id' => $request->vegetable_id,
+                    'f_price' => $memberVegetable->f_price,
+                    'v_num' => $memberVegetable->yield,
+                    'n_price' => $memberVegetable->f_price,
+                    'create_time' => time()
+                ]);
+                if ($log) {
+                    $memberVegetable->yield = 0;
+                    $memberVegetable->save();
+                    $user->gold += $memberVegetable->f_price;
+                }
+                $res = $user->save();
+                if ($res) {
+                    return $this->success($res, '兑换成功！');
+                } else {
+                    return $this->error('兑换失败！');
+                }
+            }
+        }
     }
 }
