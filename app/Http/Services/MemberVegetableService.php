@@ -89,4 +89,10 @@ class MemberVegetableService extends BaseService
         return MemberVegetable::updateNumsMemberVegetableById($id, $uId, $nums);
 
     }
+
+    //更新当种子存在则更新数量
+    static function addMemberVegetableNums($data=[], $nums=0): int
+    {
+        return MemberVegetable::addMemberVegetableNums($data, $nums);
+    }
 }

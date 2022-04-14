@@ -162,9 +162,7 @@ class DeliveryOrderController extends Controller
         try {
             DB::beginTransaction();
             // 1.订单需要为2时才能进行完成
-            // 2.更新用户蔬菜状态为4 已收货到家
-            DeliveryOrderService::updateDeliveryOrder($info["id"], ["status" => 3]);//配送完成
-            $mVBool = MemberVegetableService::updateMemberVegetable($info["m_v_id"], ["v_status" => 4]);// 表示该蔬菜已被用户收货
+            $mVBool = DeliveryOrderService::updateDeliveryOrder($info["id"], ["status" => 3]);//配送完成
             DB::commit();
             if ($mVBool) {
                 return $this->backArr('已完成该订单，感谢您的使用！', config("comm_code.code.ok"), []);
@@ -203,7 +201,7 @@ class DeliveryOrderController extends Controller
      *                      @OA\Property(property="v_monitor", type="string", description="用户蔬菜在土地的直播地址"),
      *                      @OA\Property(property="name", type="string", description="蔬菜名"),
      *                      @OA\Property(property="planting_time", type="string", description="种植时间"),
-     *                      @OA\Property(property="v_status", type="string", description="蔬菜状态 1：生长中 2：仓库中 3：已坏掉 4:已完成送货"),
+     *                      @OA\Property(property="v_status", type="string", description="蔬菜状态 1：生长中 2：仓库中 3：已坏掉"),
      *                   ),
      *                ),
      *             ),
@@ -272,7 +270,7 @@ class DeliveryOrderController extends Controller
      *                      @OA\Property(property="v_monitor", type="string", description="用户蔬菜在土地的直播地址"),
      *                      @OA\Property(property="name", type="string", description="蔬菜名"),
      *                      @OA\Property(property="planting_time", type="string", description="种植时间"),
-     *                      @OA\Property(property="v_status", type="string", description="蔬菜状态 1：生长中 2：仓库中 3：已坏掉 4:已完成送货"),
+     *                      @OA\Property(property="v_status", type="string", description="蔬菜状态 1：生长中 2：仓库中 3：已坏掉"),
      *                     ),
      *                   ),
      *                 ),

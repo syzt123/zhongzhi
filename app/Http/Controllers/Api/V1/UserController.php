@@ -362,7 +362,7 @@ class UserController extends Controller
      *                 @OA\Property(
      *                     property="status",
      *                     type="int",
-     *                     description="1：生长中 2.仓库中 3已坏掉 4:已完成送货 默认全部数据",
+     *                     description="1：生长中 2.仓库中 3已坏掉 默认全部数据",
      *                 ),
      *                 example={"page_size": 15, "page": 1,"class_id":1,"ststus":1}
      *             )

@@ -42,19 +42,18 @@ class VegetableType extends Model
         $movedFiles = array();
         foreach ($data as $key => $value) {
             if (!in_array($key, $model->getFillable()) && $value && is_numeric(str_replace('img_grow_', '', $key))) {
-                $newFile = str_replace('tmp/','public/vegetable_resources/',$value);
+                $newFile = str_replace('tmp/', 'public/vegetable_resources/', $value);
 
-                if(Storage::move($value, $newFile))
-                {
+                if (Storage::move($value, $newFile)) {
                     $movedFiles[] = $newFile;
                     $resources[] = new VegetableResources([
                         'vegetable_grow' => str_replace('img_grow_', '', $key),
                         'vegetable_resources_type' => 1,
-                        'vegetable_resources' => str_replace('public/','',$newFile)
+                        'vegetable_resources' => str_replace('public/', '', $newFile)
                     ]);
-                }else{
-                    foreach ($movedFiles as $file){
-                        Storage::disk('public')->delete(str_replace('public/','',$file));
+                } else {
+                    foreach ($movedFiles as $file) {
+                        Storage::disk('public')->delete(str_replace('public/', '', $file));
                     }
                     DB::rollBack();
                     return '请重新选择各生长阶段图片';
@@ -108,7 +107,7 @@ class VegetableType extends Model
     // 查询
     static function findVegetableTypeInfoById($id, $data = []): array
     {
-        $model = self::with([])->where("id", $id);
+        $model = self::with(['vegetableKinds'])->where("id", $id);
         if (count($data)) {
             $model = $model->where($data);
         }
@@ -160,5 +159,10 @@ class VegetableType extends Model
     public function memberVegetables()
     {
         return $this->hasMany(MemberVegetable::class,);
+    }
+
+    public function vegetableKinds()
+    {
+        return $this->hasOne(VegetableKinds::class, 'id', 'v_kinds_id');
     }
 }

@@ -45,6 +45,7 @@ class MemberVegetable extends Model
     {
         return $this->belongsTo(VegetableType::class);
     }
+
     // 蔬菜的主人
     public function memberInfo()
     {
@@ -55,7 +56,7 @@ class MemberVegetable extends Model
     // 新增
     static function addMemberVegetable($data): int
     {
-        return self::with([])->insertGetId($data);
+        return self::with([])->insert($data);
     }
 
     function vegetableLand(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -106,7 +107,7 @@ class MemberVegetable extends Model
     }
 
     // 总数
-    static function getMemberVegetableNumsByUId($uId, $data=[]): int
+    static function getMemberVegetableNumsByUId($uId, $data = []): int
     {
         $model = self::with([])->where("m_id", $uId);
         if (isset($data["page"])) {
@@ -115,7 +116,7 @@ class MemberVegetable extends Model
         if (isset($data["page_size"])) {
             unset($data["page_size"]);
         }
-        if (count($data)>0){
+        if (count($data) > 0) {
             $model = $model->where($data);
         }
         return $model->count();
@@ -144,6 +145,28 @@ class MemberVegetable extends Model
         $model = self::with([])->where("id", $id);
         if (count($data)) {
             return $model->update($data);
+        }
+        return 0;
+    }
+
+    // 更新数量
+    static function updateNumsMemberVegetableById($id, $uId, $nums = 1)
+    {
+        $model = self::with([])->where("id", $id)->where("m_id", $uId);
+        return $model->decrement('nums', $nums);
+    }
+
+    // 更新当种子存在则更新数量
+    static function addMemberVegetableNums($data = [],$nums=0): int
+    {
+        $model = self::with([]);
+        if (count($data)) {
+            $rs = $model->where($data)->first();
+            if ($rs!=null){
+                //更新
+               return $model->where($data)->increment("nums", $nums);
+            }
+            return 0;
         }
         return 0;
     }
