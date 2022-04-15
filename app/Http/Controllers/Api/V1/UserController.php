@@ -209,6 +209,8 @@ class UserController extends Controller
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
      *     @OA\Parameter (name="head_img", in="query", @OA\Schema (type="string"),description="用户头像地址 *非必须字段"),
      *     @OA\Parameter (name="user_address", in="query", @OA\Schema (type="string"),description="用户收获地址 *非必须字段"),
+     *     @OA\Parameter (name="v_tel", in="query", @OA\Schema (type="string"),description="用户收获电话 *非必须字段"),
+     *     @OA\Parameter (name="v_name", in="query", @OA\Schema (type="string"),description="用户收获人用户名 *非必须字段"),
      *     @OA\Parameter (name="nickname", in="query", @OA\Schema (type="string"),description="用户昵称 *非必须字段"),
      *     @OA\Response(response=200, description="{code: 200, msg:string, data:[]}"),
      *    )
@@ -234,6 +236,18 @@ class UserController extends Controller
             // 更新用户昵称
             $data["nickname"] = trim($request->nickname);
         }
+        if (isset($request->v_tel) && trim($request->v_tel) != '') {
+            if (!$this->checkPhone($request->v_tel)) {
+                return $this->backArr('手机号格式错误，请重试！', config("comm_code.code.ok"), []);
+            }
+            // 更新用户收货电话
+            $data["v_tel"] = trim($request->v_tel);
+        }
+        if (isset($request->v_name) && trim($request->v_name) != '') {
+            // 更新用户收货人名称
+            $data["v_name"] = trim($request->v_name);
+        }
+
         try {
             $bool = MemberInfoService::updateUserInfo($userInfo["id"], $data);
             if ($bool) {

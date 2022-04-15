@@ -46,6 +46,19 @@ class DeliveryOrderController extends Controller
         }
         $userInfo = $this->getUserInfo($request->header("token"));
 
+        if (!isset($userInfo["v_name"])) {
+            return $this->backArr('收货人名称必须', config("comm_code.code.fail"), []);
+        }
+        if ($userInfo["v_name"] == '') {
+            return $this->backArr('收货人名称必须为空', config("comm_code.code.fail"), []);
+        }
+        if (!isset($userInfo["v_tel"])) {
+            return $this->backArr('收货人电话必须', config("comm_code.code.fail"), []);
+        }
+        if ($userInfo["v_tel"] == '') {
+            return $this->backArr('收货人电话不能为空或格式错误', config("comm_code.code.fail"), []);
+        }
+
         if (!isset($request->m_v_ids)) {//
             return $this->backArr('用户想兑换蔬菜m_v_ids必须', config("comm_code.code.fail"), []);
         }
@@ -102,18 +115,7 @@ class DeliveryOrderController extends Controller
         if ($request->des_address == '') {
             return $this->backArr('收货地址不能为空', config("comm_code.code.fail"), []);
         }
-        if (!isset($request->u_name)) {
-            return $this->backArr('收货人名称必须', config("comm_code.code.fail"), []);
-        }
-        if ($request->u_name == '') {
-            return $this->backArr('收货人名称必须为空', config("comm_code.code.fail"), []);
-        }
-        if (!isset($request->u_tel)) {
-            return $this->backArr('收货人电话必须', config("comm_code.code.fail"), []);
-        }
-        if ($request->u_tel == '' || !$this->checkPhone($request->u_tel)) {
-            return $this->backArr('收货人电话不能为空或格式错误', config("comm_code.code.fail"), []);
-        }
+
         $time = time();
 
         // 新增物流表
@@ -126,8 +128,8 @@ class DeliveryOrderController extends Controller
             "create_time" => $time,
             "update_time" => $time,
             "status" => 1,//默认待配送
-            "u_tel" => $request->u_tel,
-            "u_name" => $request->u_name,
+            "u_tel" => $userInfo["v_tel"],
+            "u_name" => $userInfo["v_name"],
             "des_address" => $request->des_address,
             "total_price" => $totalPrice ?? 0,
         ];
