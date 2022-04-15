@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Services\PaymentOrderService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PayDemoController extends Controller
 {
@@ -52,12 +53,13 @@ class PayDemoController extends Controller
     {
         // $_POST接收的数据为json
         $data = file_get_contents("php://input");// 为字符串
+
         if ($data != false) {
-            file_put_contents("ces.txt", $data . PHP_EOL, FILE_APPEND);
+            /*file_put_contents("ces.txt", $data . PHP_EOL, FILE_APPEND);
 
             file_put_contents("ces.txt", $_POST["notify_type"] . PHP_EOL, FILE_APPEND);
-            file_put_contents("ces.txt", json_encode($_POST) . PHP_EOL, FILE_APPEND);
-
+            file_put_contents("ces.txt", json_encode($_POST) . PHP_EOL, FILE_APPEND);*/
+            Log::info('支付宝支付回调数据', ['data' => $data, "post" => json_encode($_POST)]);
         }
 
         $orderId = $_POST["out_trade_no"];
@@ -125,7 +127,7 @@ class PayDemoController extends Controller
         $data = file_get_contents('php://input');
         // 业务处理
         $bool = self::commHandle();
-        if ($bool){
+        if ($bool) {
             echo json_encode(["code" => 'SUCCESS', "msg" => 'ok']);
             exit();
         }
