@@ -35,6 +35,8 @@ return [
             'root' => storage_path('app'),
         ],
 
+
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -53,6 +55,13 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads/public'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*
@@ -68,6 +77,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('tmp') => storage_path('app/tmp'),
     ],
 
 ];
