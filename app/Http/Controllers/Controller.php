@@ -168,7 +168,22 @@ class Controller extends BaseController
      *     summary="公共上传接口",
      *     description="公共上传接口(2022/03/28日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
-     *     @OA\Parameter(name="files[]", in="query", @OA\Schema(type="file"),description="要上传的文件列表"),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     description="上传的字段为files且必须为数组格式",
+     *                     property="files[]",
+     *                     type="file",
+     *                     format="file",
+     *                 ),
+     *                 required={"files[]"}
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -180,7 +195,13 @@ class Controller extends BaseController
         if ($request->isMethod('post')) {
             $files = $request->allFiles();
             if (!isset($files["files"])) {
-                return ['code' => -1, 'msg' => 'files字段必须', 'data' => []];
+                return ['code' => -1, 'msg' => 'files[]字段必须', 'data' => []];
+            }
+            if (!is_array($files["files"])) {
+                return ['code' => -1, 'msg' => 'files字段必须为数组', 'data' => []];
+            }
+            if (count($files["files"])>9) {
+                return ['code' => -1, 'msg' => '最多只能上传9张图片/文件', 'data' => []];
             }
             if (is_array($files["files"])) {
                 $imgs = [];
