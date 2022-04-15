@@ -39,4 +39,5 @@ class HorizonServiceProvider //extends HorizonApplicationServiceProvider
             ]);
         });
     }
+
 }
