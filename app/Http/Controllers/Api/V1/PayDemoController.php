@@ -125,6 +125,10 @@ class PayDemoController extends Controller
         // 接收微信推送的数据
         // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_5.shtml
         $data = file_get_contents('php://input');
+        if ($data!=false){
+            Log::info('微信支付回调数据', ['data' => $data, "post" => json_encode($_POST)]);
+
+        }
         // 业务处理
         $bool = self::commHandle();
         if ($bool) {
