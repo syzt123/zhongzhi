@@ -213,7 +213,7 @@ class PaymentOrderController extends Controller
             $payInstance = $payInstance->initInstance($payMethod);
             $payRs = $payInstance->handlePay($request);
             if ($payRs["code"] == -1) {
-                return $this->backArr($payRs["message"], config("comm_code.code.ok"), ["url" => []]);
+                return $this->backArr($payRs["message"], config("comm_code.code.fail"), ["url" => []]);
             }
 
             DB::commit();
