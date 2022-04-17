@@ -42,6 +42,17 @@ class PaymentOrderController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="url", type="string", description="生成的付款地址 直接浏览器打开地址"),
      *            ),
+     *             @OA\Examples(example="success1", value={"url": "https://openapi.alipay.com/gateway.do?format=json&charset=utf-8&sign_type=RSA2&version=1.0&method=alipay.trade.wap.pay&return_url=https%3A%2F%2Fpay.zjzc88.com%2Fadmin&notify_url=https%3A%2F%2Fpay.zjzc88.com%2Fapi%2Falipay_notify&app_id=2017022805954738&biz_content=%7B%22out_trade_no%22%3A%22202204172359223679069331%22%2C%22product_code%22%3A%22QUICK_WAP_WAY%22%2C%22total_amount%22%3A%220.01%22%2C%22subject%22%3A%22%5Cu6d4b%5Cu8bd5%5Cu83b2%5Cu82b1%5Cu767d%2A1_%5Cu79cd%5Cu5b50%22%2C%22goods_type%22%3A1%7D&timestamp=2022-04-17+23%3A59%3A22&sign=LvGUp7b6n%2BMh%2F0xrj1rtEOVgpRF%2BJ%2FTkN%2F66j3VuxARL1xS%2F8JWv4xKhz1S%2FACu5tiZSgBowTGc2jiRgj4C3Q3Qwjr9v37SiiQUpxZ2y2XdTY1yH26mPP0USdBS0t1%2BfXEgEGcjFPZ94u0yRDlJRWfpTkmYz7ojtAq93HrILEebpGCNflxHj7NFoAfiKccPWPLkdAGr1ZprSseSQwUuL6jMzGTUhXe00KK2PdFB5iyomqinja5BT0cz5zm4Ug%2FuPu02djiiUxGWIIAusjmLpoVFRwuO3jFZyG%2B4JRThO7UH26CPbINFVXes55As89FMqIuuHclxVmCKGHxh8k5SafA%3D%3D","message":"打开连接进行支付即可","code":200}, summary="支付宝支付成功"),
+     *             @OA\Examples(example="success2", value={"url": "https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx2016121516420242444321ca0631331346&package=1405458241","message":"打开连接进行支付即可","code":200}, summary="h5微信支付成功"),
+     *             @OA\Examples(example="success3", value={"url": "见message内容 WeixinJSBridge 调用支付 参考地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6","message":{
+    "appId": "wx06c743308613d1ce",
+    "timeStamp": "1650209649",
+    "nonceStr": "21841ae2adfaf8c60e18b9b3f896d34d",
+    "package": "prepay_id=wx17233409403226802fbcd3c321d01c0000",
+    "signType": "MD5",
+    "paySign": "AAF5FAA575669EF9E4F7894235D3C329"
+    },"code":200}, summary="js微信支付成功"),
+     *             @OA\Examples(example="success4", value={"url": "weixin://wxpay/bizpayurl?pr=jGbiXY0zz","message":"生成二维码进行支付","code":200}, summary="native微信支付成功"),
      *          ),
      *      ),
      *    )
@@ -208,7 +219,11 @@ class PaymentOrderController extends Controller
             DB::commit();
 
             if ($buyBool) {
-                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $payRs["data"]["url"]]);
+                $url = $payRs["data"]["url"];
+                if ($request->pay_type === 'js_wechat') {
+                    $url = json_decode($url);
+                }
+                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $url]);
             }
         } catch (\Exception $exception) {
             DB::rollBack();
