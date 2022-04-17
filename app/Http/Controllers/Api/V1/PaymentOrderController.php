@@ -31,7 +31,7 @@ class PaymentOrderController extends Controller
      *     description="用户领取种子新增订单(2022/04/14已完成 支持多种蔬菜种子领取)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="v_ids", in="query", @OA\Schema(type="string"),description="蔬菜主键ids 如白菜",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
-     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 wechat:微信支付 默认支付宝"),
+     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 h5_wechat:微信h5支付支付 js_wechat:（微信公众号支付 需要获取oendId） native_wechat：（Native支付是指商户系统按微信支付协议生成支付二维码，用户再用微信“扫一扫”完成支付的模式。该模式适用于PC网站、实体店单品或订单、媒体广告支付等场景）"),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -75,7 +75,7 @@ class PaymentOrderController extends Controller
         if (!isset($request->pay_type)) {
             return $this->backArr('请选择支付方式', config("comm_code.code.fail"), []);
         }
-        if (!in_array($request->pay_type, ["ali", "wechat"])) {
+        if (!$this->isHasInPayType($request->pay_type)) {
             return $this->backArr('支付方式不存在', config("comm_code.code.fail"), []);
         }
 
@@ -92,7 +92,7 @@ class PaymentOrderController extends Controller
             // 新增订单
             $data = [
                 "m_id" => $userInfo["id"],
-                "r_id" => 1,//1 微信支付 2 支付宝 3其他
+                "r_id" => 1,//1 微信支付 2 支付宝 3其他 废弃
                 "f_price" => $totalPrice,//兑换的金额
                 "v_ids" => $request->v_ids ?? '[]',
                 "status" => 1,
@@ -101,6 +101,7 @@ class PaymentOrderController extends Controller
                 "pay_price" => 0,// 实际支付的价格
                 "create_time" => $time,
                 "update_time" => $time,
+                "pay_type" => $request->pay_type,
             ];
             $orderId = PaymentOrderService::addPaymentOrder($data);
             // 新增领取的种子表 member_vegetable 多个种子
@@ -188,6 +189,7 @@ class PaymentOrderController extends Controller
 
             $payInstance = new ChargeContent();
             $payMethod = $request->pay_type ?? 'ali';
+
             $payInstance = $payInstance->initInstance($payMethod);
             $payUrl = $payInstance->handlePay($request);
 
@@ -207,4 +209,5 @@ class PaymentOrderController extends Controller
     {
 
     }
+
 }

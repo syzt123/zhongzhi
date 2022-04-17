@@ -129,13 +129,15 @@ class PayDemoController extends Controller
             Log::info('微信支付回调数据', ['data' => $data, "post" => json_encode($_POST)]);
 
         }
+        Log::info("回调处理成功：",["xixi"=>"lala"]);
+
         // 业务处理
-        $bool = self::commHandle();
-        if ($bool) {
+        // $bool = self::commHandle();
+        /*if ($bool) {
             echo json_encode(["code" => 'SUCCESS', "msg" => 'ok']);
             exit();
-        }
-        echo json_encode(["code" => 'FAIL', "msg" => 'ok']);
+        }*/
+        echo json_encode(["code" => 'SUCCESS', "msg" => 'ok']);
         exit();
     }
 }

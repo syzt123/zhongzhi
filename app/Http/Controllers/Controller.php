@@ -224,4 +224,18 @@ class Controller extends BaseController
     {
         return date('YmdHis', time()) . substr(microtime(), 2, 6) . sprintf('%04d', rand(0, 9999));
     }
+
+    // 获取支付类型列表
+    function getPayTypeList(): array
+    {
+        return [
+            "ali", "h5_wechat", "js_wechat", "native_wechat"
+        ];
+    }
+
+    // 判断支付类型是否存在
+    function isHasInPayType(string $payType): bool
+    {
+        return in_array($payType, self::getPayTypeList());
+    }
 }
