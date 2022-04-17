@@ -17,12 +17,12 @@ class Controller extends BaseController
 
     public function success($data = "", $message = 'ok', $code = 1)
     {
-        return response()->json(compact('data', 'message', 'code'),200);
+        return response()->json(compact('data', 'message', 'code'), 200);
     }
 
     public function error($message = 'error', $data = "", $code = 0)
     {
-        return response()->json(compact('data', 'message', 'code'),400);
+        return response()->json(compact('data', 'message', 'code'), 400);
     }
 
     //返回json格式
@@ -200,7 +200,7 @@ class Controller extends BaseController
             if (!is_array($files["files"])) {
                 return ['code' => -1, 'msg' => 'files字段必须为数组', 'data' => []];
             }
-            if (count($files["files"])>9) {
+            if (count($files["files"]) > 9) {
                 return ['code' => -1, 'msg' => '最多只能上传9张图片/文件', 'data' => []];
             }
             if (is_array($files["files"])) {
@@ -237,5 +237,18 @@ class Controller extends BaseController
     function isHasInPayType(string $payType): bool
     {
         return in_array($payType, self::getPayTypeList());
+    }
+
+    // xml转数组
+    function xmlToArr($xml = ''): array
+    {
+        $values = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $values;
+    }
+
+    // 数组转xml
+    function arrToXml($arr = []): string
+    {
+
     }
 }

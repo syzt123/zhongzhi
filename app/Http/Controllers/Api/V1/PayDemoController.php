@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class PayDemoController extends Controller
 {
-    //公共处理
+    //公共处理 未用
     static function commHandle(): int
     {
         $orderId = $_POST["out_trade_no"];
@@ -55,31 +55,28 @@ class PayDemoController extends Controller
         $data = file_get_contents("php://input");// 为字符串
 
         if ($data != false) {
-            /*file_put_contents("ces.txt", $data . PHP_EOL, FILE_APPEND);
-
-            file_put_contents("ces.txt", $_POST["notify_type"] . PHP_EOL, FILE_APPEND);
-            file_put_contents("ces.txt", json_encode($_POST) . PHP_EOL, FILE_APPEND);*/
             Log::info('支付宝支付回调数据', ['data' => $data, "post" => json_encode($_POST)]);
-        }
-
-        $orderId = $_POST["out_trade_no"];
-        $aliOrderId = $_POST["trade_no"];
-        $totalMoney = (float)$_POST["total_amount"];
-        // 判断是否为当前订单
-        if (isset($_POST["trade_status"]) && $_POST["trade_status"] === 'TRADE_SUCCESS') {
-            //业务处理 修改订单为已完成
-            $orderInfo = PaymentOrderService::getOrderInfoByOrderId($orderId, []);
-            if (isset($orderInfo["status"]) && $orderInfo["status"] != config("comm_code.pay_order.pay_ok")) {
-                $bool = PaymentOrderService::updateOrderStatusInfoByOrderId($orderId, [
-                    "status" => config("comm_code.pay_order.pay_ok"),
-                    "wechat_no" => $aliOrderId,
-                    "pay_price" => $totalMoney,
-                ]);
-                if ($bool) {
-                    echo "success";//echo "fail";
+            $orderId = $_POST["out_trade_no"];
+            $aliOrderId = $_POST["trade_no"];
+            $totalMoney = (float)$_POST["total_amount"];
+            // 判断是否为当前订单
+            if (isset($_POST["trade_status"]) && $_POST["trade_status"] === 'TRADE_SUCCESS') {
+                //业务处理 修改订单为已完成
+                $orderInfo = PaymentOrderService::getOrderInfoByOrderId($orderId, []);
+                if (isset($orderInfo["status"]) && $orderInfo["status"] != config("comm_code.pay_order.pay_ok")) {
+                    $bool = PaymentOrderService::updateOrderStatusInfoByOrderId($orderId, [
+                        "status" => config("comm_code.pay_order.pay_ok"),
+                        "third_order_no" => $aliOrderId,
+                        "pay_price" => $totalMoney,
+                    ]);
+                    if ($bool) {
+                        echo "success";//echo "fail";
+                    }
                 }
             }
         }
+
+
         // 回复的内容
         echo "fail";//echo "success";
     }
@@ -125,19 +122,32 @@ class PayDemoController extends Controller
         // 接收微信推送的数据
         // https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_1_5.shtml
         $data = file_get_contents('php://input');
-        if ($data!=false){
-            Log::info('微信支付回调数据', ['data' => $data, "post" => json_encode($_POST)]);
 
+        if ($data != false) {
+            $wxArr = $this->xmlToArr($data);
+            Log::info('微信支付回调数据', ['data' => $data, "post" => json_encode($wxArr)]);
+            if (count($wxArr) > 0 && $wxArr["out_trade_no"] != '') {
+                //业务处理 修改订单为已完成
+                $orderInfo = PaymentOrderService::getOrderInfoByOrderId($wxArr["out_trade_no"], []);
+                if (isset($orderInfo["status"]) && $orderInfo["status"] != config("comm_code.pay_order.pay_ok")) {
+                    $bool = PaymentOrderService::updateOrderStatusInfoByOrderId($wxArr["out_trade_no"], [
+                        "status" => config("comm_code.pay_order.pay_ok"),
+                        "third_order_no" => $wxArr["transaction_id"],
+                        "pay_price" => number_format((int)$wxArr["total_fee"] / 100, 2),
+                    ]);
+                    if ($bool) {
+                        Log::info("回调处理成功：", ["transaction_id" => $wxArr["transaction_id"]]);
+                        echo '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
+                        exit();
+                    } else {
+                        echo '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[fail]]></return_msg></xml>';
+                        exit();
+                    }
+                }
+            }
         }
-        Log::info("回调处理成功：",["xixi"=>"lala"]);
 
-        // 业务处理
-        // $bool = self::commHandle();
-        /*if ($bool) {
-            echo json_encode(["code" => 'SUCCESS', "msg" => 'ok']);
-            exit();
-        }*/
-        echo json_encode(["code" => 'SUCCESS', "msg" => 'ok']);
+        echo '<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[fail]]></return_msg></xml>';
         exit();
     }
 }

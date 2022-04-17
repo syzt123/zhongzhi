@@ -79,7 +79,7 @@ class PaymentOrderController extends Controller
             return $this->backArr('支付方式不存在', config("comm_code.code.fail"), []);
         }
 
-        $totalPrice = 0;
+        $totalPrice = 0.00;
         $userInfo = $this->getUserInfo($request->header("token"));
         $time = time();
 
@@ -93,7 +93,7 @@ class PaymentOrderController extends Controller
             $data = [
                 "m_id" => $userInfo["id"],
                 "r_id" => 1,//1 微信支付 2 支付宝 3其他 废弃
-                "f_price" => $totalPrice,//兑换的金额
+                "f_price" => number_format($totalPrice, 2),//兑换的金额
                 "v_ids" => $request->v_ids ?? '[]',
                 "status" => 1,
                 "order_id" => $createOrderId,
@@ -172,7 +172,7 @@ class PaymentOrderController extends Controller
                 "m_id" => $userInfo["id"],
                 "v_price" => 0,//兑换的金额
                 "v_num" => $totalNums,
-                "n_price" => $totalPrice,//总金额
+                "n_price" => number_format($totalPrice, 2),//总金额
                 "payment_order_id" => $orderId,// 订单表id
                 "create_time" => $time,
             ];
@@ -184,7 +184,7 @@ class PaymentOrderController extends Controller
             // 调用支付
             // 设置订单号
             $request->out_trade_no = $createOrderId;
-            $request->total_amount = $totalPrice;
+            $request->total_amount = number_format($totalPrice, 2);
             $request->subject = $nameStr . '种子';
 
             $payInstance = new ChargeContent();
