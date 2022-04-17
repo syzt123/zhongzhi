@@ -126,7 +126,7 @@ class WechatPayCharge implements PayChargeStrategy
             return $pay->getError();
         }
     }*/
-    public function payOrder(Request $request): string
+    public function payOrder(Request $request): array
     {
         // 支付 并通知回调
         // 公共配置
