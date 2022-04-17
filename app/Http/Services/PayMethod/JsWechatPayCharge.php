@@ -42,9 +42,9 @@ class JsWechatPayCharge implements PayChargeStrategy
             $result = $pay->execute($obj);
             if ($pay->checkResult()) {
                 // 跳转支付界面
-                $request = new \Yurun\PaySDK\Weixin\JSAPI\Params\JSParams\Request();
-                $request->prepay_id = $result['prepay_id'];
-                $jsapiParams = $pay->execute($request);
+                $jsRequest = new \Yurun\PaySDK\Weixin\JSAPI\Params\JSParams\Request();
+                $jsRequest->prepay_id = $result['prepay_id'];
+                $jsapiParams = $pay->execute($jsRequest);
                 // 最后需要将数据传给js，使用WeixinJSBridge进行支付
                 return ["code" => 200, "data" => ["url" => json_encode($jsapiParams)], "message" => ""];
 
