@@ -93,9 +93,9 @@ class PaymentOrderController extends Controller
             $data = [
                 "m_id" => $userInfo["id"],
                 "r_id" => 1,//1 微信支付 2 支付宝 3其他 废弃
-                "f_price" => number_format($totalPrice, 2),//兑换的金额
+                "f_price" => 0,//兑换的金额
                 "v_ids" => $request->v_ids ?? '[]',
-                "status" => 1,
+                "status" => 2,// 1已支付，2未支付\r\n（默认为2）
                 "order_id" => $createOrderId,
                 "wechat_no" => '',// 微信或者支付宝的订单号
                 "pay_price" => 0,// 实际支付的价格
@@ -189,8 +189,8 @@ class PaymentOrderController extends Controller
 
             $payInstance = new ChargeContent();
             $payMethod = $request->pay_type ?? 'ali';
-            if ($request->pay_type != 'ali'){
-                $request->total_amount = number_format($totalPrice, 2)*100;
+            if ($request->pay_type != 'ali') {
+                $request->total_amount = number_format($totalPrice, 2) * 100;
             }
 
             $payInstance = $payInstance->initInstance($payMethod);
