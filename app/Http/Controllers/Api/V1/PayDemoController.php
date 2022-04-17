@@ -70,6 +70,7 @@ class PayDemoController extends Controller
                         "pay_price" => $totalMoney,
                     ]);
                     if ($bool) {
+                        Log::info('支付宝回调处理完成', ['third_order_no' => $aliOrderId]);
                         echo "success";//echo "fail";
                     }
                 }
@@ -136,7 +137,7 @@ class PayDemoController extends Controller
                         "pay_price" => number_format((int)$wxArr["total_fee"] / 100, 2),
                     ]);
                     if ($bool) {
-                        Log::info("回调处理成功：", ["transaction_id" => $wxArr["transaction_id"]]);
+                        Log::info("微信支付回调处理成功：", ["transaction_id" => $wxArr["transaction_id"]]);
                         echo '<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>';
                         exit();
                     } else {

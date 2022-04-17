@@ -12,7 +12,7 @@ use \Yurun\PaySDK\Weixin\SDK;
 class NativeWechatPayCharge implements PayChargeStrategy
 {
     // native
-    public function payOrder(Request $request): string
+    public function payOrder(Request $request): array
     {
         // 支付 并通知回调
         // 公共配置
@@ -39,9 +39,10 @@ class NativeWechatPayCharge implements PayChargeStrategy
         try {
             // 调用接口
             $result = $pay->execute($obj);
-            return $result['code_url'];
+            return ["code" => 200, "data" => ["url" => $result['code_url']], "message" => ""];
+
         } catch (\Exception $e) {
-            return $pay->getError();
+            return ["code" => -1, "data" => ["url" => ''], "message" => $pay->getError()];
         }
     }
 

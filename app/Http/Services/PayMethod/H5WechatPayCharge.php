@@ -12,7 +12,7 @@ use \Yurun\PaySDK\Weixin\SDK;
 class H5WechatPayCharge implements PayChargeStrategy
 {
     // 微信 h5
-    public function payOrder(Request $request): string
+    public function payOrder(Request $request): array
     {
         // 支付 并通知回调
         // 公共配置
@@ -41,10 +41,10 @@ class H5WechatPayCharge implements PayChargeStrategy
             $result = $pay->execute($obj);
             if ($pay->checkResult()) {
                 // 跳转支付界面
-                return $result['mweb_url'];
+                return ["code" => 200, "data" => ["url" => $result['mweb_url']], "message" => ""];
             }
         } catch (\Exception $e) {
-            return $pay->getError();
+            return ["code" => -1, "data" => ["url" => ''], "message" => $pay->getError()];
         }
     }
 

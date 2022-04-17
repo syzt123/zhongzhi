@@ -14,9 +14,9 @@ class ChargeContent
         $this->payInstance = match ($payMethod) {
             'ali' => new AliPayCharge(),
             //'wechat' => new WechatPayCharge(),
-            "h5_wechat" =>new H5WechatPayCharge(),//需要审核通过
-            "js_wechat"=>new JsWechatPayCharge(),//openid 必须关注公众号
-            "native_wechat"=>new NativeWechatPayCharge(),
+            "h5_wechat" => new H5WechatPayCharge(),//需要审核通过
+            "js_wechat" => new JsWechatPayCharge(),//openid 必须关注公众号
+            "native_wechat" => new NativeWechatPayCharge(),
             default => null,
         };
         return $this;
@@ -24,10 +24,10 @@ class ChargeContent
     }
 
     //支付
-    public function handlePay(Request $request): string
+    public function handlePay(Request $request): array
     {
         if ($this->payInstance == null) {
-            return '';
+            return ["code" => -1, "data" => ["url" => ''], "message" => ''];
         }
         return $this->payInstance->payOrder($request);
     }

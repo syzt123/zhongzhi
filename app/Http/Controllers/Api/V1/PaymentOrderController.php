@@ -32,6 +32,7 @@ class PaymentOrderController extends Controller
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="v_ids", in="query", @OA\Schema(type="string"),description="蔬菜主键ids 如白菜",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
      *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 h5_wechat:微信h5支付支付 js_wechat:（微信公众号支付 需要获取oendId） native_wechat：（Native支付是指商户系统按微信支付协议生成支付二维码，用户再用微信“扫一扫”完成支付的模式。该模式适用于PC网站、实体店单品或订单、媒体广告支付等场景）"),
+     *     @OA\Parameter(name="openid", in="query", @OA\Schema(type="string"),description="当支付类型为：js_wechat时 必须。其他类型支付不传"),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -79,6 +80,11 @@ class PaymentOrderController extends Controller
             return $this->backArr('支付方式不存在', config("comm_code.code.fail"), []);
         }
 
+        if ($request->pay_type === 'js_wechat') {
+            if (!isset($request->openid)) {
+                return $this->backArr('openid必须存在', config("comm_code.code.fail"), []);
+            }
+        }
         $totalPrice = 0.00;
         $userInfo = $this->getUserInfo($request->header("token"));
         $time = time();
@@ -194,12 +200,15 @@ class PaymentOrderController extends Controller
             }
 
             $payInstance = $payInstance->initInstance($payMethod);
-            $payUrl = $payInstance->handlePay($request);
+            $payRs = $payInstance->handlePay($request);
+            if ($payRs["code"] == -1) {
+                return $this->backArr($payRs["message"], config("comm_code.code.ok"), ["url" => []]);
+            }
 
             DB::commit();
 
             if ($buyBool) {
-                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $payUrl]);
+                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $payRs["data"]["url"]]);
             }
         } catch (\Exception $exception) {
             DB::rollBack();

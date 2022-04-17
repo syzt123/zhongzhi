@@ -12,7 +12,7 @@ use \Yurun\PaySDK\Weixin\SDK;
 class JsWechatPayCharge implements PayChargeStrategy
 {
     //js
-    public function payOrder(Request $request): string
+    public function payOrder(Request $request): array
     {
         // 支付 并通知回调
         // 公共配置
@@ -30,7 +30,7 @@ class JsWechatPayCharge implements PayChargeStrategy
         $obj->total_fee = $request->total_amount ?? 1; // 订单总金额，单位为：分
         $obj->spbill_create_ip = $request->getClientIp() ?? '127.0.0.1'; // 客户端ip，必须传正确的用户ip，否则会报错
         $obj->notify_url = config("comm_code.wx_config.notify_url"); // 异步通知地址
-        $obj->openid = 'opWUlwsi_2Yy9ScbM9EdSJCxY-QA'; // 必须设置openid
+        $obj->openid = $request->openid ?? ''; // 必须设置openid
         //$obj->scene_info = new SceneInfo();
         //$obj->scene_info->type = 'Wap'; // 可选值：IOS、Android、Wap
         // 下面参数根据type不同而不同
@@ -46,10 +46,12 @@ class JsWechatPayCharge implements PayChargeStrategy
                 $request->prepay_id = $result['prepay_id'];
                 $jsapiParams = $pay->execute($request);
                 // 最后需要将数据传给js，使用WeixinJSBridge进行支付
-                return json_encode($jsapiParams);
+                return ["code" => 200, "data" => ["url" => json_encode($jsapiParams)], "message" => ""];
+
             }
         } catch (\Exception $e) {
-            return $pay->getError();
+            return ["code" => -1, "data" => ["url" => ''], "message" => $pay->getError()];
+
         }
     }
 
