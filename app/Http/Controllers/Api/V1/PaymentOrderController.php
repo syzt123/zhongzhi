@@ -189,6 +189,9 @@ class PaymentOrderController extends Controller
 
             $payInstance = new ChargeContent();
             $payMethod = $request->pay_type ?? 'ali';
+            if ($request->pay_type != 'ali'){
+                $request->total_amount = number_format($totalPrice, 2)*100;
+            }
 
             $payInstance = $payInstance->initInstance($payMethod);
             $payUrl = $payInstance->handlePay($request);

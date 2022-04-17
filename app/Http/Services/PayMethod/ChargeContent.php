@@ -26,7 +26,6 @@ class ChargeContent
     //支付
     public function handlePay(Request $request): string
     {
-        //var_dump($this);exit();
         if ($this->payInstance == null) {
             return '';
         }

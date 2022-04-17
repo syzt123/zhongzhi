@@ -27,7 +27,7 @@ class NativeWechatPayCharge implements PayChargeStrategy
         $obj = new nativeRequest();
         $obj->body = $request->subject; // 商品描述
         $obj->out_trade_no = $request->out_trade_no; // 订单号
-        $obj->total_fee = $request->total_amount * 100 ?? 1; // 订单总金额，单位为：分
+        $obj->total_fee = $request->total_amount ?? 1; // 订单总金额，单位为：分
         $obj->spbill_create_ip = $request->getClientIp() ?? '127.0.0.1'; // 客户端ip，必须传正确的用户ip，否则会报错
         $obj->notify_url = config("comm_code.wx_config.notify_url"); // 异步通知地址
         //$obj->scene_info = new SceneInfo();
@@ -41,7 +41,6 @@ class NativeWechatPayCharge implements PayChargeStrategy
             $result = $pay->execute($obj);
             return $result['code_url'];
         } catch (\Exception $e) {
-            dd($pay->getErrorCode() . ':' . $pay->getError());
             return $pay->getError();
         }
     }

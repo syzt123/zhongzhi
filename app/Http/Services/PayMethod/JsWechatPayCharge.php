@@ -27,7 +27,7 @@ class JsWechatPayCharge implements PayChargeStrategy
         $obj = new jsRequest();
         $obj->body = $request->subject; // 商品描述
         $obj->out_trade_no = $request->out_trade_no; // 订单号
-        $obj->total_fee = $request->total_amount * 100 ?? 1; // 订单总金额，单位为：分
+        $obj->total_fee = $request->total_amount ?? 1; // 订单总金额，单位为：分
         $obj->spbill_create_ip = $request->getClientIp() ?? '127.0.0.1'; // 客户端ip，必须传正确的用户ip，否则会报错
         $obj->notify_url = config("comm_code.wx_config.notify_url"); // 异步通知地址
         $obj->openid = 'opWUlwsi_2Yy9ScbM9EdSJCxY-QA'; // 必须设置openid
@@ -49,7 +49,6 @@ class JsWechatPayCharge implements PayChargeStrategy
                 return json_encode($jsapiParams);
             }
         } catch (\Exception $e) {
-            //var_dump($pay->getErrorCode() . ':' . $pay->getError());
             return $pay->getError();
         }
     }

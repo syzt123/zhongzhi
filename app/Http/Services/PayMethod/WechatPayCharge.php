@@ -88,7 +88,6 @@ class WechatPayCharge implements PayChargeStrategy
                 return json_encode($jsapiParams);
             }
         } catch (\Exception $e) {
-            //var_dump($pay->getErrorCode() . ':' . $pay->getError());
             return $pay->getError();
         }
     }
@@ -160,6 +159,7 @@ class WechatPayCharge implements PayChargeStrategy
             return $pay->getError();
         }
     }
+
     public function notifyHandle(Request $request)
     {
         echo json_encode(["code" => 'SUCCESS', "msg" => 'ok']);
