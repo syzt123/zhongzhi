@@ -75,6 +75,7 @@ class MemberVegetable extends Model
         $lists = self::with(["vegetableLand", "user"])->where("m_id", '=', $uId);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
+            unset($data["vegetable_grow"]);
         }
         $page = 1;
         $pageSize = 10;
@@ -115,6 +116,7 @@ class MemberVegetable extends Model
         $model = self::with([])->where("m_id", $uId);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $model = $model->where('vegetable_grow', '>', 0);
+            unset($data["vegetable_grow"]);
         }
         if (isset($data["page"])) {
             unset($data["page"]);
