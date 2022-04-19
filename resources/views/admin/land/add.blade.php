@@ -15,6 +15,16 @@
     </fieldset>
     <form class="layui-form" action="" id="addLandForm">
         <div class="layui-form-item">
+            <label class="layui-form-label">摄像头设备号</label>
+            <div class="layui-input-block">
+                <input type="text" name="device_serial" autocomplete="off" lay-verify="required" lay-reqtext="摄像头设备号是必填项，岂能为空？"
+                       placeholder="请输入 如J38620611" class="layui-input">
+            </div>
+            <div class="layui-input-block">
+                <button type="button" onclick="getLiveAddress()">获取直播地址</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">摄像头地址</label>
             <div class="layui-input-block">
                 <input type="text" name="monitor" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
@@ -50,6 +60,19 @@
 
     //JS
     <script>
+        function getLiveAddress() {
+            console.log(44)
+            //接口返回数据
+            let rs = {"code":200,"data":[
+                    {"id":"436468143050493952",
+                        "url":"https://open.ys7.com/v3/openlive/J38620611_1_2.m3u8?expire=1650420514&id=436468143050493952&t=aa745d5593c96dff1a7e60c22bc81175706ae5a1d59557690c92dbdc0cf19ce5&ev=100",
+                        "expireTime":"2022-04-20 10:08:34",
+                    }
+                ]};
+
+            console.log(rs,$)
+        }
+
         //JS
         layui.use(['form'], function () {
             var form = layui.form
