@@ -72,7 +72,7 @@ class MemberVegetable extends Model
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with(["vegetableLand", "user"])->where("m_id", '=', $uId);
+        $lists = self::with(["vegetableLand", "user","vegetableType"])->where("m_id", '=', $uId);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
