@@ -30,6 +30,8 @@ class DeliveryOrderController extends Controller
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="m_v_ids", in="query", @OA\Schema(type="string"),description="要兑换的蔬菜ids ,id为用户蔬菜的主键id",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
      *     @OA\Parameter(name="f_price", in="query", @OA\Schema(type="string"),description="蔬菜兑换时的蔬菜币"),
+     *     @OA\Parameter(name="u_name", in="query", @OA\Schema(type="string"),description="用户收货人名字"),
+     *     @OA\Parameter(name="u_tel", in="query", @OA\Schema(type="string"),description="用户收货人电话"),
      *     @OA\Parameter(name="des_address", in="query", @OA\Schema(type="string"),description="用户收货地址"),
      *     @OA\Response(
      *         response=200,
@@ -43,6 +45,19 @@ class DeliveryOrderController extends Controller
             return $this->backArr('请求方式必须为post', config("comm_code.code.fail"), []);
         }
         $userInfo = $this->getUserInfo($request->header("token"));
+
+        if (!isset($userInfo["v_name"])) {
+            return $this->backArr('收货人名称必须', config("comm_code.code.fail"), []);
+        }
+        if ($userInfo["v_name"] == '') {
+            return $this->backArr('收货人名称必须为空', config("comm_code.code.fail"), []);
+        }
+        if (!isset($userInfo["v_tel"])) {
+            return $this->backArr('收货人电话必须', config("comm_code.code.fail"), []);
+        }
+        if ($userInfo["v_tel"] == '') {
+            return $this->backArr('收货人电话不能为空或格式错误', config("comm_code.code.fail"), []);
+        }
 
         if (!isset($request->m_v_ids)) {//
             return $this->backArr('用户想兑换蔬菜m_v_ids必须', config("comm_code.code.fail"), []);
@@ -87,13 +102,12 @@ class DeliveryOrderController extends Controller
                 }
 
                 $totalPrice += $mVInfo["list"][0]["v_price"] * $v->nums;
-                // 同时更新用户蔬菜数量 todo
-                MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], $userInfo["id"],$v->nums);
+                // 同时更新用户蔬菜数量
+                MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], $userInfo["id"], $v->nums);
 
             }
 
         }
-
 
         if (!isset($request->des_address)) {
             return $this->backArr('收货地址必须', config("comm_code.code.fail"), []);
@@ -101,6 +115,7 @@ class DeliveryOrderController extends Controller
         if ($request->des_address == '') {
             return $this->backArr('收货地址不能为空', config("comm_code.code.fail"), []);
         }
+
         $time = time();
 
         // 新增物流表
@@ -113,6 +128,8 @@ class DeliveryOrderController extends Controller
             "create_time" => $time,
             "update_time" => $time,
             "status" => 1,//默认待配送
+            "u_tel" => $userInfo["v_tel"],
+            "u_name" => $userInfo["v_name"],
             "des_address" => $request->des_address,
             "total_price" => $totalPrice ?? 0,
         ];

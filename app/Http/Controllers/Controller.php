@@ -17,12 +17,12 @@ class Controller extends BaseController
 
     public function success($data = "", $message = 'ok', $code = 1)
     {
-        return response()->json(compact('data', 'message', 'code'),200);
+        return response()->json(compact('data', 'message', 'code'), 200);
     }
 
     public function error($message = 'error', $data = "", $code = 0)
     {
-        return response()->json(compact('data', 'message', 'code'),400);
+        return response()->json(compact('data', 'message', 'code'), 400);
     }
 
     //返回json格式
@@ -168,7 +168,22 @@ class Controller extends BaseController
      *     summary="公共上传接口",
      *     description="公共上传接口(2022/03/28日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
-     *     @OA\Parameter(name="files[]", in="query", @OA\Schema(type="file"),description="要上传的文件列表"),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     description="上传的字段为files且必须为数组格式",
+     *                     property="files[]",
+     *                     type="file",
+     *                     format="file",
+     *                 ),
+     *                 required={"files[]"}
+     *             )
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -180,7 +195,13 @@ class Controller extends BaseController
         if ($request->isMethod('post')) {
             $files = $request->allFiles();
             if (!isset($files["files"])) {
-                return ['code' => -1, 'msg' => 'files字段必须', 'data' => []];
+                return ['code' => -1, 'msg' => 'files[]字段必须', 'data' => []];
+            }
+            if (!is_array($files["files"])) {
+                return ['code' => -1, 'msg' => 'files字段必须为数组', 'data' => []];
+            }
+            if (count($files["files"]) > 9) {
+                return ['code' => -1, 'msg' => '最多只能上传9张图片/文件', 'data' => []];
             }
             if (is_array($files["files"])) {
                 $imgs = [];
@@ -202,5 +223,32 @@ class Controller extends BaseController
     static function getUniqueOrderNums(): string
     {
         return date('YmdHis', time()) . substr(microtime(), 2, 6) . sprintf('%04d', rand(0, 9999));
+    }
+
+    // 获取支付类型列表
+    function getPayTypeList(): array
+    {
+        return [
+            "ali", "h5_wechat", "js_wechat", "native_wechat"
+        ];
+    }
+
+    // 判断支付类型是否存在
+    function isHasInPayType(string $payType): bool
+    {
+        return in_array($payType, self::getPayTypeList());
+    }
+
+    // xml转数组
+    function xmlToArr($xml = ''): array
+    {
+        $values = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $values;
+    }
+
+    // 数组转xml
+    function arrToXml($arr = []): string
+    {
+
     }
 }

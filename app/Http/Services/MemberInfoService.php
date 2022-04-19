@@ -55,6 +55,14 @@ class MemberInfoService extends BaseService
         if (isset($data["nickname"]) && trim($data["nickname"]) != '') {
             MemberInfo::updateUserInfo($uId, ["nickname" => $data["nickname"]]);
         }
+        // 更新收货人电话
+        if (isset($data["v_tel"]) && trim($data["v_tel"]) != '') {
+            MemberInfo::updateUserInfo($uId, ["v_tel" => $data["v_tel"]]);
+        }
+        // 更新收货人名称
+        if (isset($data["v_name"]) && trim($data["v_name"]) != '') {
+            MemberInfo::updateUserInfo($uId, ["v_name" => $data["v_name"]]);
+        }
         return 1;
     }
 
