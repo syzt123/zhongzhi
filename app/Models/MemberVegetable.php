@@ -21,7 +21,7 @@ class MemberVegetable extends Model
         // 用户每次查看自己的蔬菜时看看是否坏掉
         static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
-            if ($vegetableType == null){
+            if ($vegetableType == null) {
                 return;
             }
             $termOfValidity = array_sum([
@@ -73,6 +73,9 @@ class MemberVegetable extends Model
     static function getMemberVegetableList($uId, $data = []): array
     {
         $lists = self::with(["vegetableLand", "user"])->where("m_id", '=', $uId);
+        if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
+            $lists = $lists->where('vegetable_grow', '>', 0);
+        }
         $page = 1;
         $pageSize = 10;
         $sort = 'desc';// desc asc
@@ -110,6 +113,9 @@ class MemberVegetable extends Model
     static function getMemberVegetableNumsByUId($uId, $data = []): int
     {
         $model = self::with([])->where("m_id", $uId);
+        if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
+            $model = $model->where('vegetable_grow', '>', 0);
+        }
         if (isset($data["page"])) {
             unset($data["page"]);
         }
@@ -157,14 +163,14 @@ class MemberVegetable extends Model
     }
 
     // 更新当种子存在则更新数量
-    static function addMemberVegetableNums($data = [],$nums=0): int
+    static function addMemberVegetableNums($data = [], $nums = 0): int
     {
         $model = self::with([]);
         if (count($data)) {
             $rs = $model->where($data)->first();
-            if ($rs!=null){
+            if ($rs != null) {
                 //更新
-               return $model->where($data)->increment("nums", $nums);
+                return $model->where($data)->increment("nums", $nums);
             }
             return 0;
         }

@@ -531,7 +531,7 @@ class UserController extends Controller
      * @OA\Post (
      *     path="/api/v1/user/userVegetableExcludeTypeList",
      *     tags={"用户管理"},
-     *     summary="用户个人蔬菜列表（不含分类）",
+     *     summary="用户个人已成熟入库蔬菜列表（不含分类）",
      *     description="用户个人领取种植/仓库中/已收货蔬菜列表/(2022/04/13日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
      *     @OA\RequestBody(
@@ -553,7 +553,7 @@ class UserController extends Controller
      *                     type="int",
      *                     description="1：生长中 2.仓库中 3已坏掉 4:已完成送货 默认全部数据",
      *                 ),
-     *                 example={"page_size": 15, "page": 1,"class_id":1,"ststus":1}
+     *                 example={"page_size": 15, "page": 1}
      *             )
      *         )
      *     ),
@@ -612,11 +612,10 @@ class UserController extends Controller
         if (isset($request->page_size) && (int)$request->page_size > 0) {
             $data["page_size"] = $request->page_size;
         }
-        if (isset($request->status) && (int)$request->status > 0) {
-            $data["v_status"] = $request->status;
-        }
+
+        $data["v_status"] = 2;//已成熟
+        $data["vegetable_grow"] = 1;//已入库 不含分类
         $lists = MemberVegetableService::getMemberVegetableList($userInfo["id"], $data);
         return $this->backArr('获取列表成功', config("comm_code.code.ok"), $lists);
-
     }
 }

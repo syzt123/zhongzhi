@@ -14,6 +14,7 @@ use \App\Http\Controllers\Api\V1\DeliveryOrderController;
 use App\Http\Controllers\Api\V1\HarvestController;
 use App\Http\Controllers\Api\V1\ExchangeController;
 use \App\Http\Controllers\Api\V1\PayDemoController;
+use \App\Http\Controllers\Api\V1\Ys\YsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,10 @@ Route::prefix("v1")->group(function () {
         Route::post('/register', [UserController::class, 'registerUser']);//注册  这种方式可以
         Route::post('/login', [UserController::class, 'loginUser']);//登陆  这种方式可以
     });
+    Route::prefix("ys")->group(function () {
+        Route::get('/getLiveAddress', [YsController::class, 'getLiveAddress']);//萤石  这种方式可以
+    });
+
 });
 
 Route::middleware("check.token")->prefix("v1")->group(function () {
