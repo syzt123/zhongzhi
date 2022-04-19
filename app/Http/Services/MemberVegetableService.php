@@ -69,6 +69,11 @@ class MemberVegetableService extends BaseService
     {
         return MemberVegetable::getMemberVegetablesByUId($uId);
     }
+    static function getGrowMemberVegetablesByUId($uid)
+    {
+        return MemberVegetable::getGrowMemberVegetablesByUId($uid);
+    }
+
 
     // 更新
     static function updateMemberVegetable($id, $data = []): int

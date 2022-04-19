@@ -21,7 +21,7 @@ class MemberVegetable extends Model
         // 用户每次查看自己的蔬菜时看看是否坏掉
         static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
-            if ($vegetableType == null){
+            if ($vegetableType == null) {
                 return;
             }
             $termOfValidity = array_sum([
@@ -139,6 +139,16 @@ class MemberVegetable extends Model
         return $model->get();
     }
 
+    // 获取用户蔬菜
+    static function getGrowMemberVegetablesByUId($uId)
+    {
+        $model = self::with([])
+            ->where("m_id", $uId)
+            ->where("vegetable_grow", '>', '0')
+            ->where("v_status", "=", 1);
+        return $model->get();
+    }
+
     // 更新
     static function updateMemberVegetableById($id, $data = []): int
     {
@@ -157,14 +167,14 @@ class MemberVegetable extends Model
     }
 
     // 更新当种子存在则更新数量
-    static function addMemberVegetableNums($data = [],$nums=0): int
+    static function addMemberVegetableNums($data = [], $nums = 0): int
     {
         $model = self::with([]);
         if (count($data)) {
             $rs = $model->where($data)->first();
-            if ($rs!=null){
+            if ($rs != null) {
                 //更新
-               return $model->where($data)->increment("nums", $nums);
+                return $model->where($data)->increment("nums", $nums);
             }
             return 0;
         }
