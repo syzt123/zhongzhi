@@ -104,7 +104,7 @@ class PlantController extends Controller
         if (!$user) {
             return $this->error('未找到用户信息');
         }else{
-            $memberVegetables = MemberVegetableService::getMemberVegetables($user['id']);
+            $memberVegetables = MemberVegetableService::getGrowMemberVegetablesByUId($user['id']);// 这颗蔬菜入库操作之后已种植就查不到了(甲方前端要求)
             foreach ($memberVegetables as $memberVegetable)
             {
                 $memberVegetable->makeHidden(['vegetable_type'])->toArray();

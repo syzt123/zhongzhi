@@ -145,6 +145,16 @@ class MemberVegetable extends Model
         return $model->get();
     }
 
+    // 获取用户蔬菜
+    static function getGrowMemberVegetablesByUId($uId)
+    {
+        $model = self::with([])
+            ->where("m_id", $uId)
+            ->where("vegetable_grow", '>', '0')
+            ->where("v_status", "=", 1);
+        return $model->get();
+    }
+
     // 更新
     static function updateMemberVegetableById($id, $data = []): int
     {
