@@ -36,8 +36,11 @@ class AliPayCharge implements PayChargeStrategy
         //$pay->redirectExecute($obj);
 
         // 获取跳转url
-        $pay->prepareExecute($obj, $url);
-        return ["code" => 200, "data" => ["url" => $url], "message" => ""];
+        $pay->prepareExecute($obj, $url, $data);
+        //http_build_query
+        return ["code" => 200, "data" => ["url" => http_build_query($data)], "message" => ""];
+
+        // return ["code" => 200, "data" => ["url" => $url], "message" => ""];
     }
 
     public function notifyHandle(Request $request)

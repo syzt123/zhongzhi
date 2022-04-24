@@ -125,52 +125,54 @@ class PaymentOrderController extends Controller
             $addVegetableData = [];
             $totalNums = 0;
             $nameStr = '';
-            foreach ($rqIdsArr as $v) {
-                if (isset($v->id) && $v->id > 0) {
-                    $vegetableTypeData = VegetableTypeService::findVegetableTypeInfoById($v->id);
-                    if (count($vegetableTypeData) == 0) {
-                        return $this->backArr('输入的蔬菜有不存在，请重试！', config("comm_code.code.fail"), []);
-                    }
-                    if (isset($v->nums) && $v->nums <= 0) {
-                        return $this->backArr('输入的蔬菜数量要必须大于0，请重试！', config("comm_code.code.fail"), []);
-                    }
-                    // 单个商品总价
-                    $singleVegetablePrice = $v->nums * $vegetableTypeData["v_price"];
-                    $totalPrice += $singleVegetablePrice;
-                    $totalNums += $v->nums;
-                    $nameStr .= $vegetableTypeData["v_type"] . "*" . (string)$v->nums . '_';
-                    // 如果之前用户蔬菜表存在蔬菜种子或其他(未种植 只增加数量 即更新) todo 有问题，订单会被覆盖
-                    /*$whereData = [
-                        "m_id" => $userInfo["id"],
-                        "v_type" => $vegetableTypeData["id"],
-                        "v_status" => 0,
-                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
-                    ];
-                    $addRs = MemberVegetableService::addMemberVegetableNums($whereData, $v->nums);
-                    if ($addRs) {
-                        continue;// 跳过这次循环
-                    }*/
+//            foreach ($rqIdsArr as $v) {
+//                if (isset($v->id) && $v->id > 0) {
+//                    $vegetableTypeData = VegetableTypeService::findVegetableTypeInfoById($v->id);
+//                    if (count($vegetableTypeData) == 0) {
+//                        return $this->backArr('输入的蔬菜有不存在，请重试！', config("comm_code.code.fail"), []);
+//                    }
+//                    if (isset($v->nums) && $v->nums <= 0) {
+//                        return $this->backArr('输入的蔬菜数量要必须大于0，请重试！', config("comm_code.code.fail"), []);
+//                    }
+//                    // 单个商品总价
+//                    $singleVegetablePrice = $v->nums * $vegetableTypeData["v_price"];
+//                    $totalPrice += $singleVegetablePrice;
+//                    $totalNums += $v->nums;
+//                    $nameStr .= $vegetableTypeData["v_type"] . "*" . (string)$v->nums . '_';
+//                    // 如果之前用户蔬菜表存在蔬菜种子或其他(未种植 只增加数量 即更新) todo 有问题，订单会被覆盖
+//                    /*$whereData = [
+//                        "m_id" => $userInfo["id"],
+//                        "v_type" => $vegetableTypeData["id"],
+//                        "v_status" => 0,
+//                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
+//                    ];
+//                    $addRs = MemberVegetableService::addMemberVegetableNums($whereData, $v->nums);
+//                    if ($addRs) {
+//                        continue;// 跳过这次循环
+//                    }*/
+//
+//                    // 否则新增数据
+//                    $addVegetableData[] = [
+//                        "m_id" => $userInfo["id"],
+//                        "v_price" => $vegetableTypeData["v_price"] ?? 0,
+//                        "f_price" => 0,
+//                        "pay_price" => $vegetableTypeData["v_price"] * $v->nums,
+//                        "v_type" => $vegetableTypeData["id"],
+//                        "nums" => $v->nums,
+//                        "planting_time" => $time,
+//                        "v_status" => 0,
+//                        "create_time" => $time,
+//                        "payment_order_id" => $orderId,
+//                        "v_name" => $vegetableTypeData["v_type"],//名字
+//                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
+//                    ];
+//                }
+//
+//            }
+//
+//            MemberVegetableService::addMemberVegetable($addVegetableData);
 
-                    // 否则新增数据
-                    $addVegetableData[] = [
-                        "m_id" => $userInfo["id"],
-                        "v_price" => $vegetableTypeData["v_price"] ?? 0,
-                        "f_price" => 0,
-                        "pay_price" => $vegetableTypeData["v_price"] * $v->nums,
-                        "v_type" => $vegetableTypeData["id"],
-                        "nums" => $v->nums,
-                        "planting_time" => $time,
-                        "v_status" => 0,
-                        "create_time" => $time,
-                        "payment_order_id" => $orderId,
-                        "v_name" => $vegetableTypeData["v_type"],//名字
-                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
-                    ];
-                }
 
-            }
-
-            MemberVegetableService::addMemberVegetable($addVegetableData);
 
             /*$deliveryData = [
                 "m_id" => $userInfo["id"],
