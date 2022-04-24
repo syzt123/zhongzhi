@@ -112,7 +112,7 @@ class PayDemoController extends Controller
 
                                 // 否则新增数据
                                 $addVegetableData[] = [
-                                    "m_id" => $orderInfo["id"],
+                                    "m_id" => $orderInfo["m_id"],
                                     "v_price" => $vegetableTypeData["v_price"] ?? 0,
                                     "f_price" => 0,
                                     "pay_price" => $vegetableTypeData["v_price"] * $v->nums,
@@ -249,7 +249,7 @@ class PayDemoController extends Controller
 
                                 // 否则新增数据
                                 $addVegetableData[] = [
-                                    "m_id" => $orderInfo["id"],
+                                    "m_id" => $orderInfo["m_id"],
                                     "v_price" => $vegetableTypeData["v_price"] ?? 0,
                                     "f_price" => 0,
                                     "pay_price" => $vegetableTypeData["v_price"] * $v->nums,
