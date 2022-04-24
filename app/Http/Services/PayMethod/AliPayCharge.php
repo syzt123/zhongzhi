@@ -31,7 +31,7 @@ class AliPayCharge implements PayChargeStrategy
         $obj->businessParams->out_trade_no = $request->out_trade_no ?? 'test' . mt_rand(10000000, 99999999); // 商户订单号
         $obj->businessParams->total_amount = $request->total_amount ?? 0.01; // 价格元
         $obj->businessParams->subject = $request->subject ?? '小米手机9黑色陶瓷尊享版'; // 商品标题
-
+        $obj->businessParams->passback_params = urlencode(json_encode(["pay_type"=>$request->pay_type]));
         // 跳转到支付页面
         //$pay->redirectExecute($obj);
 

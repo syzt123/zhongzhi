@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\MemberInfoService;
 use App\Http\Services\MemberVegetableService;
 use App\Http\Services\PaymentOrderService;
 use App\Http\Services\VegetableTypeService;
@@ -79,16 +80,18 @@ class PayDemoController extends Controller
                         $rqIdsArr = json_decode($orderInfo["v_ids"], true);
                         $time = time();
                         $addVegetableData = [];
+                        $totalNums = 0;
+                        $nameStr = '';
+                        $totalPrice = 0.00;
+
                         foreach ($rqIdsArr as $v) {
                             if (isset($v->id) && $v->id > 0) {
                                 $vegetableTypeData = VegetableTypeService::findVegetableTypeInfoById($v->id);
                                 if (count($vegetableTypeData) == 0) {
                                     continue;
-                                    //return $this->backArr('输入的蔬菜有不存在，请重试！', config("comm_code.code.fail"), []);
                                 }
                                 if (isset($v->nums) && $v->nums <= 0) {
                                     continue;
-                                    //return $this->backArr('输入的蔬菜数量要必须大于0，请重试！', config("comm_code.code.fail"), []);
                                 }
                                 // 单个商品总价
                                 $singleVegetablePrice = $v->nums * $vegetableTypeData["v_price"];
@@ -118,16 +121,17 @@ class PayDemoController extends Controller
                                     "planting_time" => $time,
                                     "v_status" => 0,
                                     "create_time" => $time,
-                                    "payment_order_id" => $orderId,
+                                    "payment_order_id" => $orderInfo["id"],
                                     "v_name" => $vegetableTypeData["v_type"],//名字
                                     "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
                                 ];
                             }
-
                         }
 
                         MemberVegetableService::addMemberVegetable($addVegetableData);
 
+                        // 用户蔬菜自增
+                        MemberInfoService::increaseVegetableNums($orderInfo["m_id"], $totalNums);
                         DB::commit();
 
                         if ($bool) {
@@ -213,16 +217,17 @@ class PayDemoController extends Controller
                         $rqIdsArr = json_decode($orderInfo["v_ids"], true);
                         $time = time();
                         $addVegetableData = [];
+                        $totalNums = 0;
+                        $nameStr = '';
+                        $totalPrice = 0.00;
                         foreach ($rqIdsArr as $v) {
                             if (isset($v->id) && $v->id > 0) {
                                 $vegetableTypeData = VegetableTypeService::findVegetableTypeInfoById($v->id);
                                 if (count($vegetableTypeData) == 0) {
                                     continue;
-                                    //return $this->backArr('输入的蔬菜有不存在，请重试！', config("comm_code.code.fail"), []);
                                 }
                                 if (isset($v->nums) && $v->nums <= 0) {
                                     continue;
-                                    //return $this->backArr('输入的蔬菜数量要必须大于0，请重试！', config("comm_code.code.fail"), []);
                                 }
                                 // 单个商品总价
                                 $singleVegetablePrice = $v->nums * $vegetableTypeData["v_price"];
@@ -252,7 +257,7 @@ class PayDemoController extends Controller
                                     "planting_time" => $time,
                                     "v_status" => 0,
                                     "create_time" => $time,
-                                    "payment_order_id" => $orderId,
+                                    "payment_order_id" => $orderInfo["id"],
                                     "v_name" => $vegetableTypeData["v_type"],//名字
                                     "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
                                 ];
@@ -261,6 +266,8 @@ class PayDemoController extends Controller
                         }
 
                         MemberVegetableService::addMemberVegetable($addVegetableData);
+                        // 用户蔬菜自增
+                        MemberInfoService::increaseVegetableNums($orderInfo["m_id"], $totalNums);
 
                         DB::commit();
 
