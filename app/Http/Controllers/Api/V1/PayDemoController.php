@@ -77,7 +77,7 @@ class PayDemoController extends Controller
                             "pay_price" => $totalMoney,
                         ]);
                         //新增用户蔬菜种子
-                        $rqIdsArr = json_decode($orderInfo["v_ids"], true);
+                        $rqIdsArr = json_decode($orderInfo["v_ids"]);
                         $time = time();
                         $addVegetableData = [];
                         $totalNums = 0;
@@ -137,11 +137,13 @@ class PayDemoController extends Controller
                         if ($bool) {
                             Log::info('支付宝回调处理完成', ['third_order_no' => $aliOrderId]);
                             echo "success";//echo "fail";
+                            exit();
                         }
                     } catch (\Exception $e) {
                         Log::info('支付宝回调处理完成失败', ['third_order_no' => $aliOrderId, "reason" => $e->getMessage()]);
                         echo "fail";//echo "fail";
                         DB::rollBack();
+                        exit();
                     }
                 }
             }
@@ -150,6 +152,7 @@ class PayDemoController extends Controller
 
         // 回复的内容
         echo "fail";//echo "success";
+        exit();
     }
 
     //微信支付 h5支付
@@ -214,11 +217,10 @@ class PayDemoController extends Controller
                             "pay_price" => $totalMoney,
                         ]);
                         //新增用户蔬菜种子
-                        $rqIdsArr = json_decode($orderInfo["v_ids"], true);
+                        $rqIdsArr = json_decode($orderInfo["v_ids"]);
                         $time = time();
                         $addVegetableData = [];
                         $totalNums = 0;
-                        $nameStr = '';
                         $totalPrice = 0.00;
                         foreach ($rqIdsArr as $v) {
                             if (isset($v->id) && $v->id > 0) {
@@ -233,7 +235,6 @@ class PayDemoController extends Controller
                                 $singleVegetablePrice = $v->nums * $vegetableTypeData["v_price"];
                                 $totalPrice += $singleVegetablePrice;
                                 $totalNums += $v->nums;
-                                $nameStr .= $vegetableTypeData["v_type"] . "*" . (string)$v->nums . '_';
                                 // 如果之前用户蔬菜表存在蔬菜种子或其他(未种植 只增加数量 即更新) todo 有问题，订单会被覆盖
                                 /*$whereData = [
                                     "m_id" => $userInfo["id"],
