@@ -174,6 +174,7 @@ class ExchangeController extends Controller
         }
         return false;
     }
+
     /**
      * @OA\Post(
      *     path="/api/v1/exchange/coin",
@@ -188,7 +189,13 @@ class ExchangeController extends Controller
      *                     property="vegetable_id",
      *                     type="int"
      *                 ),
-     *                 example={"vegetable_id": 1}
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="int",
+     *                     description="用户蔬菜id 必须",
+     *                 ),
+     *                 example={"vegetable_id": 1, "id":1}
+     *
      *             )
      *         )
      *     ),
@@ -225,8 +232,9 @@ class ExchangeController extends Controller
         } else {
             $user = MemberInfo::find($user['id']);
             $memberVegetable = MemberVegetable::where('vegetable_type_id', '=', $request->vegetable_id)
-                ->where('vegetable_grow','=',0)
-                ->where('v_status','=',2)
+                ->where('id', '=', $request->id)
+                ->where('vegetable_grow', '=', 0)
+                ->where('v_status', '=', 2)
                 ->first();
             if (!$memberVegetable) {
                 return $this->error('未找到您的蔬菜或您的蔬菜已过期！');
