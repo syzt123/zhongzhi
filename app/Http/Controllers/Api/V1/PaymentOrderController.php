@@ -121,8 +121,6 @@ class PaymentOrderController extends Controller
                 "pay_type" => $request->pay_type,
             ];
             $orderId = PaymentOrderService::addPaymentOrder($data);
-            // 新增领取的种子表 member_vegetable 多个种子
-            $addVegetableData = [];
             $totalNums = 0;
             $nameStr = '';
             foreach ($rqIdsArr as $v) {
@@ -139,51 +137,8 @@ class PaymentOrderController extends Controller
                     $totalPrice += $singleVegetablePrice;
                     $totalNums += $v->nums;
                     $nameStr .= $vegetableTypeData["v_type"] . "*" . (string)$v->nums . '_';
-                    // 如果之前用户蔬菜表存在蔬菜种子或其他(未种植 只增加数量 即更新) todo 有问题，订单会被覆盖
-                    /*$whereData = [
-                        "m_id" => $userInfo["id"],
-                        "v_type" => $vegetableTypeData["id"],
-                        "v_status" => 0,
-                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
-                    ];
-                    $addRs = MemberVegetableService::addMemberVegetableNums($whereData, $v->nums);
-                    if ($addRs) {
-                        continue;// 跳过这次循环
-                    }*/
-
-                    // 否则新增数据
-                    $addVegetableData[] = [
-                        "m_id" => $userInfo["id"],
-                        "v_price" => $vegetableTypeData["v_price"] ?? 0,
-                        "f_price" => 0,
-                        "pay_price" => $vegetableTypeData["v_price"] * $v->nums,
-                        "v_type" => $vegetableTypeData["id"],
-                        "nums" => $v->nums,
-                        "planting_time" => $time,
-                        "v_status" => 0,
-                        "create_time" => $time,
-                        "payment_order_id" => $orderId,
-                        "v_name" => $vegetableTypeData["v_type"],//名字
-                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
-                    ];
                 }
-
             }
-
-            MemberVegetableService::addMemberVegetable($addVegetableData);
-
-            /*$deliveryData = [
-                "m_id" => $userInfo["id"],
-                "r_id" => 1,//1 微信支付 2 支付宝 3其他
-                "f_price" => $request->f_price,//兑换的金额
-                "status" => 1,
-                "order_id" => $this->getUniqueOrderNums(),
-                "payment_order_id" => $orderId,// 订单表id
-                "create_time" => $time,
-                "update_time" => $time,
-            ];
-            // 新增物流
-            DeliveryOrderService::addDeliveryOrder($deliveryData);*/
 
             $buyData = [
                 "m_id" => $userInfo["id"],
@@ -197,7 +152,7 @@ class PaymentOrderController extends Controller
             $buyBool = BuyLogService::addUserBuyLog($buyData);
 
             // 用户蔬菜自增
-            MemberInfoService::increaseVegetableNums($userInfo["id"]);
+            //MemberInfoService::increaseVegetableNums($userInfo["id"]);
             // 调用支付
             // 设置订单号
             $request->out_trade_no = $createOrderId;
