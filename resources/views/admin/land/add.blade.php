@@ -42,7 +42,6 @@
         </div>
 
 
-
         <div class="row" style="padding:10px;">
             <h4 style="font-size: 40px;color: red;">上传视频到腾讯云点播</h4>
             <input type="file" onchange="vExampleUpload(this)"/>
@@ -50,18 +49,19 @@
         <div class="layui-form-item">
             <label class="layui-form-label">腾讯云点播url</label>
             <div class="layui-input-block">
-                <input type="text" name="tx_video_url" id="tx_video_url" style="background: #cccccc" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
-                       placeholder="点击上传视频文件即自动填充"  readonly class="layui-input">
+                <input type="text" name="tx_video_url" id="tx_video_url" style="background: #cccccc" autocomplete="off"
+                       lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
+                       placeholder="点击上传视频文件即自动填充" readonly class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">腾讯云文件ID</label>
             <div class="layui-input-block">
-                <input type="text" name="tx_video_id" id="tx_video_id" style="background: #cccccc" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
+                <input type="text" name="tx_video_id" id="tx_video_id" style="background: #cccccc" autocomplete="off"
+                       lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
                        placeholder="点击上传视频文件即自动填充" readonly class="layui-input">
             </div>
         </div>
-
 
 
         <div class="layui-form-item">
@@ -96,7 +96,7 @@
 @endsection
 @section('js')
     <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         /**
@@ -128,6 +128,7 @@
          * @param rs
          */
         var uploaderInfos = [];
+
         function vExampleUpload(rs) {
             // new 新对象
             var tcInstance = new TcVod.default({
@@ -148,7 +149,7 @@
                 uploaderInfo.isVideoUploadSuccess = true;
             })
 
-           // console.log(uploader, 'uploader')
+            // console.log(uploader, 'uploader')
 
             var uploaderInfo = {
                 videoInfo: uploader.videoInfo,
@@ -181,8 +182,7 @@
             })
 
 
-
-           // rs.reset()
+            // rs.reset()
             console.log('执行完')
         }
 
