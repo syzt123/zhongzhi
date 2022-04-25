@@ -119,8 +119,9 @@ class PayDemoController extends Controller
                                     "v_type" => $vegetableTypeData["id"],
                                     "nums" => $v->nums,
                                     "planting_time" => $time,
-                                    "v_status" => 0,
+                                    "v_status" => 1,//已种植
                                     "create_time" => $time,
+                                    "vegetable_grow" => 1,//大于0说明生长中
                                     "payment_order_id" => $orderInfo["id"],
                                     "v_name" => $vegetableTypeData["v_type"],//名字
                                     "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
@@ -256,7 +257,8 @@ class PayDemoController extends Controller
                                     "v_type" => $vegetableTypeData["id"],
                                     "nums" => $v->nums,
                                     "planting_time" => $time,
-                                    "v_status" => 0,
+                                    "v_status" => 1,//已种植
+                                    "vegetable_grow" => 1,//大于0说明生长中
                                     "create_time" => $time,
                                     "payment_order_id" => $orderInfo["id"],
                                     "v_name" => $vegetableTypeData["v_type"],//名字
