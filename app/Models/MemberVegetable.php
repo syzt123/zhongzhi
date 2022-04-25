@@ -19,7 +19,7 @@ class MemberVegetable extends Model
     protected static function booted()
     {
         // 用户每次查看自己的蔬菜时看看是否坏掉
-        /*static::retrieved(function ($memberVegetable) {
+        static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
             if ($vegetableType == null) {
                 return;
@@ -36,9 +36,29 @@ class MemberVegetable extends Model
                 $memberVegetable->vegetable_grow = -1;
                 $memberVegetable->v_status = 3;
                 $memberVegetable->save();
+            } else {
+                switch (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())){
+                    case $vegetableType->grow_1:
+                        $memberVegetable->vegetable_grow = 1;
+                        break;
+                    case $vegetableType->grow_2:
+                        $memberVegetable->vegetable_grow = 2;
+                        break;
+                    case $vegetableType->grow_3:
+                        $memberVegetable->vegetable_grow = 3;
+                        break;
+                    case $vegetableType->grow_4:
+                        $memberVegetable->vegetable_grow = 4;
+                        break;
+                    case $vegetableType->grow_5:
+                        $memberVegetable->vegetable_grow = 5;
+                        break;
+                }
+                $memberVegetable->save();
             }
+
             $memberVegetable->makeHidden(['vegetable_type']);
-        });*/
+        });
     }
 
     public function vegetableType()
@@ -72,7 +92,7 @@ class MemberVegetable extends Model
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with(["vegetableLand", "user","vegetableType"])->where("m_id", '=', $uId);
+        $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("m_id", '=', $uId);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
