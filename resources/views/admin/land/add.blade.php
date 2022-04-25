@@ -34,6 +34,13 @@
             </div>
         </div>--}}
         <div class="layui-form-item">
+            <label class="layui-form-label">土地名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="required" lay-reqtext="土地名称是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">可种植的蔬菜量</label>
             <div class="layui-input-block">
                 <input type="number" name="v_num" lay-verify="required" lay-reqtext="可种植的蔬菜量是必填项，岂能为空？"
@@ -44,7 +51,7 @@
 
         <div class="row" style="padding:10px;">
             <h4 style="font-size: 40px;color: red;">上传视频到腾讯云点播</h4>
-            <input type="file" onchange="vExampleUpload(this)"/>
+            <input type="file" accept="video/*" onchange="vExampleUpload(this)"/>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">腾讯云点播url</label>
@@ -112,7 +119,7 @@
         };
 
         /*
-        * 防盗链地址获取。这是腾讯云官网demo的特殊逻辑，用户可忽略此处。
+        * 防盗链地址获取。
         */
         function getAntiLeechUrl(videoUrl, callback) {
             return axios.post('https://pay.zjzc88.com/api/v1/vod/getSign', JSON.stringify({
