@@ -125,6 +125,7 @@ class PayDemoController extends Controller
                                     "payment_order_id" => $orderInfo["id"],
                                     "v_name" => $vegetableTypeData["v_type"],//名字
                                     "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
+                                    "yield" => $vegetableTypeData["estimated_output"] * $v->nums ?? 100,
                                 ];
                             }
                         }
@@ -263,6 +264,7 @@ class PayDemoController extends Controller
                                     "payment_order_id" => $orderInfo["id"],
                                     "v_name" => $vegetableTypeData["v_type"],//名字
                                     "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
+                                    "yield" => $vegetableTypeData["estimated_output"] * $v->nums ?? 100,
                                 ];
                             }
 

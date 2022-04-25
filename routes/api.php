@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\HarvestController;
 use App\Http\Controllers\Api\V1\ExchangeController;
 use \App\Http\Controllers\Api\V1\PayDemoController;
 use \App\Http\Controllers\Api\V1\Ys\YsController;
+use \App\Http\Controllers\Api\V1\TencentVodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,10 @@ Route::prefix("v1")->group(function () {
     Route::prefix("ys")->group(function () {
         Route::get('/getLiveAddress', [YsController::class, 'getLiveAddress']);//萤石  这种方式可以
     });
+    Route::prefix("vod")->group(function () {
+        Route::post('/getSign', [TencentVodController::class, 'getSign']);//腾讯云点播签名
+    });
+
 
 });
 
@@ -106,7 +111,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         //获取用户的蔬菜详情
         Route::post('/userDetailVegetable', [UserController::class, 'userDetailVegetable']);//获取用户的蔬菜详情
 
-       //获取用户的兑换蔬菜列表
+        //获取用户的兑换蔬菜列表
         Route::post('/userExchangeLogList', [UserExchangeLogController::class, 'userExchangeLogList']);//获取用户兑换的蔬菜列表
         //获取用户的兑换蔬菜详情
         Route::get('/userDetailExchangeLog/{id}', [UserExchangeLogController::class, 'userDetailExchangeLog']);//获取用户兑换的蔬菜详情

@@ -72,7 +72,7 @@ class MemberVegetable extends Model
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with(["vegetableLand", "user","vegetableType"])->where("m_id", '=', $uId);
+        $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("m_id", '=', $uId);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
@@ -87,6 +87,13 @@ class MemberVegetable extends Model
         if (isset($data["page_size"])) {
             $pageSize = $data["page_size"];
             unset($data["page_size"]);
+        }
+        if (isset($data["v_status"]) && is_array($data["v_status"])) {
+            $lists = $lists->whereIn("v_status", $data["v_status"]);//如果是数组表示未坏掉[1,2]
+            unset($data["v_status"]);
+        } elseif (isset($data["v_status"]) && (int)$data["v_status"] > 0) {
+            $lists = $lists->where('v_status', '=', (int)$data["v_status"]); //1 生长 2成熟 3坏掉
+            unset($data["v_status"]);
         }
         if (count($data)) {
             $lists = $lists->where($data);
@@ -123,6 +130,13 @@ class MemberVegetable extends Model
         }
         if (isset($data["page_size"])) {
             unset($data["page_size"]);
+        }
+        if (isset($data["v_status"]) && is_array($data["v_status"])) {
+            $model = $model->whereIn("v_status", $data["v_status"]);//如果是数组表示未坏掉[1,2]
+            unset($data["v_status"]);
+        } elseif (isset($data["v_status"]) && (int)$data["v_status"] > 0) {
+            $model = $model->where('v_status', '=', (int)$data["v_status"]); //1 生长 2成熟 3坏掉
+            unset($data["v_status"]);
         }
         if (count($data) > 0) {
             $model = $model->where($data);
