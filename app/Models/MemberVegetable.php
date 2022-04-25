@@ -19,7 +19,7 @@ class MemberVegetable extends Model
     protected static function booted()
     {
         // 用户每次查看自己的蔬菜时看看是否坏掉
-        /*static::retrieved(function ($memberVegetable) {
+        static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
             if ($vegetableType == null) {
                 return;
@@ -32,13 +32,29 @@ class MemberVegetable extends Model
                 $vegetableType->storage_time
             ]);
             // 种植时间 + 生长过程 + 可存储时间 <= 当前时间 视为坏掉
-            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($termOfValidity)->lte(Carbon::now())) {
+
+            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
+                <= $vegetableType->grow_2) {
+                $memberVegetable->vegetable_grow = 1;
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
+                <= $tow = bcadd($vegetableType->grow_2, $vegetableType->grow_3)) {
+                $memberVegetable->vegetable_grow = 2;
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
+                <= $three = bcadd($vegetableType->grow_4, $tow)) {
+                $memberVegetable->vegetable_grow = 3;
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
+                <= $four = bcadd($vegetableType->grow_5, $three)) {
+                $memberVegetable->vegetable_grow = 4;
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
+                <= $five = bcadd($four, $vegetableType->storage_time)) {
+                $memberVegetable->vegetable_grow = 5;
+            } else {
                 $memberVegetable->vegetable_grow = -1;
                 $memberVegetable->v_status = 3;
-                $memberVegetable->save();
             }
+            $memberVegetable->save();
             $memberVegetable->makeHidden(['vegetable_type']);
-        });*/
+        });
     }
 
     public function vegetableType()
