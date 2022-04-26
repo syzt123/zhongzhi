@@ -29,10 +29,10 @@ class DeliveryOrderController extends Controller
      *     description="新增物流订单(2022/03/31已完成)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="m_v_ids", in="query", @OA\Schema(type="string"),description="要兑换的蔬菜ids ,id为用户蔬菜的主键id",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
-     *     @OA\Parameter(name="f_price", in="query", @OA\Schema(type="string"),description="蔬菜兑换时的蔬菜币"),
-     *     @OA\Parameter(name="u_name", in="query", @OA\Schema(type="string"),description="用户收货人名字"),
-     *     @OA\Parameter(name="u_tel", in="query", @OA\Schema(type="string"),description="用户收货人电话"),
-     *     @OA\Parameter(name="des_address", in="query", @OA\Schema(type="string"),description="用户收货地址"),
+     *     @OA\Parameter(name="f_price", in="query", @OA\Schema(type="string"),description="蔬菜兑换时的蔬菜币 默认0"),
+     *     @OA\Parameter(name="u_name", in="query", @OA\Schema(type="string"),description="用户收货人名字 默认读用户收货人名称 不必传"),
+     *     @OA\Parameter(name="u_tel", in="query", @OA\Schema(type="string"),description="用户收货人电话 默认读用户收货人电话 不必传"),
+     *     @OA\Parameter(name="des_address", in="query", @OA\Schema(type="string"),description="用户收货地址 默认读用户收货地址 不必传"),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -109,10 +109,10 @@ class DeliveryOrderController extends Controller
 
         }
 
-        if (!isset($request->des_address)) {
+        if (!isset($userInfo["v_address"])) {
             return $this->backArr('收货地址必须', config("comm_code.code.fail"), []);
         }
-        if ($request->des_address == '') {
+        if ($userInfo["v_address"] == '') {
             return $this->backArr('收货地址不能为空', config("comm_code.code.fail"), []);
         }
 
@@ -122,7 +122,7 @@ class DeliveryOrderController extends Controller
         $data = [
             "m_id" => $userInfo["id"],
             "r_id" => 1,//1 微信支付 2 支付宝 3其他
-            "f_price" => $request->f_price,//兑换的金额
+            "f_price" => $request->f_price ?? 0,//兑换的金额
             "m_v_ids" => $request->m_v_ids ?? '[]',
             "order_id" => $this->getUniqueOrderNums(),//
             "create_time" => $time,
@@ -130,7 +130,7 @@ class DeliveryOrderController extends Controller
             "status" => 1,//默认待配送
             "u_tel" => $userInfo["v_tel"],
             "u_name" => $userInfo["v_name"],
-            "des_address" => $request->des_address,
+            "des_address" => $userInfo["v_address"],
             "total_price" => $totalPrice ?? 0,
         ];
         $bool = DeliveryOrderService::addDeliveryOrder($data);
