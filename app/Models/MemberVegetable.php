@@ -88,7 +88,7 @@ class MemberVegetable extends Model
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("m_id", '=', $uId);
+        $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("m_id", '=', $uId)->where("nums", '>', 0);;
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
@@ -136,7 +136,7 @@ class MemberVegetable extends Model
     // 总数
     static function getMemberVegetableNumsByUId($uId, $data = []): int
     {
-        $model = self::with([])->where("m_id", $uId);
+        $model = self::with([])->where("m_id", $uId)->where("nums", '>', 0);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $model = $model->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
