@@ -14,11 +14,18 @@
         <legend>编辑土地</legend>
     </fieldset>
     <form class="layui-form" action="" id="addLandForm">
-        <div class="layui-form-item">
+        {{--<div class="layui-form-item">
             <label class="layui-form-label">摄像头地址</label>
             <div class="layui-input-block">
                 <input type="text" name="monitor" value="{{$land->monitor}}" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
                        placeholder="请输入" class="layui-input">
+            </div>
+        </div>--}}
+        <div class="layui-form-item">
+            <label class="layui-form-label">土地名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="required" value="{{$land->name}}"  lay-reqtext="土地名称是必填项，岂能为空？"
+                       placeholder="请输入" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -29,6 +36,25 @@
             </div>
         </div>
 
+
+        <div class="row" style="padding:10px;">
+            <h4 style="font-size: 40px;color: red;">上传视频到腾讯云点播</h4>
+            <input type="file" accept="video/*" onchange="vExampleUpload(this)"/>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">腾讯云点播url</label>
+            <div class="layui-input-block">
+                <input type="text" name="tx_video_url" id="tx_video_url" value="{{$land->tx_video_url}}" style="background: #cccccc" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
+                       placeholder="点击上传视频文件即自动填充"  readonly class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">腾讯云文件ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="tx_video_id" id="tx_video_id" value="{{$land->tx_video_id}}" style="background: #cccccc" autocomplete="off" lay-verify="required" lay-reqtext="摄像头地址是必填项，岂能为空？"
+                       placeholder="点击上传视频文件即自动填充" readonly class="layui-input">
+            </div>
+        </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">状态</label>
@@ -48,6 +74,101 @@
 @endsection
 @section('js')
 
+    <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        /**
+         * 计算签名。
+         **/
+        function getSignature() {
+            return axios.post('https://pay.zjzc88.com/api/v1/vod/getSign', JSON.stringify({
+                "Action": "GetUgcUploadSign"
+            })).then(function (response) {
+                console.log(response);//return;
+                return response.data.data.sign
+            });
+        };
+
+        /*
+        * 防盗链地址获取。
+        */
+        function getAntiLeechUrl(videoUrl, callback) {
+            return axios.post('https://pay.zjzc88.com/api/v1/vod/getSign', JSON.stringify({
+                Action: "GetAntiLeechUrl",
+                Url: videoUrl,
+            })).then(function (response) {
+                return response.data.data.url
+            })
+        }
+
+        /**
+         * 上传
+         * @param rs
+         */
+        var uploaderInfos = [];
+        function vExampleUpload(rs) {
+            // new 新对象
+            var tcInstance = new TcVod.default({
+                getSignature: getSignature
+            })
+            if (rs.files[0] === undefined) {
+                return;
+            }
+            var mediaFile = rs.files[0]
+
+            var uploader = tcInstance.upload({
+                mediaFile: mediaFile,
+            })
+            uploader.on('media_progress', function (info) {
+                uploaderInfo.progress = info.percent;
+            })
+            uploader.on('media_upload', function (info) {
+                uploaderInfo.isVideoUploadSuccess = true;
+            })
+
+            // console.log(uploader, 'uploader')
+
+            var uploaderInfo = {
+                videoInfo: uploader.videoInfo,
+                isVideoUploadSuccess: false,
+                isVideoUploadCancel: false,
+                progress: 0,
+                fileId: '',
+                videoUrl: '',
+                cancel: function () {
+                    uploaderInfo.isVideoUploadCancel = true;
+                    uploader.cancel()
+                },
+            }
+
+            // this.uploaderInfos.push(uploaderInfo)
+
+
+            uploader.done().then(function (doneResult) {
+                console.log('doneResult', doneResult)
+                uploaderInfo.fileId = doneResult.fileId;
+
+                // 赋值
+                $("#tx_video_url").val(doneResult.video.url)
+                $("#tx_video_id").val(doneResult.fileId)
+                //$("#cover_id").val(doneResult.cover.url)
+                return getAntiLeechUrl(doneResult.video.url);
+            }).then(function (videoUrl) {
+                uploaderInfo.videoUrl = videoUrl
+                //rs.reset();
+            })
+
+
+
+            // rs.reset()
+            console.log('执行完')
+        }
+
+        //let sign = getSignature();
+
+
+    </script>
 
     //JS
     <script>
