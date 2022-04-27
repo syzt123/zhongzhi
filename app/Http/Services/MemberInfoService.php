@@ -77,4 +77,11 @@ class MemberInfoService extends BaseService
     {
         return MemberInfo::decreaseVegetableNums($uId, $nums);
     }
+
+    // 减少用户蔬菜币
+    static function decreaseUserGoldNums($uId, $gold = 0): int
+    {
+        return MemberInfo::decreaseUserGoldNums($uId, $gold);
+
+    }
 }

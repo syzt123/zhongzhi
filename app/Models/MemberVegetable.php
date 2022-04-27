@@ -198,9 +198,12 @@ class MemberVegetable extends Model
     }
 
     // 更新数量
-    static function updateNumsMemberVegetableById($id, $uId, $nums = 1)
+    static function updateNumsMemberVegetableById($id, $uId, $nums = 0, $yield = 0): int
     {
         $model = self::with([])->where("id", $id)->where("m_id", $uId);
+        if ($yield > 0) {
+            $model->decrement('yield', $yield);
+        }
         return $model->decrement('nums', $nums);
     }
 
