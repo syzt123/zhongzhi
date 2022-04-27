@@ -50,7 +50,7 @@ class MemberVegetable extends Model
                 $memberVegetable->vegetable_grow = 5;
             } else {
                 $memberVegetable->vegetable_grow = -1;
-                $memberVegetable->v_status = 3;
+//                $memberVegetable->v_status = 3;
             }
             $memberVegetable->save();
             $memberVegetable->makeHidden(['vegetable_type']);
@@ -168,8 +168,8 @@ class MemberVegetable extends Model
     {
         $model = self::with([])
             ->where("m_id", $uId)
-            ->where("vegetable_grow", '>', '0')
-            ->where("v_status", "=", 1);
+//            ->where("vegetable_grow", '>', '0')
+            ->where("v_status", "!=", 3);
         return $model->get();
     }
 
