@@ -88,11 +88,18 @@ class MemberVegetable extends Model
     // 查询
     static function getMemberVegetableList($uId, $data = []): array
     {
-        $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("m_id", '=', $uId)->where("nums", '>', 0);;
+        $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("nums", '>', 0);;
+
+        if ($uId == null) {//平台蔬菜列表
+            $lists = $lists->whereNull("m_id");
+        } else {
+            $lists = $lists->where("m_id", '=', $uId);
+        }
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
         }
+        //var_dump($data);exit();
         $page = 1;
         $pageSize = 10;
         $sort = 'desc';// desc asc
@@ -111,6 +118,8 @@ class MemberVegetable extends Model
             $lists = $lists->where('v_status', '=', (int)$data["v_status"]); //1 生长 2成熟 3坏掉
             unset($data["v_status"]);
         }
+
+
         if (count($data)) {
             $lists = $lists->where($data);
         }
@@ -118,6 +127,9 @@ class MemberVegetable extends Model
         $lists = $lists->skip($skipNums)->limit($pageSize)->orderBy("id", $sort)->get();
 
         if ($lists) {
+            if ($uId == null) {
+                $lists = $lists->makeHidden(["vegetableLand", "user"]);
+            }
             return $lists->toArray();
         }
         return [];
