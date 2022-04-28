@@ -248,12 +248,12 @@ class ExchangeController extends Controller
                     'm_id' => $user['id'],
                     'm_v_id' => $request->vegetable_id,
                     'f_price' => $memberVegetable->f_price,
-                    'v_num' => $memberVegetable->yield,
+                    'v_num' => $memberVegetable->nums,
                     'n_price' => $memberVegetable->f_price,
                     'create_time' => time()
                 ]);
                 if ($log) {
-                    $memberVegetable->yield = 0;
+                    $memberVegetable->nums = 0; //数量归0
                     $memberVegetable->save();
                     $user->gold += $memberVegetable->f_price;
                 }
