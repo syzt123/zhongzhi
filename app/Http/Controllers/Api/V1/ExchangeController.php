@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\DeliveryOrderService;
+use App\Http\Services\MemberInfoService;
 use App\Models\ExchangeLog;
 use App\Models\MemberInfo;
 use App\Models\MemberVegetable;
@@ -244,7 +245,7 @@ class ExchangeController extends Controller
                 if ($memberVegetable->yield <= 0) {
                     return $this->error('该蔬菜剩余量不足！');
                 }
-                $gold = bcmul($memberVegetable->f_price,$memberVegetable->nums,2);
+                $gold = bcmul($memberVegetable->f_price, $memberVegetable->nums, 2);
                 $log = ExchangeLog::create([
                     'm_id' => $user['id'],
                     'm_v_id' => $request->vegetable_id,
@@ -260,6 +261,13 @@ class ExchangeController extends Controller
                 }
                 $res = $user->save();
                 if ($res) {
+                    $user->refresh();
+                    // 更新缓存
+                    $tmpData = $user->toArray();
+                    $tmpRsJson = json_encode($tmpData);
+                    // 保存更新缓存
+                    $days = 15 * 24 * 60 * 60;
+                    Redis::setex(config("comm_code.redis_prefix.token") . $request->header("token"), $days, $tmpRsJson);
                     return $this->success($res, '兑换成功！');
                 } else {
                     return $this->error('兑换失败！');
