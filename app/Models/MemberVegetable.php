@@ -33,20 +33,15 @@ class MemberVegetable extends Model
             ]);
             // 种植时间 + 生长过程 + 可存储时间 <= 当前时间 视为坏掉
 
-            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
-                <= $vegetableType->grow_2) {
+            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($vegetableType->grow_2)->lte(Carbon::now())) {
                 $memberVegetable->vegetable_grow = 1;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
-                <= $tow = bcadd($vegetableType->grow_2, $vegetableType->grow_3)) {
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($tow = bcadd($vegetableType->grow_2, $vegetableType->grow_3))->lte(Carbon::now())) {
                 $memberVegetable->vegetable_grow = 2;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
-                <= $three = bcadd($vegetableType->grow_4, $tow)) {
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($three = bcadd($vegetableType->grow_4, $tow))->lte(Carbon::now())) {
                 $memberVegetable->vegetable_grow = 3;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
-                <= $four = bcadd($vegetableType->grow_5, $three)) {
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($four = bcadd($vegetableType->grow_5, $three))->lte(Carbon::now())) {
                 $memberVegetable->vegetable_grow = 4;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->lte(Carbon::now())
-                <= $five = bcadd($four, $vegetableType->storage_time)) {
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($five = bcadd($four, $vegetableType->storage_time))->lte(Carbon::now())) {
                 $memberVegetable->vegetable_grow = 5;
             } else {
                 $memberVegetable->vegetable_grow = -1;
