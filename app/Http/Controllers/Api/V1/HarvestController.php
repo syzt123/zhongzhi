@@ -38,7 +38,7 @@ class HarvestController extends Controller
 
         if (!$memberVegetable) {
             return $this->error('该蔬菜可能不是您的哦');
-        } elseif ($memberVegetable->vegetable_grow !== 5) {
+        } elseif ($memberVegetable->vegetable_grow !== 4) {
             return $this->error('您的蔬菜未在成熟期无法入库！');
         } elseif ($memberVegetable->vegetable_grow <= 0) {
             $memberVegetable->v_status = 3;
