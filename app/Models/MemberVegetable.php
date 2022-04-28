@@ -19,7 +19,7 @@ class MemberVegetable extends Model
     protected static function booted()
     {
         // 用户每次查看自己的蔬菜时看看是否坏掉
-        static::retrieved(function ($memberVegetable) {
+        /*static::retrieved(function ($memberVegetable) {
             $vegetableType = $memberVegetable->vegetableType;
             if ($vegetableType == null) {
                 return;
@@ -50,7 +50,7 @@ class MemberVegetable extends Model
             }
             $memberVegetable->save();
             $memberVegetable->makeHidden(['vegetable_type']);
-        });
+        });*/
     }
 
     public function vegetableType()
