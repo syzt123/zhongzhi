@@ -614,7 +614,7 @@ class UserController extends Controller
         }
 
         $data["v_status"] = 2;//已成熟 仓库中
-        $data["vegetable_grow"] = 1;//已入库 不含分类
+        $data["vegetable_grow"] = 0;//已入库 不含分类
         $lists = MemberVegetableService::getMemberVegetableList($userInfo["id"], $data);
         return $this->backArr('获取列表成功', config("comm_code.code.ok"), $lists);
     }
