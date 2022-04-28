@@ -201,7 +201,7 @@ class MemberVegetable extends Model
     {
         $model = self::with([])
             ->where("m_id", $uId)
-//            ->where("vegetable_grow", '>', '0')
+            ->where("vegetable_grow", '>', '0')
             ->where("v_status", "!=", 3);
         return $model->get();
     }
