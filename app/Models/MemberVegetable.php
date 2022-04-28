@@ -202,7 +202,7 @@ class MemberVegetable extends Model
     {
         $model = self::with([])
             ->where("m_id", $uId)
-            ->wehwe('nums', ">", 0)
+            ->where('nums', ">", 0)
             ->where("vegetable_grow", '>', '0')
             ->where("v_status", "!=", 3);
         return $model->get();
