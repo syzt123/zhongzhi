@@ -244,18 +244,19 @@ class ExchangeController extends Controller
                 if ($memberVegetable->yield <= 0) {
                     return $this->error('该蔬菜剩余量不足！');
                 }
+                $gold = bcmul($memberVegetable->f_price,$memberVegetable->nums,2);
                 $log = ExchangeLog::create([
                     'm_id' => $user['id'],
                     'm_v_id' => $request->vegetable_id,
                     'f_price' => $memberVegetable->f_price,
                     'v_num' => $memberVegetable->nums,
-                    'n_price' => $memberVegetable->f_price,
+                    'n_price' => $gold,
                     'create_time' => time()
                 ]);
                 if ($log) {
                     $memberVegetable->nums = 0; //数量归0
                     $memberVegetable->save();
-                    $user->gold += $memberVegetable->f_price;
+                    $user->gold += (int)$gold;
                 }
                 $res = $user->save();
                 if ($res) {
