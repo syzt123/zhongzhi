@@ -233,6 +233,8 @@ class ExchangeController extends Controller
             $user = MemberInfo::find($user['id']);
             $memberVegetable = MemberVegetable::where('vegetable_type_id', '=', $request->vegetable_id)
                 ->where('id', '=', $request->id)
+                ->where('m_id', '=', $user['id'])
+                ->where('nums', '>', 0)
                 ->where('vegetable_grow', '=', 0)
                 ->where('v_status', '=', 2)
                 ->first();
