@@ -29,20 +29,21 @@ class MemberVegetable extends Model
                 $vegetableType->grow_3,
                 $vegetableType->grow_4,
                 $vegetableType->grow_5,
+
                 $vegetableType->storage_time
             ]);
-            // 种植时间 + 生长过程 + 可存储时间 <= 当前时间 视为坏掉
+            // 种植时间 + 生长过程 + 可存储时间 <= 当前时间 视为坏掉  将之前的5个时期改成 幼苗期，生长期，成熟期
 
-            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($vegetableType->grow_2)->lte(Carbon::now())) {
-                $memberVegetable->vegetable_grow = 1;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($tow = bcadd($vegetableType->grow_2, $vegetableType->grow_3))->lte(Carbon::now())) {
-                $memberVegetable->vegetable_grow = 2;
+            if (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($one = $vegetableType->grow_2)->lte(Carbon::now())) {
+                $memberVegetable->vegetable_grow = 2; // 幼苗期
+            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($tow = bcadd($one, $vegetableType->grow_3))->lte(Carbon::now())) {
+                $memberVegetable->vegetable_grow = 3; // 生长期
             } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($three = bcadd($vegetableType->grow_4, $tow))->lte(Carbon::now())) {
-                $memberVegetable->vegetable_grow = 3;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($four = bcadd($vegetableType->grow_5, $three))->lte(Carbon::now())) {
-                $memberVegetable->vegetable_grow = 4;
-            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($five = bcadd($four, $vegetableType->storage_time))->lte(Carbon::now())) {
-                $memberVegetable->vegetable_grow = 5;
+                $memberVegetable->vegetable_grow = 4; // 原成年期->成熟期
+//            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($four = bcadd($vegetableType->grow_5, $three))->lte(Carbon::now())) {
+//                $memberVegetable->vegetable_grow = 5;
+//            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($five = bcadd($four, $vegetableType->storage_time))->lte(Carbon::now())) {
+//                $memberVegetable->vegetable_grow = 5;
             } else {
                 $memberVegetable->vegetable_grow = -1;
 //                $memberVegetable->v_status = 3;
