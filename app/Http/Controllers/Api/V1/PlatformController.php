@@ -104,7 +104,8 @@ class PlatformController extends Controller
             $data["page_size"] = $request->page_size;
         }
 
-        $data["vegetable_grow"] = 1;//已入库 不含分类
+        $data["vegetable_grow"] = 0;//已入库 不含分类
+        $data["v_status"] = 2;//已入库 不含分类
         $lists = MemberVegetableService::getMemberVegetableList(null, $data);
         return $this->backArr('获取列表成功', config("comm_code.code.ok"), $lists);
     }

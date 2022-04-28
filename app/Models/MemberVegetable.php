@@ -40,6 +40,7 @@ class MemberVegetable extends Model
                 $memberVegetable->vegetable_grow = 2; // 幼苗->生长期
             } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($three = bcadd($vegetableType->grow_3, $tow))->lte(Carbon::now())) {
                 $memberVegetable->vegetable_grow = 3; // 生长->成熟期
+                $memberVegetable->v_status = 2;
 //            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($four = bcadd($vegetableType->grow_5, $three))->lte(Carbon::now())) {
 //                $memberVegetable->vegetable_grow = 5;
 //            } elseif (Carbon::createFromTimestamp($memberVegetable->planting_time)->addDays($five = bcadd($four, $vegetableType->storage_time))->lte(Carbon::now())) {
