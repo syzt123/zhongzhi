@@ -174,6 +174,17 @@ class MemberVegetable extends Model
         $model = self::with([])
             ->where("m_id", $uId)
             ->where("v_type", $vegetable_id);
+
+        return $model->first();
+    }
+
+    // 获取用户指定蔬菜2
+    static function getMemberVegetableByUId2($uId, $vegetable_id)
+    {
+        $model = self::with([])
+            ->where("m_id", $uId)
+            ->where("id", $vegetable_id);
+
         return $model->first();
     }
 
