@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\ExchangeController;
 use \App\Http\Controllers\Api\V1\PayDemoController;
 use \App\Http\Controllers\Api\V1\Ys\YsController;
 use \App\Http\Controllers\Api\V1\TencentVodController;
+use \App\Http\Controllers\Api\V1\PlatformController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,6 +117,13 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
         //获取用户的兑换蔬菜详情
         Route::get('/userDetailExchangeLog/{id}', [UserExchangeLogController::class, 'userDetailExchangeLog']);//获取用户兑换的蔬菜详情
 
+
+    });
+
+    //平台数据
+    Route::prefix("platform")->group(function () {
+        //获取平台的蔬菜列表 仓库 无用户id
+        Route::post('/vegetableList', [PlatformController::class, 'vegetableList']);//获取用户的蔬菜列表 不包含分类
 
     });
 
