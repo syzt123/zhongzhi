@@ -31,7 +31,7 @@ class PaymentOrderController extends Controller
      *     description="用户领取种子新增订单(2022/04/14已完成 支持多种蔬菜种子领取)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="v_ids", in="query", @OA\Schema(type="string"),description="蔬菜主键ids 如白菜",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
-     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 h5_wechat:微信h5支付支付 js_wechat:（微信公众号支付 需要获取oendId） native_wechat：（Native支付是指商户系统按微信支付协议生成支付二维码，用户再用微信“扫一扫”完成支付的模式。该模式适用于PC网站、实体店单品或订单、媒体广告支付等场景）"),
+     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 h5_wechat:微信h5支付支付 js_wechat:（微信公众号支付 需要获取oendId） native_wechat：（Native支付是指商户系统按微信支付协议生成支付二维码，用户再用微信“扫一扫”完成支付的模式。该模式适用于PC网站、实体店单品或订单、媒体广告支付等场景） app_wechat:微信app支付方式"),
      *     @OA\Parameter(name="openid", in="query", @OA\Schema(type="string"),description="当支付类型为：js_wechat时 必须。其他类型支付不传"),
      *     @OA\Response(
      *         response=200,

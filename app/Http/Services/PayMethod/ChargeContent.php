@@ -14,6 +14,7 @@ class ChargeContent
         $this->payInstance = match ($payMethod) {
             'ali' => new AliPayCharge(),
             //'wechat' => new WechatPayCharge(),
+            "app_wechat" => new AppWechatPayCharge(),//需要审核通过
             "h5_wechat" => new H5WechatPayCharge(),//需要审核通过
             "js_wechat" => new JsWechatPayCharge(),//openid 必须关注公众号
             "native_wechat" => new NativeWechatPayCharge(),

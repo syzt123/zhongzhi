@@ -229,7 +229,7 @@ class Controller extends BaseController
     function getPayTypeList(): array
     {
         return [
-            "ali", "h5_wechat", "js_wechat", "native_wechat"
+            "ali", "h5_wechat", "js_wechat", "native_wechat", "app_wechat"
         ];
     }
 
