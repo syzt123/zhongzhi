@@ -25,6 +25,7 @@ class PlatformController extends Controller
      *     summary="平台已成熟入库蔬菜列表（不含分类）",
      *     description="平台已收货蔬菜列表(2022/04/28日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
+     *     @OA\Parameter(name="class_id", in="query", @OA\Schema(type="string"),description="分类id 非必须字段"),
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -103,8 +104,11 @@ class PlatformController extends Controller
         if (isset($request->page_size) && (int)$request->page_size > 0) {
             $data["page_size"] = $request->page_size;
         }
+        if (isset($request->class_id)&&(int)$request->class_id > 0) {
+            $data["vegetable_type_id"] = (int)$request->class_id;
+        }
 
-        $data["vegetable_grow"] = 0;//已入库 不含分类
+        $data["vegetable_grow"] = 1;//已入库 不含分类
         $data["v_status"] = 2;//已入库 不含分类
         $lists = MemberVegetableService::getMemberVegetableList(null, $data);
         return $this->backArr('获取列表成功', config("comm_code.code.ok"), $lists);
