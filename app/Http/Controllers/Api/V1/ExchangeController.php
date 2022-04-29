@@ -14,6 +14,7 @@ use App\Models\VegetableType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use function Sodium\compare;
+use Illuminate\Support\Facades\Redis;
 
 class ExchangeController extends Controller
 {
