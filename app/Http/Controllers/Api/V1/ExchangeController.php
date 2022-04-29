@@ -258,6 +258,7 @@ class ExchangeController extends Controller
                     $memberVegetable->nums = 0; //数量归0
                     $memberVegetable->save();
                     $user->gold += (int)$gold;
+
                 }
                 $res = $user->save();
                 if ($res) {
