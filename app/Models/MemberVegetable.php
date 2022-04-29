@@ -87,16 +87,15 @@ class MemberVegetable extends Model
     {
         $lists = self::with(["vegetableLand", "user", "vegetableType"])->where("nums", '>', 0);;
 
-        if ($uId == null) {//平台蔬菜列表
-            $lists = $lists->whereNull("m_id");
-        } else {
-            $lists = $lists->where("m_id", '=', $uId);
+        if ($uId === null){
+            $lists = $lists->whereNull("m_id");// 平台的蔬菜
+        }else{
+            $lists = $lists->where("m_id",$uId);// 用户自己的蔬菜
         }
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $lists = $lists->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
         }
-        //var_dump($data);exit();
         $page = 1;
         $pageSize = 10;
         $sort = 'desc';// desc asc
@@ -145,10 +144,15 @@ class MemberVegetable extends Model
     // 总数
     static function getMemberVegetableNumsByUId($uId, $data = []): int
     {
-        $model = self::with([])->where("m_id", $uId)->where("nums", '>', 0);
+        $model = self::with([])->where("nums", '>', 0);
         if (isset($data["vegetable_grow"]) && $data["vegetable_grow"] > 0) {
             $model = $model->where('vegetable_grow', '>', 0);
             unset($data["vegetable_grow"]);
+        }
+        if ($uId === null){
+            $model = $model->whereNull("m_id");// 平台的蔬菜
+        }else{
+            $model = $model->where("m_id",$uId);// 用户自己的蔬菜
         }
         if (isset($data["page"])) {
             unset($data["page"]);

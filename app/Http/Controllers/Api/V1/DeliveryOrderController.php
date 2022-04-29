@@ -99,7 +99,10 @@ class DeliveryOrderController extends Controller
                     $mVData = [
                         "id" => $v->id,
                     ];
-                    $mVInfo = MemberVegetableService::getMemberVegetableList($userInfo["id"], $mVData);
+                    $mVInfo = MemberVegetableService::getMemberVegetableList($userInfo["id"], $mVData);//用户自己的蔬菜
+                    if (!count($mVInfo["list"])) {
+                        $mVInfo = MemberVegetableService::getMemberVegetableList(null, $mVData);//平台蔬菜
+                    }
                     if (!count($mVInfo["list"])) {
                         return $this->backArr('用户想兑换蔬不存在，请重试！', config("comm_code.code.fail"), []);
                     }
