@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\MemberInfoService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -250,5 +251,29 @@ class Controller extends BaseController
     function arrToXml($arr = []): string
     {
 
+    }
+
+    // 更新用户缓存
+    function updateUserCache($userToken = ''): int
+    {
+        // 更新缓存
+        $userInfo = $this->getUserInfo($userToken);
+
+        $tmpData = [
+            "tel" => $userInfo["tel"],
+        ];
+        $tmpRs = MemberInfoService::LoginUser($tmpData);
+        if (!count($tmpRs)) {
+            return -1;
+        }
+        $tmpRsJson = json_encode($tmpRs);
+        // 保存更新缓存
+        $days = 15 * 24 * 60 * 60;
+        $rs = Redis::setex(config("comm_code.redis_prefix.token") . $userToken, $days, $tmpRsJson);
+
+        if ($rs) {
+            return 1;
+        }
+        return 0;
     }
 }

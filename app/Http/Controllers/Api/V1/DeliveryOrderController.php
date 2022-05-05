@@ -99,9 +99,10 @@ class DeliveryOrderController extends Controller
                     $mVData = [
                         "id" => $v->id,
                     ];
-                    $mVInfo = MemberVegetableService::getMemberVegetableList($userInfo["id"], $mVData);//用户自己的蔬菜
+                    $selfVegetable = $mVInfo = MemberVegetableService::getMemberVegetableList($userInfo["id"], $mVData);//用户自己的蔬菜
+                    $platformVegetable = [];//平台蔬菜列表
                     if (!count($mVInfo["list"])) {
-                        $mVInfo = MemberVegetableService::getMemberVegetableList(null, $mVData);//平台蔬菜
+                        $platformVegetable = $mVInfo = MemberVegetableService::getMemberVegetableList(null, $mVData);//平台蔬菜
                     }
                     if (!count($mVInfo["list"])) {
                         return $this->backArr('用户想兑换蔬不存在，请重试！', config("comm_code.code.fail"), []);
@@ -117,7 +118,12 @@ class DeliveryOrderController extends Controller
                     $totalPrice += $mVInfo["list"][0]["v_price"] * $v->nums;
                     $useGold = ($mVInfo["list"][0]["yield"] / $mVInfo["list"][0]["nums"]) * $v->nums;
                     // 同时更新用户蔬菜数量 产量
-                    MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], $userInfo["id"], $v->nums, $useGold);
+                    if (count($platformVegetable) == 0) {
+                        MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], $userInfo["id"], $v->nums, $useGold);
+                    }else{
+                        // 平台蔬菜
+                        MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], null, $v->nums, $useGold);
+                    }
 
 
                     $name .= $mVInfo["list"][0]["v_name"] . '*' . (string)$v->nums . '_';
@@ -127,7 +133,8 @@ class DeliveryOrderController extends Controller
                     $vegetableInfo = VegetableTypeService::findVegetableTypeInfoById($mVInfo["list"][0]["v_type"]);
 
                     // 获取需要兑换的蔬菜币 数量*单价
-                    $allExchangeGold += (($mVInfo["list"][0]["yield"] / $mVInfo["list"][0]["nums"]) * $v->nums) / $vegetableInfo["exchange_quality"];
+                    //$allExchangeGold += (($mVInfo["list"][0]["yield"] / $mVInfo["list"][0]["nums"]) * $v->nums) / $vegetableInfo["exchange_quality"];
+                    $allExchangeGold += $mVInfo["list"][0]["f_price"] * $v->nums;// 新算法逻辑
                     // 获取蔬菜图片地址
                     $tmpImg = VegetableResources::with([])->where("vegetable_type_id", '=', $vegetableInfo["id"])->where("vegetable_type_id", '=', 3)->first();
                     if ($tmpImg) {
@@ -153,7 +160,8 @@ class DeliveryOrderController extends Controller
 
             // 更新用户蔬菜币
             MemberInfoService::decreaseUserGoldNums($userInfo["id"], $allExchangeGold);
-
+            // 更新缓存
+            $this->updateUserCache($request->header("token"));
             // 新增物流表
             $data = [
                 "m_id" => $userInfo["id"],
