@@ -288,7 +288,7 @@ class UserController extends Controller
                 return $this->backArr('新确认密码与输入要更改密码不符！', config("comm_code.code.ok"), []);
             }
             // 更新用户登陆密码
-            $data["password"] = trim($request->new_passwd);
+            $data["password"] = md5(trim($request->new_passwd));
         }
 
         try {
