@@ -268,7 +268,8 @@ class UserController extends Controller
 
         if (isset($request->old_passwd)) {//原密码
             //查询当前用户系信息
-            if (md5(trim($request->old_passwd)) != trim($userInfo["password"])) {
+            $personInfo = MemberInfoService::getUserInfo($userInfo["id"]);
+            if (md5(trim($request->old_passwd)) != trim($personInfo["password"])) {
                 return $this->backArr('输入的旧密码与当前用户密码不一致，请重试！', config("comm_code.code.ok"), []);
             }
             if (!isset($request->new_passwd)) {
