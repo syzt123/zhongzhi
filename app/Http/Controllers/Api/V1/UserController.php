@@ -31,7 +31,9 @@ class UserController extends Controller
      *     description="用户注册(2022/03/22日完)",
      *     @OA\Parameter(name="tel", in="query", @OA\Schema(type="string"),description="手机号"),
      *     @OA\Parameter(name="nickname", in="query", @OA\Schema(type="string"),description="用户昵称"),
-     *     @OA\Parameter(name="head_img", in="query", @OA\Schema(type="string"),description="用户头像"),
+     *     @OA\Parameter(name="passwd", in="query", @OA\Schema(type="string"),description="注册密码 如果不填则默认密码：12345678"),
+     *     @OA\Parameter(name="confirm_passwd", in="query", @OA\Schema(type="string"),description="确认密码 当注册密码不填写，非必须"),
+     *     @OA\Parameter(name="head_img", in="query", @OA\Schema(type="string"),description="用户头像 非必须"),
      *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
      *    )
      */
@@ -56,6 +58,19 @@ class UserController extends Controller
             return $this->backArr('用户昵称必须', config("comm_code.code.fail"), []);
         }
 
+        if (isset($request->passwd)) {
+            if (!isset($request->confirm_passwd)) {
+                return $this->backArr('确认密码必须', config("comm_code.code.fail"), []);
+            }
+            if (strlen($request->passwd) < 8) {
+                return $this->backArr('密码长度不能小于8位！', config("comm_code.code.fail"), []);
+            }
+            if ($request->passwd != $request->confirm_passwd) {
+                return $this->backArr('确认密码与输入密码不一致，请重试！', config("comm_code.code.fail"), []);
+            }
+        }
+
+
         // 通过后进行注册
         $time = time();
         $data = [
@@ -65,7 +80,7 @@ class UserController extends Controller
             "vegetable_num" => 0,
             "nickname" => $request->nickname,
             "gold" => 0,
-            "password" => md5("12345678"),
+            "password" => isset($request->passwd) ? md5(trim($request->passwd)) : md5("12345678"),
             "create_time" => $time,
             "update_time" => $time,
         ];
@@ -212,6 +227,9 @@ class UserController extends Controller
      *     @OA\Parameter (name="v_tel", in="query", @OA\Schema (type="string"),description="用户收获电话 *非必须字段"),
      *     @OA\Parameter (name="v_name", in="query", @OA\Schema (type="string"),description="用户收获人用户名 *非必须字段"),
      *     @OA\Parameter (name="nickname", in="query", @OA\Schema (type="string"),description="用户昵称 *非必须字段"),
+     *     @OA\Parameter (name="old_passwd", in="query", @OA\Schema (type="string"),description="旧密码 *非必须字段 当需要修改密码是该字段必须"),
+     *     @OA\Parameter (name="new_passwd", in="query", @OA\Schema (type="string"),description="新密码 *非必须字段 当需要修改密码是该字段必须"),
+     *     @OA\Parameter (name="new_con_passwd", in="query", @OA\Schema (type="string"),description="新确认密码 *非必须字段 当需要修改密码是该字段必须"),
      *     @OA\Response(response=200, description="{code: 200, msg:string, data:[]}"),
      *    )
      * @param Request $request
@@ -246,6 +264,30 @@ class UserController extends Controller
         if (isset($request->v_name) && trim($request->v_name) != '') {
             // 更新用户收货人名称
             $data["v_name"] = trim($request->v_name);
+        }
+
+        if (isset($request->old_passwd)) {//原密码
+            //查询当前用户系信息
+            if (md5(trim($request->old_passwd)) != trim($userInfo["password"])) {
+                return $this->backArr('输入的旧密码与当前用户密码不一致，请重试！', config("comm_code.code.ok"), []);
+            }
+            if (!isset($request->new_passwd)) {
+                return $this->backArr('新密码字段必须！', config("comm_code.code.ok"), []);
+            }
+            if (!isset($request->new_con_passwd)) {
+                return $this->backArr('新确认密码字段必须！', config("comm_code.code.ok"), []);
+            }
+            if (strlen(trim($request->new_passwd)) < 8) {
+                return $this->backArr('新密码长度须大于8位，请重试！', config("comm_code.code.ok"), []);
+            }
+            if (strlen(trim($request->new_con_passwd)) < 8) {
+                return $this->backArr('新确认密码长度须大于8位，请重试！', config("comm_code.code.ok"), []);
+            }
+            if (trim($request->new_con_passwd) != trim($request->new_passwd)) {
+                return $this->backArr('新确认密码与输入要更改密码不符！', config("comm_code.code.ok"), []);
+            }
+            // 更新用户登陆密码
+            $data["password"] = trim($request->new_passwd);
         }
 
         try {

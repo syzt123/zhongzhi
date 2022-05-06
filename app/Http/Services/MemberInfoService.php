@@ -63,6 +63,10 @@ class MemberInfoService extends BaseService
         if (isset($data["v_name"]) && trim($data["v_name"]) != '') {
             MemberInfo::updateUserInfo($uId, ["v_name" => $data["v_name"]]);
         }
+        // 更新用户密码
+        if (isset($data["password"]) && trim($data["password"]) != '') {
+            MemberInfo::updateUserInfo($uId, ["password" => $data["password"]]);
+        }
         return 1;
     }
 

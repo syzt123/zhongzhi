@@ -130,6 +130,7 @@ Route::middleware("check.token")->prefix("v1")->group(function () {
     //土地列表
     Route::prefix("land")->group(function () {
         Route::post('/lists', [LandController::class, 'landLists']);//土地列表
+        Route::get('/detail/{land_id}', [LandController::class, 'getDetailByLandId']);//土地详情
     });
 
     //蔬菜类型列表
