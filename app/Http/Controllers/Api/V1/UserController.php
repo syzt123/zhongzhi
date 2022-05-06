@@ -270,22 +270,22 @@ class UserController extends Controller
             //查询当前用户系信息
             $personInfo = MemberInfoService::getUserInfo($userInfo["id"]);
             if (md5(trim($request->old_passwd)) != trim($personInfo["password"])) {
-                return $this->backArr('输入的旧密码与当前用户密码不一致，请重试！', config("comm_code.code.ok"), []);
+                return $this->backArr('输入的旧密码与当前用户密码不一致，请重试！', config("comm_code.code.fail"), []);
             }
             if (!isset($request->new_passwd)) {
-                return $this->backArr('新密码字段必须！', config("comm_code.code.ok"), []);
+                return $this->backArr('新密码字段必须！', config("comm_code.code.fail"), []);
             }
             if (!isset($request->new_con_passwd)) {
-                return $this->backArr('新确认密码字段必须！', config("comm_code.code.ok"), []);
+                return $this->backArr('新确认密码字段必须！', config("comm_code.code.fail"), []);
             }
             if (strlen(trim($request->new_passwd)) < 8) {
-                return $this->backArr('新密码长度须大于8位，请重试！', config("comm_code.code.ok"), []);
+                return $this->backArr('新密码长度须大于8位，请重试！', config("comm_code.code.fail"), []);
             }
             if (strlen(trim($request->new_con_passwd)) < 8) {
-                return $this->backArr('新确认密码长度须大于8位，请重试！', config("comm_code.code.ok"), []);
+                return $this->backArr('新确认密码长度须大于8位，请重试！', config("comm_code.code.fail"), []);
             }
             if (trim($request->new_con_passwd) != trim($request->new_passwd)) {
-                return $this->backArr('新确认密码与输入要更改密码不符！', config("comm_code.code.ok"), []);
+                return $this->backArr('新确认密码与输入要更改密码不符！', config("comm_code.code.fail"), []);
             }
             // 更新用户登陆密码
             $data["password"] = md5(trim($request->new_passwd));
