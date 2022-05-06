@@ -95,14 +95,12 @@ class LandController extends Controller
      *             mediaType="application/json",
      *
      *             @OA\Schema(
-     *                  @OA\Items(
-     *                      @OA\Property(property="id", type="int", description="主键id"),
-     *                      @OA\Property(property="monitor", type="string", description="土地监控地址 已废弃"),
-     *                      @OA\Property(property="v_num", type="int", description="可以种植蔬菜数量"),
-     *                      @OA\Property(property="tx_video_url", type="string", description="腾讯云点播url地址 2022/04/26新增"),
-     *                      @OA\Property(property="tx_video_id", type="string", description="腾讯云点播唯一id 2022/04/26新增"),
-     *                      @OA\Property(property="create_time", type="int", description="创建时间戳"),
-     *                 ),
+     *                 @OA\Property(property="id", type="int", description="主键id"),
+     *                 @OA\Property(property="monitor", type="string", description="土地监控地址 已废弃"),
+     *                 @OA\Property(property="v_num", type="int", description="可以种植蔬菜数量"),
+     *                 @OA\Property(property="tx_video_url", type="string", description="腾讯云点播url地址 2022/04/26新增"),
+     *                 @OA\Property(property="tx_video_id", type="string", description="腾讯云点播唯一id 2022/04/26新增"),
+     *                 @OA\Property(property="create_time", type="int", description="创建时间戳"),
      *             ),
      *         ),
      *     ),
