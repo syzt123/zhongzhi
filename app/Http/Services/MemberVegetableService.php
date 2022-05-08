@@ -61,7 +61,7 @@ class MemberVegetableService extends BaseService
     // 用户蔬菜状态
     static function memberVegetableStatus($uId, $vegetable_id)
     {
-        return MemberVegetable::getMemberVegetableByUId($uId, $vegetable_id);
+        return MemberVegetable::getMemberVegetableByUId2($uId, $vegetable_id);
     }
 
     // 获取用户的蔬菜
@@ -69,6 +69,12 @@ class MemberVegetableService extends BaseService
     {
         return MemberVegetable::getMemberVegetablesByUId($uId);
     }
+
+    static function getGrowMemberVegetablesByUId($uid)
+    {
+        return MemberVegetable::getGrowMemberVegetablesByUId($uid);
+    }
+
 
     // 更新
     static function updateMemberVegetable($id, $data = []): int
@@ -82,16 +88,17 @@ class MemberVegetableService extends BaseService
      * @param $id
      * @param $uId
      * @param int $nums 减少的数 默认减一
+     * @param int $yieldNum
      * @return int
      */
-    static function updateNumsMemberVegetable($id, $uId, $nums = 1): int
+    static function updateNumsMemberVegetable($id, $uId, $nums = 1, $yieldNum = 0): int
     {
-        return MemberVegetable::updateNumsMemberVegetableById($id, $uId, $nums);
+        return MemberVegetable::updateNumsMemberVegetableById($id, $uId, $nums, $yieldNum);
 
     }
 
     //更新当种子存在则更新数量
-    static function addMemberVegetableNums($data=[], $nums=0): int
+    static function addMemberVegetableNums($data = [], $nums = 0): int
     {
         return MemberVegetable::addMemberVegetableNums($data, $nums);
     }

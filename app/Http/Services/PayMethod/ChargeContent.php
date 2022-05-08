@@ -11,20 +11,13 @@ class ChargeContent
     // 实例化
     public function initInstance($payMethod = 'ali'): self
     {
-        /*switch ($payMethod) {
-            case 'ali':
-                $this->payInstance = new AliPayCharge();
-                break;
-            case 'wechat':
-                $this->payInstance = new WechatPayCharge();
-                break;
-            default:
-                $this->payInstance = null;
-                break;
-        }*/
         $this->payInstance = match ($payMethod) {
             'ali' => new AliPayCharge(),
-            'wechat' => new WechatPayCharge(),
+            //'wechat' => new WechatPayCharge(),
+            "app_wechat" => new AppWechatPayCharge(),//需要审核通过
+            "h5_wechat" => new H5WechatPayCharge(),//需要审核通过
+            "js_wechat" => new JsWechatPayCharge(),//openid 必须关注公众号
+            "native_wechat" => new NativeWechatPayCharge(),
             default => null,
         };
         return $this;
@@ -32,11 +25,10 @@ class ChargeContent
     }
 
     //支付
-    public function handlePay(Request $request): string
+    public function handlePay(Request $request): array
     {
-        //var_dump($this);exit();
         if ($this->payInstance == null) {
-            return '';
+            return ["code" => -1, "data" => ["url" => ''], "message" => ''];
         }
         return $this->payInstance->payOrder($request);
     }

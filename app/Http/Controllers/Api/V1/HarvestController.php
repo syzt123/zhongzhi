@@ -38,8 +38,12 @@ class HarvestController extends Controller
 
         if (!$memberVegetable) {
             return $this->error('该蔬菜可能不是您的哦');
-        } elseif ($memberVegetable->vegetable_grow !== 5) {
+        } elseif ($memberVegetable->vegetable_grow !== 3) {
             return $this->error('您的蔬菜未在成熟期无法入库！');
+        } elseif ($memberVegetable->vegetable_grow <= 0) {
+            $memberVegetable->v_status = 3;
+            $memberVegetable->save();
+            return $this->error('您的蔬菜已坏掉无法入库！');
         } else {
             $memberVegetable->vegetable_grow = 0;
             $memberVegetable->v_status = 2;
@@ -81,8 +85,7 @@ class HarvestController extends Controller
         } elseif (!$memberInfo->v_address) {
             return $this->error('请完善您的收货地址！');
         } else {
-            if($memberVegetable->yield==0)
-            {
+            if ($memberVegetable->yield == 0) {
                 return $this->error('蔬菜产量不足无法配送！');
             }
             $data = [
@@ -99,7 +102,7 @@ class HarvestController extends Controller
             ];
             $res = DeliveryOrderService::addDeliveryOrder($data);
             if ($res) {
-                $memberVegetable->yield=0;
+                $memberVegetable->yield = 0;
                 $memberVegetable->save();
                 return $this->success([], '您的配送需求已提交，将在48小时内为你送达！');
             } else {

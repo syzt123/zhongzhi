@@ -31,7 +31,9 @@ class UserController extends Controller
      *     description="用户注册(2022/03/22日完)",
      *     @OA\Parameter(name="tel", in="query", @OA\Schema(type="string"),description="手机号"),
      *     @OA\Parameter(name="nickname", in="query", @OA\Schema(type="string"),description="用户昵称"),
-     *     @OA\Parameter(name="head_img", in="query", @OA\Schema(type="string"),description="用户头像"),
+     *     @OA\Parameter(name="passwd", in="query", @OA\Schema(type="string"),description="注册密码 如果不填则默认密码：12345678"),
+     *     @OA\Parameter(name="confirm_passwd", in="query", @OA\Schema(type="string"),description="确认密码 当注册密码不填写，非必须"),
+     *     @OA\Parameter(name="head_img", in="query", @OA\Schema(type="string"),description="用户头像 非必须"),
      *     @OA\Response(response=200, description="  {code: 200, msg:string, data:[]}  "),
      *    )
      */
@@ -56,6 +58,19 @@ class UserController extends Controller
             return $this->backArr('用户昵称必须', config("comm_code.code.fail"), []);
         }
 
+        if (isset($request->passwd)) {
+            if (!isset($request->confirm_passwd)) {
+                return $this->backArr('确认密码必须', config("comm_code.code.fail"), []);
+            }
+            if (strlen($request->passwd) < 8) {
+                return $this->backArr('密码长度不能小于8位！', config("comm_code.code.fail"), []);
+            }
+            if ($request->passwd != $request->confirm_passwd) {
+                return $this->backArr('确认密码与输入密码不一致，请重试！', config("comm_code.code.fail"), []);
+            }
+        }
+
+
         // 通过后进行注册
         $time = time();
         $data = [
@@ -65,7 +80,7 @@ class UserController extends Controller
             "vegetable_num" => 0,
             "nickname" => $request->nickname,
             "gold" => 0,
-            "password" => md5("12345678"),
+            "password" => isset($request->passwd) ? md5(trim($request->passwd)) : md5("12345678"),
             "create_time" => $time,
             "update_time" => $time,
         ];
@@ -209,7 +224,12 @@ class UserController extends Controller
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
      *     @OA\Parameter (name="head_img", in="query", @OA\Schema (type="string"),description="用户头像地址 *非必须字段"),
      *     @OA\Parameter (name="user_address", in="query", @OA\Schema (type="string"),description="用户收获地址 *非必须字段"),
+     *     @OA\Parameter (name="v_tel", in="query", @OA\Schema (type="string"),description="用户收获电话 *非必须字段"),
+     *     @OA\Parameter (name="v_name", in="query", @OA\Schema (type="string"),description="用户收获人用户名 *非必须字段"),
      *     @OA\Parameter (name="nickname", in="query", @OA\Schema (type="string"),description="用户昵称 *非必须字段"),
+     *     @OA\Parameter (name="old_passwd", in="query", @OA\Schema (type="string"),description="旧密码 *非必须字段 当需要修改密码是该字段必须"),
+     *     @OA\Parameter (name="new_passwd", in="query", @OA\Schema (type="string"),description="新密码 *非必须字段 当需要修改密码是该字段必须"),
+     *     @OA\Parameter (name="new_con_passwd", in="query", @OA\Schema (type="string"),description="新确认密码 *非必须字段 当需要修改密码是该字段必须"),
      *     @OA\Response(response=200, description="{code: 200, msg:string, data:[]}"),
      *    )
      * @param Request $request
@@ -234,6 +254,43 @@ class UserController extends Controller
             // 更新用户昵称
             $data["nickname"] = trim($request->nickname);
         }
+        if (isset($request->v_tel) && trim($request->v_tel) != '') {
+            if (!$this->checkPhone($request->v_tel)) {
+                return $this->backArr('手机号格式错误，请重试！', config("comm_code.code.ok"), []);
+            }
+            // 更新用户收货电话
+            $data["v_tel"] = trim($request->v_tel);
+        }
+        if (isset($request->v_name) && trim($request->v_name) != '') {
+            // 更新用户收货人名称
+            $data["v_name"] = trim($request->v_name);
+        }
+
+        if (isset($request->old_passwd)) {//原密码
+            //查询当前用户系信息
+            $personInfo = MemberInfoService::getUserInfo($userInfo["id"]);
+            if (md5(trim($request->old_passwd)) != trim($personInfo["password"])) {
+                return $this->backArr('输入的旧密码与当前用户密码不一致，请重试！', config("comm_code.code.fail"), []);
+            }
+            if (!isset($request->new_passwd)) {
+                return $this->backArr('新密码字段必须！', config("comm_code.code.fail"), []);
+            }
+            if (!isset($request->new_con_passwd)) {
+                return $this->backArr('新确认密码字段必须！', config("comm_code.code.fail"), []);
+            }
+            if (strlen(trim($request->new_passwd)) < 8) {
+                return $this->backArr('新密码长度须大于8位，请重试！', config("comm_code.code.fail"), []);
+            }
+            if (strlen(trim($request->new_con_passwd)) < 8) {
+                return $this->backArr('新确认密码长度须大于8位，请重试！', config("comm_code.code.fail"), []);
+            }
+            if (trim($request->new_con_passwd) != trim($request->new_passwd)) {
+                return $this->backArr('新确认密码与输入要更改密码不符！', config("comm_code.code.fail"), []);
+            }
+            // 更新用户登陆密码
+            $data["password"] = md5(trim($request->new_passwd));
+        }
+
         try {
             $bool = MemberInfoService::updateUserInfo($userInfo["id"], $data);
             if ($bool) {
@@ -517,7 +574,7 @@ class UserController extends Controller
      * @OA\Post (
      *     path="/api/v1/user/userVegetableExcludeTypeList",
      *     tags={"用户管理"},
-     *     summary="用户个人蔬菜列表（不含分类）",
+     *     summary="用户个人已成熟入库蔬菜列表（不含分类）",
      *     description="用户个人领取种植/仓库中/已收货蔬菜列表/(2022/04/13日完)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="header头token"),
      *     @OA\RequestBody(
@@ -539,7 +596,7 @@ class UserController extends Controller
      *                     type="int",
      *                     description="1：生长中 2.仓库中 3已坏掉 4:已完成送货 默认全部数据",
      *                 ),
-     *                 example={"page_size": 15, "page": 1,"class_id":1,"ststus":1}
+     *                 example={"page_size": 15, "page": 1}
      *             )
      *         )
      *     ),
@@ -598,11 +655,10 @@ class UserController extends Controller
         if (isset($request->page_size) && (int)$request->page_size > 0) {
             $data["page_size"] = $request->page_size;
         }
-        if (isset($request->status) && (int)$request->status > 0) {
-            $data["v_status"] = $request->status;
-        }
+
+        $data["v_status"] = 2;//已成熟 仓库中
+        $data["vegetable_grow"] = 0;//已入库 不含分类
         $lists = MemberVegetableService::getMemberVegetableList($userInfo["id"], $data);
         return $this->backArr('获取列表成功', config("comm_code.code.ok"), $lists);
-
     }
 }

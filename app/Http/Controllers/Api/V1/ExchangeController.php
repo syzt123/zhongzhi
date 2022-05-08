@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\DeliveryOrderService;
+use App\Http\Services\MemberInfoService;
 use App\Models\ExchangeLog;
 use App\Models\MemberInfo;
 use App\Models\MemberVegetable;
@@ -13,6 +14,7 @@ use App\Models\VegetableType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use function Sodium\compare;
+use Illuminate\Support\Facades\Redis;
 
 class ExchangeController extends Controller
 {
@@ -174,6 +176,7 @@ class ExchangeController extends Controller
         }
         return false;
     }
+
     /**
      * @OA\Post(
      *     path="/api/v1/exchange/coin",
@@ -188,7 +191,13 @@ class ExchangeController extends Controller
      *                     property="vegetable_id",
      *                     type="int"
      *                 ),
-     *                 example={"vegetable_id": 1}
+     *                 @OA\Property(
+     *                     property="id",
+     *                     type="int",
+     *                     description="用户蔬菜id 必须",
+     *                 ),
+     *                 example={"vegetable_id": 1, "id":1}
+     *
      *             )
      *         )
      *     ),
@@ -225,8 +234,11 @@ class ExchangeController extends Controller
         } else {
             $user = MemberInfo::find($user['id']);
             $memberVegetable = MemberVegetable::where('vegetable_type_id', '=', $request->vegetable_id)
-                ->where('vegetable_grow','=',0)
-                ->where('v_status','=',2)
+                ->where('id', '=', $request->id)
+                ->where('m_id', '=', $user['id'])
+                ->where('nums', '>', 0)
+                ->where('vegetable_grow', '=', 0)
+                ->where('v_status', '=', 2)
                 ->first();
             if (!$memberVegetable) {
                 return $this->error('未找到您的蔬菜或您的蔬菜已过期！');
@@ -234,21 +246,30 @@ class ExchangeController extends Controller
                 if ($memberVegetable->yield <= 0) {
                     return $this->error('该蔬菜剩余量不足！');
                 }
+                $gold = bcmul($memberVegetable->f_price, $memberVegetable->nums, 2);
                 $log = ExchangeLog::create([
                     'm_id' => $user['id'],
                     'm_v_id' => $request->vegetable_id,
                     'f_price' => $memberVegetable->f_price,
-                    'v_num' => $memberVegetable->yield,
-                    'n_price' => $memberVegetable->f_price,
+                    'v_num' => $memberVegetable->nums,
+                    'n_price' => $gold,
                     'create_time' => time()
                 ]);
                 if ($log) {
-                    $memberVegetable->yield = 0;
+                    $memberVegetable->nums = 0; //数量归0
                     $memberVegetable->save();
-                    $user->gold += $memberVegetable->f_price;
+                    $user->gold += (int)$gold;
+
                 }
                 $res = $user->save();
                 if ($res) {
+                    $user->refresh();
+                    // 更新缓存
+                    $tmpData = $user->toArray();
+                    $tmpRsJson = json_encode($tmpData);
+                    // 保存更新缓存
+                    $days = 15 * 24 * 60 * 60;
+                    Redis::setex(config("comm_code.redis_prefix.token") . $request->header("token"), $days, $tmpRsJson);
                     return $this->success($res, '兑换成功！');
                 } else {
                     return $this->error('兑换失败！');

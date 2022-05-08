@@ -5,12 +5,12 @@ namespace App\Http\Services\PayMethod;
 use Illuminate\Http\Request;
 use Yurun\PaySDK\AlipayApp\Params\PublicParams;
 use Yurun\PaySDK\AlipayApp\SDK;
-use Yurun\PaySDK\AlipayApp\Wap\Params\Pay\Request as yuRunRequest;
+use Yurun\PaySDK\AlipayApp\App\Params\Pay\Request as yuRunRequest;
 
 class AliPayCharge implements PayChargeStrategy
 {
-    // 支付宝
-    public function payOrder(Request $request):string
+    // 支付宝 app支付
+    public function payOrder(Request $request): array
     {
         // 支付 并通知回调
         // 公共配置
@@ -27,18 +27,17 @@ class AliPayCharge implements PayChargeStrategy
         // 支付接口
         $obj = new yuRunRequest;
         $obj->notify_url = config("comm_code.ali_config.notify_url"); // 支付后通知地址（作为支付成功回调，这个可靠）
-        $obj->return_url = config("comm_code.ali_config.return_url"); // 支付后跳转返回地址
-        $obj->businessParams->out_trade_no = $request->out_trade_no??'test' . mt_rand(10000000, 99999999); // 商户订单号
-        $obj->businessParams->total_amount = $request->total_amount??1.00; // 价格元
-        $obj->businessParams->subject = $request->subject??'小米手机9黑色陶瓷尊享版'; // 商品标题
-
+        //$obj->return_url = config("comm_code.ali_config.return_url"); // 支付后跳转返回地址
+        $obj->businessParams->out_trade_no = $request->out_trade_no ?? 'test' . mt_rand(10000000, 99999999); // 商户订单号
+        $obj->businessParams->total_amount = $request->total_amount ?? 0.01; // 价格元
+        $obj->businessParams->subject = $request->subject ?? '小米手机9黑色陶瓷尊享版'; // 商品标题
+        $obj->businessParams->passback_params = urlencode(json_encode(["pay_type"=>$request->pay_type]));
         // 跳转到支付页面
         //$pay->redirectExecute($obj);
 
         // 获取跳转url
-        $pay->prepareExecute($obj, $url);
-        return $url;
-        //var_dump($url);
+        $pay->prepareExecute($obj, $url, $data);
+        return ["code" => 200, "data" => ["url" => http_build_query($data)], "message" => ""];
     }
 
     public function notifyHandle(Request $request)

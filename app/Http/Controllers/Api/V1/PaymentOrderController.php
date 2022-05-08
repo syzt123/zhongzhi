@@ -31,7 +31,8 @@ class PaymentOrderController extends Controller
      *     description="用户领取种子新增订单(2022/04/14已完成 支持多种蔬菜种子领取)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="v_ids", in="query", @OA\Schema(type="string"),description="蔬菜主键ids 如白菜",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
-     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 wechat:微信支付 默认支付宝"),
+     *     @OA\Parameter(name="pay_type", in="query", @OA\Schema(type="string"),description="支付类型 ali：支付宝支付 h5_wechat:微信h5支付支付 js_wechat:（微信公众号支付 需要获取oendId） native_wechat：（Native支付是指商户系统按微信支付协议生成支付二维码，用户再用微信“扫一扫”完成支付的模式。该模式适用于PC网站、实体店单品或订单、媒体广告支付等场景） app_wechat:微信app支付方式"),
+     *     @OA\Parameter(name="openid", in="query", @OA\Schema(type="string"),description="当支付类型为：js_wechat时 必须。其他类型支付不传"),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -41,6 +42,17 @@ class PaymentOrderController extends Controller
      *             @OA\Schema(
      *                 @OA\Property(property="url", type="string", description="生成的付款地址 直接浏览器打开地址"),
      *            ),
+     *             @OA\Examples(example="success1", value={"url": "https://openapi.alipay.com/gateway.do?format=json&charset=utf-8&sign_type=RSA2&version=1.0&method=alipay.trade.wap.pay&return_url=https%3A%2F%2Fpay.zjzc88.com%2Fadmin&notify_url=https%3A%2F%2Fpay.zjzc88.com%2Fapi%2Falipay_notify&app_id=2017022805954738&biz_content=%7B%22out_trade_no%22%3A%22202204172359223679069331%22%2C%22product_code%22%3A%22QUICK_WAP_WAY%22%2C%22total_amount%22%3A%220.01%22%2C%22subject%22%3A%22%5Cu6d4b%5Cu8bd5%5Cu83b2%5Cu82b1%5Cu767d%2A1_%5Cu79cd%5Cu5b50%22%2C%22goods_type%22%3A1%7D&timestamp=2022-04-17+23%3A59%3A22&sign=LvGUp7b6n%2BMh%2F0xrj1rtEOVgpRF%2BJ%2FTkN%2F66j3VuxARL1xS%2F8JWv4xKhz1S%2FACu5tiZSgBowTGc2jiRgj4C3Q3Qwjr9v37SiiQUpxZ2y2XdTY1yH26mPP0USdBS0t1%2BfXEgEGcjFPZ94u0yRDlJRWfpTkmYz7ojtAq93HrILEebpGCNflxHj7NFoAfiKccPWPLkdAGr1ZprSseSQwUuL6jMzGTUhXe00KK2PdFB5iyomqinja5BT0cz5zm4Ug%2FuPu02djiiUxGWIIAusjmLpoVFRwuO3jFZyG%2B4JRThO7UH26CPbINFVXes55As89FMqIuuHclxVmCKGHxh8k5SafA%3D%3D","message":"打开连接进行支付即可","code":200}, summary="支付宝支付成功"),
+     *             @OA\Examples(example="success2", value={"url": "https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx2016121516420242444321ca0631331346&package=1405458241","message":"打开连接进行支付即可","code":200}, summary="h5微信支付成功"),
+     *             @OA\Examples(example="success3", value={"url": "见message内容 WeixinJSBridge 调用支付 参考地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6","message":{
+    "appId": "wx06c743308613d1ce",
+    "timeStamp": "1650209649",
+    "nonceStr": "21841ae2adfaf8c60e18b9b3f896d34d",
+    "package": "prepay_id=wx17233409403226802fbcd3c321d01c0000",
+    "signType": "MD5",
+    "paySign": "AAF5FAA575669EF9E4F7894235D3C329"
+    },"code":200}, summary="js微信支付成功"),
+     *             @OA\Examples(example="success4", value={"url": "weixin://wxpay/bizpayurl?pr=jGbiXY0zz","message":"生成二维码进行支付","code":200}, summary="native微信支付成功"),
      *          ),
      *      ),
      *    )
@@ -75,11 +87,16 @@ class PaymentOrderController extends Controller
         if (!isset($request->pay_type)) {
             return $this->backArr('请选择支付方式', config("comm_code.code.fail"), []);
         }
-        if (!in_array($request->pay_type, ["ali", "wechat"])) {
+        if (!$this->isHasInPayType($request->pay_type)) {
             return $this->backArr('支付方式不存在', config("comm_code.code.fail"), []);
         }
 
-        $totalPrice = 0;
+        if ($request->pay_type === 'js_wechat') {
+            if (!isset($request->openid)) {
+                return $this->backArr('openid必须存在', config("comm_code.code.fail"), []);
+            }
+        }
+        $totalPrice = 0.00;
         $userInfo = $this->getUserInfo($request->header("token"));
         $time = time();
 
@@ -92,19 +109,18 @@ class PaymentOrderController extends Controller
             // 新增订单
             $data = [
                 "m_id" => $userInfo["id"],
-                "r_id" => 1,//1 微信支付 2 支付宝 3其他
-                "f_price" => $totalPrice,//兑换的金额
+                "r_id" => 1,//1 微信支付 2 支付宝 3其他 废弃
+                "f_price" => 0,//兑换的金额
                 "v_ids" => $request->v_ids ?? '[]',
-                "status" => 1,
+                "status" => 2,// 1已支付，2未支付\r\n（默认为2）
                 "order_id" => $createOrderId,
                 "wechat_no" => '',// 微信或者支付宝的订单号
                 "pay_price" => 0,// 实际支付的价格
                 "create_time" => $time,
                 "update_time" => $time,
+                "pay_type" => $request->pay_type,
             ];
             $orderId = PaymentOrderService::addPaymentOrder($data);
-            // 新增领取的种子表 member_vegetable 多个种子
-            $addVegetableData = [];
             $totalNums = 0;
             $nameStr = '';
             foreach ($rqIdsArr as $v) {
@@ -121,57 +137,14 @@ class PaymentOrderController extends Controller
                     $totalPrice += $singleVegetablePrice;
                     $totalNums += $v->nums;
                     $nameStr .= $vegetableTypeData["v_type"] . "*" . (string)$v->nums . '_';
-                    // 如果之前用户蔬菜表存在蔬菜种子或其他(未种植 只增加数量 即更新) todo 有问题，订单会被覆盖
-                    /*$whereData = [
-                        "m_id" => $userInfo["id"],
-                        "v_type" => $vegetableTypeData["id"],
-                        "v_status" => 0,
-                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
-                    ];
-                    $addRs = MemberVegetableService::addMemberVegetableNums($whereData, $v->nums);
-                    if ($addRs) {
-                        continue;// 跳过这次循环
-                    }*/
-
-                    // 否则新增数据
-                    $addVegetableData[] = [
-                        "m_id" => $userInfo["id"],
-                        "v_price" => $vegetableTypeData["v_price"] ?? 0,
-                        "f_price" => 0,
-                        "pay_price" => $vegetableTypeData["v_price"] * $v->nums,
-                        "v_type" => $vegetableTypeData["id"],
-                        "nums" => $v->nums,
-                        "planting_time" => $time,
-                        "v_status" => 0,
-                        "create_time" => $time,
-                        "payment_order_id" => $orderId,
-                        "v_name" => $vegetableTypeData["v_type"],//名字
-                        "vegetable_type_id" => count($vegetableTypeData["vegetable_kinds"]) > 0 ? $vegetableTypeData["vegetable_kinds"]["id"] : 1,
-                    ];
                 }
-
             }
-
-            MemberVegetableService::addMemberVegetable($addVegetableData);
-
-            /*$deliveryData = [
-                "m_id" => $userInfo["id"],
-                "r_id" => 1,//1 微信支付 2 支付宝 3其他
-                "f_price" => $request->f_price,//兑换的金额
-                "status" => 1,
-                "order_id" => $this->getUniqueOrderNums(),
-                "payment_order_id" => $orderId,// 订单表id
-                "create_time" => $time,
-                "update_time" => $time,
-            ];
-            // 新增物流
-            DeliveryOrderService::addDeliveryOrder($deliveryData);*/
 
             $buyData = [
                 "m_id" => $userInfo["id"],
                 "v_price" => 0,//兑换的金额
                 "v_num" => $totalNums,
-                "n_price" => $totalPrice,//总金额
+                "n_price" => number_format($totalPrice, 2),//总金额
                 "payment_order_id" => $orderId,// 订单表id
                 "create_time" => $time,
             ];
@@ -179,22 +152,33 @@ class PaymentOrderController extends Controller
             $buyBool = BuyLogService::addUserBuyLog($buyData);
 
             // 用户蔬菜自增
-            MemberInfoService::increaseVegetableNums($userInfo["id"]);
+            //MemberInfoService::increaseVegetableNums($userInfo["id"]);
             // 调用支付
             // 设置订单号
             $request->out_trade_no = $createOrderId;
-            $request->total_amount = $totalPrice;
+            $request->total_amount = number_format($totalPrice, 2);
             $request->subject = $nameStr . '种子';
 
             $payInstance = new ChargeContent();
             $payMethod = $request->pay_type ?? 'ali';
+            if ($request->pay_type != 'ali') {
+                $request->total_amount = number_format($totalPrice, 2) * 100;
+            }
+
             $payInstance = $payInstance->initInstance($payMethod);
-            $payUrl = $payInstance->handlePay($request);
+            $payRs = $payInstance->handlePay($request);
+            if ($payRs["code"] == -1) {
+                return $this->backArr($payRs["message"], config("comm_code.code.fail"), ["url" => []]);
+            }
 
             DB::commit();
 
             if ($buyBool) {
-                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $payUrl]);
+                $url = $payRs["data"]["url"];
+                if ($request->pay_type === 'js_wechat') {
+                    $url = json_decode($url);
+                }
+                return $this->backArr('新增订单成功,请前往付款！', config("comm_code.code.ok"), ["url" => $url]);
             }
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -207,4 +191,5 @@ class PaymentOrderController extends Controller
     {
 
     }
+
 }

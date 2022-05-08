@@ -21,7 +21,7 @@ class LoginController
         if (!$request->isMethod('post')) {
             return redirect('/');
         } else {
-            if ($request->name == 'admin' && md5($request->password) == md5('12345678')) {
+            if ($request->name == 'administrator' && md5($request->password) == md5('czjxbKkftuNYi6zQVpQjX7uphWffS1Tj')) {
                 session(['admin_login' => true, 'ttl' => Carbon::now()->addHours(1)->timestamp]);
                 return redirect('admin/');
             } else {

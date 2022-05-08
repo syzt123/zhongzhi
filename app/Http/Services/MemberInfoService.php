@@ -55,6 +55,18 @@ class MemberInfoService extends BaseService
         if (isset($data["nickname"]) && trim($data["nickname"]) != '') {
             MemberInfo::updateUserInfo($uId, ["nickname" => $data["nickname"]]);
         }
+        // 更新收货人电话
+        if (isset($data["v_tel"]) && trim($data["v_tel"]) != '') {
+            MemberInfo::updateUserInfo($uId, ["v_tel" => $data["v_tel"]]);
+        }
+        // 更新收货人名称
+        if (isset($data["v_name"]) && trim($data["v_name"]) != '') {
+            MemberInfo::updateUserInfo($uId, ["v_name" => $data["v_name"]]);
+        }
+        // 更新用户密码
+        if (isset($data["password"]) && trim($data["password"]) != '') {
+            MemberInfo::updateUserInfo($uId, ["password" => $data["password"]]);
+        }
         return 1;
     }
 
@@ -68,5 +80,12 @@ class MemberInfoService extends BaseService
     static function decreaseVegetableNums($uId, $nums = 1): int
     {
         return MemberInfo::decreaseVegetableNums($uId, $nums);
+    }
+
+    // 减少用户蔬菜币
+    static function decreaseUserGoldNums($uId, $gold = 0): int
+    {
+        return MemberInfo::decreaseUserGoldNums($uId, $gold);
+
     }
 }

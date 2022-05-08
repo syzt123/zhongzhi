@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Ys;
 
 use \App\Http\Controllers\Controller;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
 //萤石
@@ -42,22 +43,31 @@ class YsController extends Controller
     }
 
     // 获取直播地址
-    static function getLiveAddress(): array
+    static function getLiveAddress(Request $request): array
     {
+        if (!isset($request->device_serial)) {
+            return ["msg" => '设备号必须', "data" => [], "code" => -1];
+        }
+        if (($request->device_serial === '')) {
+            return ["msg" => '设备号不能为空', "data" => [], "code" => -1];
+        }
         $url = config('comm_code.ys_config.url') . 'lapp/v2/live/address/get';
         $data = [
             "accessToken" => self::flashAccessToken(),
-            "deviceSerial" => config('comm_code.ys_config.deviceSerial'),
+            "deviceSerial" => $request->device_serial,//config('comm_code.ys_config.deviceSerial'),
             "channelNo" => config('comm_code.ys_config.channelNo'),
-            //"expireTime" => 2 * 60 * 60,
+            "expireTime" => 720 * 24 * 60 * 60,
             "protocol" => 2,//1-ezopen、2-hls、3-rtmp、4-flv，默认为1
             "quality" => 2,//视频清晰度，1-高清（主码流）、2-流畅（子码流）
         ];
         // 取出所有的再追加。
         $rs = self::httpCurl($url, "post", [], $data);
-        if (isset($rs["code"]["url"])) {
+        if (isset($rs["code"]) && (int)$rs["code"] != 200) {
+            return ["msg" => $rs["msg"], "data" => [], "code" => -1];
+        }
+        if (isset($rs["data"]["url"])) {
             // 存直播url并设置有效期
-            var_dump(config("comm_code.ys_config.live_address"), [config('comm_code.ys_config.deviceSerial') => $rs["code"]["url"]]);
+            //var_dump(config("comm_code.ys_config.live_address"), [config('comm_code.ys_config.deviceSerial') => $rs["code"]["url"]]);
             Redis::lpush(config("comm_code.ys_config.live_address"), json_encode([config('comm_code.ys_config.deviceSerial') => $rs["code"]["url"]]));
         }
 
@@ -72,11 +82,11 @@ class YsController extends Controller
         ];*/
         //Redis::lpush(config("comm_code.ys_config.live_address"), json_encode([config('comm_code.ys_config.deviceSerial').'888' => $rs["data"]["url"]]));
         // 加入新数据
-        Redis::hmset(config("comm_code.ys_config.live_address"), config('comm_code.ys_config.deviceSerial') . '666', $rs["data"]["url"]);
+        //Redis::hmset(config("comm_code.ys_config.live_address"), $request->device_serial, $rs["data"]["url"]);
 
         // 获取所有的数据
         /*$rrrr = Redis::hgetall(config("comm_code.ys_config.live_address"));
         var_dump('meget数据：',$rrrr);*/
-        return $rs;
+        return ["msg" => '设备号必须', "data" => $rs["data"], "code" => 200];
     }
 }

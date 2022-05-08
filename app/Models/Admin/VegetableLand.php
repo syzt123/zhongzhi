@@ -27,9 +27,13 @@ class VegetableLand extends Base
     public function creatLand(){
         try {
             DB::beginTransaction();
-            $this->monitor = Request::get('monitor');
+            //$this->monitor = Request::get('monitor');废弃
+            $this->name =Request::get('name');
             $this->v_num =Request::get('v_num');
             $this->l_status =Request::get('l_status');
+            $this->tx_video_url =Request::get('tx_video_url');
+            $this->tx_video_id =Request::get('tx_video_id');
+
             $this->save();
             DB::commit();
             return true;
@@ -42,9 +46,12 @@ class VegetableLand extends Base
         try {
             DB::beginTransaction();
             $land = $this->find(Request::input('id'));
-            $land->monitor = Request::input('monitor');
+            //$land->monitor = Request::input('monitor');废弃
+            $this->name =Request::get('name');
             $land->v_num =Request::input('v_num');
             $land->l_status =Request::input('l_status');
+            $this->tx_video_url =Request::get('tx_video_url');
+            $this->tx_video_id =Request::get('tx_video_id');
             $land->save();
             DB::commit();
             return true;

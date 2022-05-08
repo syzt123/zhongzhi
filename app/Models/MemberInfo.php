@@ -127,4 +127,11 @@ class MemberInfo extends Model
         return self::with([])->where("id", '=', $uId)
             ->decrement('vegetable_num', $nums);
     }
+
+    // 自减少用户蔬菜币
+    static function decreaseUserGoldNums($uId, $gold = 0): int
+    {
+        return self::with([])->where("id", '=', $uId)
+            ->decrement('gold', $gold);
+    }
 }

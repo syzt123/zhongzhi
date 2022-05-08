@@ -6,11 +6,13 @@ use App\Http\Controllers\Api\V1\Ys\YsController;
 use \App\Http\Controllers\Controller;
 use App\Http\Services\BuyLogService;
 use App\Http\Services\DeliveryOrderService;
+use App\Http\Services\MemberInfoService;
 use App\Http\Services\MemberVegetableService;
 use App\Http\Services\NoticeService;
 use App\Http\Services\PaymentOrderService;
 use App\Http\Services\VegetableLandService;
 use App\Http\Services\VegetableTypeService;
+use App\Models\VegetableResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,8 +31,10 @@ class DeliveryOrderController extends Controller
      *     description="新增物流订单(2022/03/31已完成)",
      *     @OA\Parameter(name="token", in="header", @OA\Schema(type="string"),description="heder头带token"),
      *     @OA\Parameter(name="m_v_ids", in="query", @OA\Schema(type="string"),description="要兑换的蔬菜ids ,id为用户蔬菜的主键id",example={"[{id:1,nums:10},{id2:2,nums:10}]"}),
-     *     @OA\Parameter(name="f_price", in="query", @OA\Schema(type="string"),description="蔬菜兑换时的蔬菜币"),
-     *     @OA\Parameter(name="des_address", in="query", @OA\Schema(type="string"),description="用户收货地址"),
+     *     @OA\Parameter(name="f_price", in="query", @OA\Schema(type="string"),description="蔬菜兑换时的蔬菜币 默认0"),
+     *     @OA\Parameter(name="u_name", in="query", @OA\Schema(type="string"),description="用户收货人名字 默认读用户收货人名称 不必传"),
+     *     @OA\Parameter(name="u_tel", in="query", @OA\Schema(type="string"),description="用户收货人电话 默认读用户收货人电话 不必传"),
+     *     @OA\Parameter(name="des_address", in="query", @OA\Schema(type="string"),description="用户收货地址 默认读用户收货地址 不必传"),
      *     @OA\Response(
      *         response=200,
      *         description="{code: 200, msg:string, data:[]}",
@@ -43,6 +47,21 @@ class DeliveryOrderController extends Controller
             return $this->backArr('请求方式必须为post', config("comm_code.code.fail"), []);
         }
         $userInfo = $this->getUserInfo($request->header("token"));
+        //不读缓存数据
+        $userInfo = MemberInfoService::getUserInfo($userInfo["id"]);
+
+        if (!isset($userInfo["v_name"])) {
+            return $this->backArr('收货人名称必须', config("comm_code.code.fail"), []);
+        }
+        if ($userInfo["v_name"] == '') {
+            return $this->backArr('收货人名称必须为空', config("comm_code.code.fail"), []);
+        }
+        if (!isset($userInfo["v_tel"])) {
+            return $this->backArr('收货人电话必须', config("comm_code.code.fail"), []);
+        }
+        if ($userInfo["v_tel"] == '') {
+            return $this->backArr('收货人电话不能为空或格式错误', config("comm_code.code.fail"), []);
+        }
 
         if (!isset($request->m_v_ids)) {//
             return $this->backArr('用户想兑换蔬菜m_v_ids必须', config("comm_code.code.fail"), []);
@@ -57,70 +76,122 @@ class DeliveryOrderController extends Controller
         //校验m_v_ids是否存在
 
         $totalPrice = 0;
-        foreach ($rqIdsArr as $v) {
-            if (!isset($v->id)) {
-                return $this->backArr('每个蔬菜id必须存在', config("comm_code.code.fail"), []);
-            }
-            if ($v->id <= 0) {
-                return $this->backArr('每个蔬菜id必须大于0', config("comm_code.code.fail"), []);
-            }
-            if (!isset($v->nums)) {
-                return $this->backArr('每个蔬菜数量必须存在且大于o', config("comm_code.code.fail"), []);
-            }
-            if ($v->nums <= 0) {
-                return $this->backArr('每个蔬菜数量必须大于0', config("comm_code.code.fail"), []);
-            }
-            if (isset($v->id)) {
-                $mVData = [
-                    "id" => $v->id,
-                ];
-                $mVInfo = MemberVegetableService::getMemberVegetableList($userInfo["id"], $mVData);
-                if (!count($mVInfo["list"])) {
-                    return $this->backArr('用户想兑换蔬不存在，请重试！', config("comm_code.code.fail"), []);
+        DB::beginTransaction();
+        $name = '';//蔬菜名
+        $weight = 0;
+        $allExchangeGold = 0;//总蔬菜对货币
+        $vegetableImg = '';
+        try {
+            foreach ($rqIdsArr as $v) {
+                if (!isset($v->id)) {
+                    return $this->backArr('每个蔬菜id必须存在', config("comm_code.code.fail"), []);
+                }
+                if ($v->id <= 0) {
+                    return $this->backArr('每个蔬菜id必须大于0', config("comm_code.code.fail"), []);
+                }
+                if (!isset($v->nums)) {
+                    return $this->backArr('每个蔬菜数量必须存在且大于o', config("comm_code.code.fail"), []);
+                }
+                if ($v->nums <= 0) {
+                    return $this->backArr('每个蔬菜数量必须大于0', config("comm_code.code.fail"), []);
+                }
+                if (isset($v->id)) {
+                    $mVData = [
+                        "id" => $v->id,
+                    ];
+                    $selfVegetable = $mVInfo = MemberVegetableService::getMemberVegetableList($userInfo["id"], $mVData);//用户自己的蔬菜
+                    $platformVegetable = [];//平台蔬菜列表
+                    if (!count($mVInfo["list"])) {
+                        $platformVegetable = $mVInfo = MemberVegetableService::getMemberVegetableList(null, $mVData);//平台蔬菜
+                    }
+                    if (!count($mVInfo["list"])) {
+                        return $this->backArr('用户想兑换蔬不存在，请重试！', config("comm_code.code.fail"), []);
+                    }
+
+                    if (count($mVInfo["list"]) == 1 && $mVInfo["list"][0]["v_status"] != 2) {
+                        return $this->backArr('存在蔬菜还未成熟/已坏，暂时不能兑换！', config("comm_code.code.fail"), []);
+                    }
+                    if ($v->nums > $mVInfo["list"][0]["nums"]) {
+                        return $this->backArr('能兑换的蔬菜数不能大于总库存/购买的蔬菜数量，请重试！', config("comm_code.code.fail"), []);
+                    }
+
+                    $totalPrice += $mVInfo["list"][0]["v_price"] * $v->nums;
+                    $useGold = ($mVInfo["list"][0]["yield"] / $mVInfo["list"][0]["nums"]) * $v->nums;
+                    // 同时更新用户蔬菜数量 产量
+                    if (count($platformVegetable) == 0) {
+                        MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], $userInfo["id"], $v->nums, $useGold);
+                    }else{
+                        // 平台蔬菜
+                        MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], null, $v->nums, $useGold);
+                    }
+
+
+                    $name .= $mVInfo["list"][0]["v_name"] . '*' . (string)$v->nums . '_';
+                    $weight += (($mVInfo["list"][0]["yield"] / $mVInfo["list"][0]["nums"]) * $v->nums);
+
+                    // 获取蔬菜信息 拿到兑换比例
+                    $vegetableInfo = VegetableTypeService::findVegetableTypeInfoById($mVInfo["list"][0]["v_type"]);
+
+                    // 获取需要兑换的蔬菜币 数量*单价
+                    //$allExchangeGold += (($mVInfo["list"][0]["yield"] / $mVInfo["list"][0]["nums"]) * $v->nums) / $vegetableInfo["exchange_quality"];
+                    $allExchangeGold += $mVInfo["list"][0]["f_price"] * $v->nums;// 新算法逻辑
+                    // 获取蔬菜图片地址
+                    $tmpImg = VegetableResources::with([])->where("vegetable_type_id", '=', $vegetableInfo["id"])->where("vegetable_type_id", '=', 3)->first();
+                    if ($tmpImg) {
+                        $vegetableImg = $tmpImg->toArray()["vegetable_resources"];
+                    }
                 }
 
-                if (count($mVInfo["list"]) == 1 && $mVInfo["list"][0]["v_status"] != 2) {
-                    return $this->backArr('存在蔬菜还未成熟/已坏，暂时不能兑换！', config("comm_code.code.fail"), []);
-                }
-                if ($v->nums > $mVInfo["list"][0]["nums"]) {
-                    return $this->backArr('能兑换的蔬菜数不能大于总库存/购买的蔬菜数量，请重试！', config("comm_code.code.fail"), []);
-                }
-
-                $totalPrice += $mVInfo["list"][0]["v_price"] * $v->nums;
-                // 同时更新用户蔬菜数量 todo
-                MemberVegetableService::updateNumsMemberVegetable($mVInfo["list"][0]["id"], $userInfo["id"],$v->nums);
-
             }
 
-        }
+            if ($allExchangeGold > $userInfo["gold"]) {
+                return $this->backArr('您的蔬菜币不足以兑换当前所选蔬菜，请重试！', config("comm_code.code.fail"), []);
+            }
+
+            if (!isset($userInfo["v_address"])) {
+                return $this->backArr('收货地址必须', config("comm_code.code.fail"), []);
+            }
+            if ($userInfo["v_address"] == '') {
+                return $this->backArr('收货地址不能为空', config("comm_code.code.fail"), []);
+            }
 
 
-        if (!isset($request->des_address)) {
-            return $this->backArr('收货地址必须', config("comm_code.code.fail"), []);
-        }
-        if ($request->des_address == '') {
-            return $this->backArr('收货地址不能为空', config("comm_code.code.fail"), []);
-        }
-        $time = time();
+            $time = time();
 
-        // 新增物流表
-        $data = [
-            "m_id" => $userInfo["id"],
-            "r_id" => 1,//1 微信支付 2 支付宝 3其他
-            "f_price" => $request->f_price,//兑换的金额
-            "m_v_ids" => $request->m_v_ids ?? '[]',
-            "order_id" => $this->getUniqueOrderNums(),//
-            "create_time" => $time,
-            "update_time" => $time,
-            "status" => 1,//默认待配送
-            "des_address" => $request->des_address,
-            "total_price" => $totalPrice ?? 0,
-        ];
-        $bool = DeliveryOrderService::addDeliveryOrder($data);
-        if ($bool) {
-            return $this->backArr('新增物流订单成功', config("comm_code.code.ok"), []);
+            // 更新用户蔬菜币
+            MemberInfoService::decreaseUserGoldNums($userInfo["id"], $allExchangeGold);
+            // 更新缓存
+            $this->updateUserCache($request->header("token"));
+            // 新增物流表
+            $data = [
+                "m_id" => $userInfo["id"],
+                "r_id" => 1,//1 微信支付 2 支付宝 3其他
+                "f_price" => $allExchangeGold ?? 0,//兑换的蔬菜币
+                "m_v_ids" => $request->m_v_ids ?? '[]',
+                "order_id" => $this->getUniqueOrderNums(),//
+                "create_time" => $time,
+                "update_time" => $time,
+                "status" => 1,//默认待配送
+                "u_tel" => $userInfo["v_tel"],
+                "u_name" => $userInfo["v_name"],
+                "des_address" => $userInfo["v_address"],
+                "total_price" => $totalPrice ?? 0,
+                "v_img" => $vegetableImg,
+                "v_name" => substr($name, 0, -1),
+                "weight" => number_format($weight / 1000, 2) ?? 1,
+            ];
+            $bool = DeliveryOrderService::addDeliveryOrder($data);
+
+            DB::commit();
+            if ($bool) {
+                return $this->backArr('新增物流订单成功', config("comm_code.code.ok"), []);
+            }
+            return $this->backArr('新增物流订单失败', config("comm_code.code.fail"), []);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->backArr('新增物流订单失败2' . $e->getMessage(), config("comm_code.code.fail"), []);
         }
-        return $this->backArr('新增物流订单失败', config("comm_code.code.fail"), []);
+
 
     }
 
